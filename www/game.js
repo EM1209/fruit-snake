@@ -39,9 +39,26 @@
   }
 
   // ---- state -------------------------------------------------------------
-  const FRUITS = ["🍎","🍓","🍌","🍇","🍊","🍉","🍑","🥝","🍒","🍐"];
-  let snake, dir, nextDir, food, foodEmoji, score, best, state, prevSnake, renderFrom;
+  // ---- learning content --------------------------------------------------
+  const DATA = window.FS_DATA;
+  let category = DATA.CATEGORIES.find(c => c.id === (localStorage.getItem("fs_cat") || "fruits"))
+                 || DATA.CATEGORIES[0];
+  // items the child has collected at least once, per category: {catId: [names]}
+  let learned = {};
+  try { learned = JSON.parse(localStorage.getItem("fs_learned") || "{}"); } catch(e){ learned = {}; }
+  const learnedSet = () => new Set(learned[category.id] || []);
+  function markLearned(name){
+    const s = learnedSet();
+    if (s.has(name)) return false;
+    s.add(name);
+    learned[category.id] = [...s];
+    localStorage.setItem("fs_learned", JSON.stringify(learned));
+    return true;                       // brand new discovery!
+  }
+
+  let snake, dir, nextDir, food, foodItem, score, best, state, prevSnake, renderFrom;
   let stepMs, lastTick, popAt, cheer, cheerAt, reviveUsed;
+  let sparkles = [];
   let muted = localStorage.getItem("fs_muted") === "1";
 
   best = +(localStorage.getItem("fs_best") || 0);
@@ -53,15 +70,25 @@
     prevSnake = snake.map(s => ({...s}));
     renderFrom = snake.map(s => ({...s}));
     dir = {x:1,y:0}; nextDir = {x:1,y:0};
-    score = 0; stepMs = 200; popAt = 0; cheer = ""; cheerAt = 0; reviveUsed = false;
+    score = 0; stepMs = 220; popAt = 0; cheer = ""; cheerAt = 0; reviveUsed = false;
+    sparkles = [];
     $("score").textContent = 0;
+    if (window.Voice) window.Voice.cancel();
     placeFood();
   }
   function placeFood(){
     let p;
     do { p = {x:(Math.random()*GRID)|0, y:(Math.random()*GRID)|0}; }
     while (snake.some(s => s.x===p.x && s.y===p.y));
-    food = p; foodEmoji = FRUITS[(Math.random()*FRUITS.length)|0];
+    food = p;
+    // prefer something the child hasn't collected yet, so new words keep coming
+    const seen = learnedSet();
+    const fresh = category.items.filter(i => !seen.has(i.n));
+    const pool = fresh.length ? fresh : category.items;
+    let next = pool[(Math.random()*pool.length)|0];
+    if (foodItem && pool.length > 1 && next.n === foodItem.n)   // avoid repeats
+      next = pool[(pool.indexOf(next)+1) % pool.length];
+    foodItem = next;
   }
 
   // ---- sound -------------------------------------------------------------
@@ -129,6 +156,22 @@
   soundBtn.onclick=()=>{ muted=!muted; localStorage.setItem("fs_muted", muted?"1":"0"); paintSound(); if(!muted) sEat(); };
   paintSound();
 
+  const voiceBtn=$("voiceBtn");
+  function paintVoice(){
+    const on = window.Voice && window.Voice.isEnabled();
+    voiceBtn.textContent = on ? "🗣️ Voice" : "🤐 Voice";
+    voiceBtn.setAttribute("aria-pressed", String(!!on));
+    voiceBtn.style.opacity = on ? "1" : ".55";
+  }
+  voiceBtn.onclick=()=>{
+    if (!window.Voice) return;
+    const on = !window.Voice.isEnabled();
+    window.Voice.setEnabled(on);
+    paintVoice();
+    if (on) window.Voice.speak("Voice on", {rate:0.9});
+  };
+  paintVoice();
+
   // ---- shop --------------------------------------------------------------
   $("shopBtn").onclick=()=>{ if(state==="playing") togglePause(); hideAll(); refreshShop(); shopOv.hidden=false; };
   $("shopCloseBtn").onclick=()=>{ shopOv.hidden=true; if(state==="ready"){ startOv.hidden=false; } };
@@ -147,6 +190,38 @@
       : "Unlock every snake skin and turn off all ads — one time, forever.";
   }
   document.addEventListener("fs-ownership", ()=>{ refreshShop(); buildSkins(); });
+
+  // ---- category picker + learning tracker --------------------------------
+  function buildCats(){
+    const wrap=$("catPicker"); wrap.innerHTML="";
+    DATA.CATEGORIES.forEach(c=>{
+      const el=document.createElement("button");
+      el.className="cat"+(c.id===category.id?" sel":"");
+      el.innerHTML=`<span>${c.icon}</span><span>${c.label}</span>`;
+      el.setAttribute("aria-pressed", String(c.id===category.id));
+      el.onclick=()=>{
+        category=c; localStorage.setItem("fs_cat", c.id);
+        buildCats(); updateTracker(); placeFood();
+        if (window.Voice) { window.Voice.unlock(); window.Voice.speak(c.label, {rate:0.85}); }
+      };
+      wrap.appendChild(el);
+    });
+  }
+
+  function updateTracker(){
+    const s=learnedSet(), total=category.items.length, got=category.items.filter(i=>s.has(i.n)).length;
+    $("trackTitle").textContent = `${category.icon} ${category.label} learned`;
+    $("trackCount").textContent = `${got} / ${total}`;
+    $("trackFill").style.width = `${Math.round(got/total*100)}%`;
+    const found=$("trackFound"); found.innerHTML="";
+    category.items.forEach(i=>{
+      const sp=document.createElement("span");
+      sp.textContent=i.e;
+      sp.title = s.has(i.n) ? i.n : "not found yet";
+      if (s.has(i.n)) sp.className="got";
+      found.appendChild(sp);
+    });
+  }
 
   // ---- skin picker -------------------------------------------------------
   function buildSkins(){
@@ -170,7 +245,44 @@
   }
 
   // ---- game tick ---------------------------------------------------------
-  const CHEERS={1:"Yum!",2:"Nice!",3:"Tasty!",5:"Great job!",8:"Wow!",10:"Super! 10!",15:"Amazing!",20:"Snake star! ⭐"};
+  // The learning moment: say the name, show the word, sparkle, track progress.
+  function celebrate(item, atCell){
+    const isNew = markLearned(item.n);
+    const sentence = DATA.reaction(item);
+
+    // 1) big readable word on screen
+    const banner = $("learnBanner");
+    banner.innerHTML = "";
+    const txt = document.createElement("span");
+    txt.textContent = DATA.label(item);
+    banner.appendChild(txt);
+    if (isNew){
+      const tag = document.createElement("span");
+      tag.className = "new"; tag.textContent = "NEW!";
+      banner.appendChild(tag);
+    }
+    banner.classList.remove("show"); void banner.offsetWidth;  // restart anim
+    banner.classList.add("show");
+
+    // 2) say the name clearly, then the fun reaction
+    if (window.Voice) window.Voice.sayItem(item.n, sentence);
+
+    // 3) sparkle burst where it was eaten
+    for (let i=0;i<12;i++){
+      const ang = (Math.PI*2*i)/12 + Math.random()*0.4;
+      const sp = 0.9 + Math.random()*1.1;
+      sparkles.push({ x:atCell.x+0.5, y:atCell.y+0.5,
+                      vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,
+                      born:performance.now(), life:620 + Math.random()*260,
+                      hue:(Math.random()*360)|0 });
+    }
+
+    // 4) progress panel
+    updateTracker();
+    return isNew;
+  }
+
+  const CHEERS={3:"Great job!",5:"Wow!",8:"Super!",10:"Amazing! 10!",15:"Fantastic!",20:"Word star! ⭐"};
   function tick(){
     dir=nextDir;
     prevSnake=snake.map(s=>({...s}));
@@ -181,8 +293,10 @@
     snake.unshift(head);
     if (ate){
       score++; $("score").textContent=score;
-      popAt=performance.now(); stepMs=Math.max(100, stepMs-3);
-      if (CHEERS[score]){ cheer=CHEERS[score]; cheerAt=performance.now(); sYay(); } else sEat();
+      popAt=performance.now(); stepMs=Math.max(110, stepMs-2.5);
+      const isNew = celebrate(foodItem, {x:food.x,y:food.y});
+      if (isNew) sYay(); else sEat();
+      if (CHEERS[score]){ cheer=CHEERS[score]; cheerAt=performance.now(); }
       placeFood();
     } else snake.pop();
     renderFrom=snake.map((s,i)=> prevSnake[i]?{...prevSnake[i]}:{...s});
@@ -194,9 +308,12 @@
     const bonus = score>=best && score>0;
     $("overEmoji").textContent = bonus?"🏆":"🙈";
     $("overTitle").textContent = bonus?"New best!":"Oops!";
+    const s=learnedSet(), total=category.items.length;
+    const got=category.items.filter(i=>s.has(i.n)).length;
     $("overMsg").textContent = score===0
-      ? "So close! Tap Play again to start munching."
-      : `You ate ${score} ${score===1?"fruit":"fruits"}${bonus?" — a new record!":""} Keep going?`;
+      ? "So close! Tap Play again to keep learning."
+      : `You collected ${score} ${score===1?"thing":"things"}${bonus?" — a new record!":""} ` +
+        `You know ${got} of ${total} ${category.label.toLowerCase()}!`;
     // offer a rewarded-ad revive once per run (and only if it's worth it)
     const canRevive = !reviveUsed && score>=3;
     const rb=$("reviveBtn"); rb.hidden=!canRevive;
@@ -236,7 +353,7 @@
   function render(now){
     const W=cv.clientWidth, c=cellCss, sk=skinById(selSkin);
     for (let y=0;y<GRID;y++) for (let x=0;x<GRID;x++){
-      ctx.fillStyle=(x+y)%2 ? "#a6e178" : "#b7ec8f";
+      ctx.fillStyle=(x+y)%2 ? category.grassB : category.grassA;
       ctx.fillRect(x*c,y*c,c+0.6,c+0.6);
     }
     let t=1;
@@ -244,9 +361,17 @@
 
     const bob=reduceMotion?0:Math.sin(now/300)*c*0.05;
     let fscale=1; if(popAt){ const p=(now-popAt)/220; fscale=p<1?1+0.35*Math.sin(p*Math.PI):1; }
-    ctx.font=`${c*0.82*fscale}px system-ui,"Apple Color Emoji","Segoe UI Emoji"`;
     ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.fillText(foodEmoji, food.x*c+c/2, food.y*c+c/2+bob);
+    // soft glow ring so the item to collect is easy for little eyes to spot
+    if (!reduceMotion){
+      const pulse = 0.5 + 0.5*Math.sin(now/380);
+      ctx.beginPath();
+      ctx.arc(food.x*c+c/2, food.y*c+c/2+bob, c*(0.44+0.06*pulse), 0, 7);
+      ctx.fillStyle = `rgba(255,255,255,${0.28+0.22*pulse})`;
+      ctx.fill();
+    }
+    ctx.font=`${c*0.82*fscale}px system-ui,"Apple Color Emoji","Segoe UI Emoji"`;
+    ctx.fillText(foodItem.e, food.x*c+c/2, food.y*c+c/2+bob);
 
     for (let i=snake.length-1;i>=0;i--){
       const cur=snake[i], from=renderFrom[i]||cur;
@@ -259,6 +384,19 @@
       ctx.fillStyle=g; ctx.strokeStyle="rgba(40,20,80,.45)"; ctx.lineWidth=Math.max(1,c*0.05);
       roundRect(px+pad,py+pad,c-pad*2,c-pad*2,c*0.32); ctx.fill(); ctx.stroke();
       if (isHead) drawFace(px,py,c,now);
+    }
+
+    // sparkle burst from the last thing eaten
+    if (sparkles.length){
+      sparkles = sparkles.filter(s => now - s.born < s.life);
+      sparkles.forEach(s=>{
+        const p = (now - s.born) / s.life;
+        const x = (s.x + s.vx*p*1.6) * c, y = (s.y + s.vy*p*1.6 + p*p*1.2) * c;
+        ctx.globalAlpha = 1 - p;
+        ctx.fillStyle = `hsl(${s.hue} 90% 62%)`;
+        ctx.beginPath(); ctx.arc(x, y, c*0.10*(1-p*0.5), 0, 7); ctx.fill();
+        ctx.globalAlpha = 1;
+      });
     }
 
     if (cheer && cheerAt){
@@ -297,7 +435,10 @@
   if (window.Money) window.Money.init();
   // if the saved skin is locked (e.g. refund), fall back to a free one
   if (!skinUnlocked(skinById(selSkin))) selSkin="grape";
-  buildSkins();
+  buildCats(); buildSkins(); updateTracker();
+  // browsers need a gesture before audio — unlock voice on the first tap
+  ["pointerdown","keydown"].forEach(ev =>
+    addEventListener(ev, () => { if (window.Voice) window.Voice.unlock(); }, {once:true}));
   reset(); state="ready"; sizeCanvas();
   addEventListener("resize", sizeCanvas);
   requestAnimationFrame(frame);

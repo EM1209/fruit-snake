@@ -7,7 +7,26 @@ wrapped as a real native app with [Capacitor](https://capacitorjs.com).
 - **Play it now (browser):** `npm run serve` → <http://localhost:8080>
 - **Ship it:** follow **[PUBLISHING.md](PUBLISHING.md)** step by step.
 
-## Why kids like it (and why that helps retention)
+## Learning while playing
+Every time the snake collects something, the game **says the word out loud**,
+shows it in big friendly letters, and sparkles:
+
+> 🍎 **Apple** — *"Apple… Yummy, an apple!"*
+> 🥦 **Broccoli** — *"Broccoli… Mmm, green broccoli!"*
+
+- **4 categories** to collect — 🍎 Fruits · 🥕 Vegetables · 🥨 Healthy Snacks ·
+  🌈 Rainbow Mix (36 words total), each with its own board colors.
+- **Clear speech first:** the name is spoken alone, then the fun sentence — so
+  the word lands before the reaction.
+- **"NEW!" badge** the first time a child finds something, plus a **progress
+  tracker** ("7 / 12 Fruits learned") with grayed-out emoji filling in as they
+  discover each one. Progress is saved between sessions.
+- **New words are prioritized** — the game prefers to spawn items the child
+  hasn't collected yet, so learning keeps moving.
+- 🗣️ **Voice toggle** for quiet time; grammar is handled properly
+  ("a red apple", "an orange") since children are learning these words.
+
+## Why kids stay (and why that helps retention)
 - **Friendly walls** — the snake wraps to the other side instead of dying, so
   little players stay in the game.
 - **Big controls** — swipe, on-screen arrows, or keyboard.
@@ -31,7 +50,9 @@ IDs in `money.js`/`capacitor.config.json` for your own before shipping — see
 ```
 www/               the game (self-contained, no network needed)
   index.html         UI + styles
-  game.js            gameplay, skins, rewarded-ad revive
+  data.js            the learning content — categories, words, reaction phrases
+  voice.js           child-friendly speech (device TTS, offline, free)
+  game.js            gameplay, skins, learning moments, rewarded-ad revive
   money.js           ads + purchase bridge  ← put your real IDs here
 capacitor.config.json  app id/name + AdMob app IDs
 assets/icon.svg    master icon → `npx @capacitor/assets generate`

@@ -72,6 +72,44 @@
   .pad .up{grid-area:1/2} .pad .left{grid-area:2/1} .pad .right{grid-area:2/3} .pad .down{grid-area:3/2}
   .pad .mid{grid-area:2/2; display:flex; align-items:center; justify-content:center; font-size:22px}
 
+  /* category picker */
+  .cats{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:22ch}
+  .cat{border:0; cursor:pointer; font-family:var(--font); font-weight:800; color:#fff;
+    padding:9px 14px; border-radius:999px; font-size:15px; background:rgba(255,255,255,.22);
+    box-shadow:inset 0 0 0 3px rgba(255,255,255,.55); display:flex; align-items:center; gap:6px}
+  .cat.sel{background:var(--sun); color:#5a4600; box-shadow:0 4px 0 #d9a800}
+  .cat:focus-visible{outline:4px solid #fff; outline-offset:2px}
+
+  /* the big "what did I just eat" banner */
+  .learn{
+    position:absolute; left:50%; top:14px; transform:translateX(-50%) scale(.6);
+    display:flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px;
+    background:#fff; color:var(--plum); font-weight:800; font-size:clamp(20px,6vw,30px);
+    box-shadow:0 6px 0 rgba(52,35,79,.18), 0 10px 24px rgba(52,35,79,.22);
+    opacity:0; pointer-events:none; white-space:nowrap; z-index:3;
+  }
+  .learn.show{animation:pop 1.9s ease-out forwards}
+  .learn .new{font-size:.55em; background:var(--sun); color:#5a4600; padding:3px 9px; border-radius:999px}
+  @keyframes pop{
+    0%{opacity:0; transform:translateX(-50%) scale(.6)}
+    12%{opacity:1; transform:translateX(-50%) scale(1.12)}
+    22%{transform:translateX(-50%) scale(1)}
+    78%{opacity:1; transform:translateX(-50%) scale(1)}
+    100%{opacity:0; transform:translateX(-50%) scale(.95)}
+  }
+  @media (prefers-reduced-motion: reduce){ .learn.show{animation:fade 1.9s ease-out forwards}
+    @keyframes fade{0%,100%{opacity:0}12%,78%{opacity:1}} }
+
+  /* learned-so-far tracker */
+  .tracker{width:100%; max-width:480px; background:var(--card); border-radius:18px; padding:10px 14px;
+    box-shadow:0 4px 0 rgba(124,194,74,.35), 0 8px 18px rgba(52,35,79,.08)}
+  .tracker .top{display:flex; justify-content:space-between; align-items:center; font-size:14px; font-weight:800}
+  .tracker .bar{height:10px; border-radius:999px; background:#eee6f7; margin-top:7px; overflow:hidden}
+  .tracker .fill{height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg,#ffd23f,#24c98a); transition:width .4s}
+  .tracker .found{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; font-size:19px; line-height:1.1}
+  .tracker .found span{filter:grayscale(1); opacity:.28}
+  .tracker .found span.got{filter:none; opacity:1}
+
   .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   .mini{border:0; cursor:pointer; font-family:var(--font); font-weight:800; color:var(--plum); background:var(--card);
     padding:9px 15px; border-radius:999px; font-size:14px; box-shadow:0 3px 0 rgba(124,194,74,.45)}
@@ -85,21 +123,23 @@
   <div class="wrap">
     <header>
       <h1>🍓 Fruit Snake 🐍</h1>
-      <p class="tag">Munch the fruit and grow!</p>
+      <p class="tag">Eat, listen, and learn new words!</p>
     </header>
 
     <div class="hud">
-      <div class="chip"><span>🍎</span><span><small>FRUIT</small><span class="val" id="score">0</span></span></div>
+      <div class="chip"><span>🍎</span><span><small>FOUND</small><span class="val" id="score">0</span></span></div>
       <div class="chip"><span>⭐</span><span><small>BEST</small><span class="val" id="best">0</span></span></div>
     </div>
 
     <div class="stage">
       <canvas id="board" width="480" height="480" aria-label="Fruit Snake game board"></canvas>
+      <div class="learn" id="learnBanner" aria-live="polite"></div>
 
       <div class="overlay" id="startOverlay">
         <div class="big-emoji">🐍🍎</div>
         <h2>Fruit Snake</h2>
-        <p>Arrows to move. Eat fruit. Don’t bump your tail — walls are friendly!</p>
+        <p>Pick what to collect. Eat it, hear its name, and learn!</p>
+        <div class="cats" id="catPicker"></div>
         <div class="skins" id="skinPicker"></div>
         <button class="btn play" id="startBtn">▶ Play</button>
       </div>
@@ -135,14 +175,23 @@
       <button class="down"  data-dir="down"  aria-label="Move down">▼</button>
     </div>
 
+    <div class="tracker">
+      <div class="top"><span id="trackTitle">🍎 Fruits learned</span><span id="trackCount">0 / 12</span></div>
+      <div class="bar"><div class="fill" id="trackFill"></div></div>
+      <div class="found" id="trackFound"></div>
+    </div>
+
     <div class="row">
       <button class="mini" id="pauseBtn">⏸ Pause</button>
+      <button class="mini" id="voiceBtn" aria-pressed="true">🗣️ Voice</button>
       <button class="mini" id="soundBtn" aria-pressed="false">🔊 Sound</button>
       <button class="mini" id="shopBtn">🛍️ Shop</button>
     </div>
     <footer>Walls are friendly — the snake pops out the other side. Arrow keys, buttons, or swipe all work.</footer>
   </div>
 
+<script src="data.js"></script>
+<script src="voice.js"></script>
 <script src="money.js"></script>
 <script src="game.js"></script>
 </body>
