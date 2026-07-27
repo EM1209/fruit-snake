@@ -1,7 +1,7 @@
 {
   "name": "fruit-snake",
   "version": "1.0.0",
-  "description": "Fruit Snake — a friendly, kid-safe Snake game for iOS and Android (Capacitor).",
+  "description": "Fruit Snake \u2014 a friendly, kid-safe Snake game for iOS and Android (Capacitor).",
   "license": "MIT",
   "scripts": {
     "serve": "npx --yes http-server www -p 8080 -c-1 -o",
@@ -13,11 +13,11 @@
     "icons": "npx --yes @capacitor/assets generate --iconBackgroundColor '#eafce9' --iconBackgroundColorDark '#2a1a44'"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^6.1.0",
     "@capacitor/android": "^6.1.0",
     "@capacitor/app": "^6.0.0",
     "@capacitor/core": "^6.1.0",
     "@capacitor/ios": "^6.1.0",
-    "@capacitor-community/admob": "^6.1.0",
     "@revenuecat/purchases-capacitor": "^9.0.0"
   },
   "devDependencies": {
