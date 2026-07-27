@@ -1,0 +1,14 @@
+{
+  "appId": "com.fruitsnake.game",
+  "appName": "Fruit Snake",
+  "webDir": "www",
+  "backgroundColor": "#eafce9",
+  "plugins": {
+    "AdMob": {
+      "appIdAndroid": "ca-app-pub-3940256099942544~3347511713",
+      "appIdIos": "ca-app-pub-3940256099942544~1458002511"
+    }
+  },
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "always" }
+}

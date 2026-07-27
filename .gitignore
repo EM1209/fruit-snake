@@ -1,3 +1,14 @@
+# node / capacitor
+node_modules/
+/android/
+/ios/
+.gradle/
+*.keystore
+*.jks
+assets/icon.png
+assets/splash.png
+
+# python (analysis/)
 __pycache__/
 *.pyc
 .venv/

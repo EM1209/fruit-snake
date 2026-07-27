@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bff0a0"/>
+      <stop offset="1" stop-color="#8fd85f"/>
+    </linearGradient>
+    <linearGradient id="snake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9a5cff"/>
+      <stop offset="1" stop-color="#6a2fe0"/>
+    </linearGradient>
+  </defs>
+  <!-- background -->
+  <rect width="1024" height="1024" rx="230" fill="url(#bg)"/>
+  <!-- subtle checker -->
+  <g fill="#ffffff" opacity="0.10">
+    <rect x="0" y="0" width="128" height="128"/><rect x="256" y="0" width="128" height="128"/>
+    <rect x="512" y="0" width="128" height="128"/><rect x="768" y="0" width="128" height="128"/>
+    <rect x="128" y="128" width="128" height="128"/><rect x="384" y="128" width="128" height="128"/>
+    <rect x="640" y="128" width="128" height="128"/><rect x="896" y="128" width="128" height="128"/>
+  </g>
+  <!-- snake body: a friendly S curve -->
+  <path d="M250 720
+           C 250 560, 470 560, 470 470
+           C 470 380, 250 380, 250 300
+           C 250 210, 430 210, 560 250"
+        fill="none" stroke="#4a1fb0" stroke-width="150" stroke-linecap="round" opacity="0.35"/>
+  <path d="M250 720
+           C 250 560, 470 560, 470 470
+           C 470 380, 250 380, 250 300
+           C 250 210, 430 210, 560 250"
+        fill="none" stroke="url(#snake)" stroke-width="120" stroke-linecap="round"/>
+  <!-- head -->
+  <circle cx="600" cy="270" r="92" fill="url(#snake)"/>
+  <circle cx="585" cy="250" r="26" fill="#ffffff"/><circle cx="592" cy="256" r="13" fill="#20143a"/>
+  <circle cx="648" cy="250" r="26" fill="#ffffff"/><circle cx="655" cy="256" r="13" fill="#20143a"/>
+  <path d="M690 300 q40 8 66 -8" stroke="#ff5b7f" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <!-- apple -->
+  <g transform="translate(690 640)">
+    <circle cx="0" cy="0" r="120" fill="#ff5a5a"/>
+    <circle cx="-38" cy="-30" r="26" fill="#ffffff" opacity="0.5"/>
+    <rect x="-8" y="-140" width="16" height="46" rx="8" fill="#7a4a1f"/>
+    <path d="M8 -128 q60 -30 86 6 q-60 26 -86 -6" fill="#3fa34d"/>
+  </g>
+</svg>
