@@ -109,6 +109,53 @@ Prefer no RevenueCat? Swap in a native billing plugin (e.g.
 
 ---
 
+## 5b. "Say it back!" — microphone permissions (only if you ship the mic)
+
+The say-it-back mode has two flavours (see `www/listen.js`): **mic** (the game
+listens and matches the word) and **tap** (no microphone — the child says the
+word out loud and taps a star). Tap mode needs **no permissions at all** and
+works everywhere. If you are happy to ship only tap mode, skip this section —
+the game downgrades to it automatically wherever recognition is unavailable, and
+you can declare "no microphone" in both stores.
+
+To ship the microphone flavour:
+
+**iOS** — add both keys to `ios/App/App/Info.plist` (Apple rejects builds that
+use these APIs without a purpose string, and the string is shown to the user):
+```xml
+<key>NSMicrophoneUsageDescription</key>
+<string>So your child can say each word out loud and earn a star. Audio is not recorded or saved.</string>
+<key>NSSpeechRecognitionUsageDescription</key>
+<string>To check that the word your child said matches the word on screen.</string>
+```
+
+**Android** — add to `android/app/src/main/AndroidManifest.xml`:
+```xml
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+<queries><intent><action android:name="android.speech.RecognitionService"/></intent></queries>
+```
+
+**A real caveat about the wrapped app:** `SpeechRecognition` is a *browser* API.
+It is present in Chrome and Safari, but inside a Capacitor **WKWebView (iOS)**
+it is generally absent, and inside an **Android WebView** it is often absent or
+fails with a `network`/`service-not-allowed` error. The game handles this
+honestly rather than pretending: after two failed turns it switches itself to
+tap mode and keeps teaching. So:
+
+- **Browser / PWA builds:** the mic works today, no extra work.
+- **Native builds:** either ship tap mode (nothing to do), or add a native
+  speech plugin — e.g. `@capacitor-community/speech-recognition` — and call it
+  from `listenFor()` in `www/listen.js`. That function is the single seam: it
+  takes a target word and resolves `{ ok, quality, heard, reason }`. Nothing
+  else in the game needs to change.
+
+Also update the two store disclosures below if you ship the mic, and test on a
+real device with the permission **denied** — the game must fall back to tap mode
+and never get stuck. (It does: `listenFor()` resolves `reason:"denied"` and the
+turn switches to "say it, then tap ⭐". Worth re-checking on your own hardware.)
+
+---
+
 ## 6. Build & test on a real device
 
 ```bash
@@ -135,9 +182,24 @@ description, keywords) and the screenshot plan there.
 - **Data safety (Google) / Privacy “nutrition label” (Apple):** AdMob collects
   device/usage data for ads — both consoles have a guided AdMob disclosure;
   follow it. With `childDirected:true` you're requesting non-personalized ads.
+- **Microphone / audio:** if you ship the mic flavour of "Say it back!", declare
+  it. Google Data safety: **Audio → Voice or sound recordings**, *collected*
+  (the OS recognizer receives it), **not** stored by you, purpose **App
+  functionality**, and tick *"users can choose whether it's collected"* — it is
+  off by default and switchable. Apple: the app itself collects nothing, but
+  answer honestly about the recognizer, and keep your `NS...UsageDescription`
+  strings matching what you actually do. If you ship tap-only, declare **no**
+  audio collection.
 - **Kids category:** only opt into Google **“Designed for Families”** / Apple
   **Kids** if you commit to child-safe (non-personalized) ads and stricter
   review. This project's defaults are compatible with that if you choose it.
+  **Note:** kids programmes scrutinise microphone use hard, and Apple's Kids
+  Category forbids sending personal information off-device without verifiable
+  parental consent. The safe route for a Kids-Category submission is to ship
+  **tap mode only** — set the default and remove the mic option in
+  `www/listen.js` (`setMode` already refuses "mic" when recognition is absent;
+  make it refuse always). The grown-up gate is a speed bump, not verifiable
+  parental consent — don't mistake it for one.
 
 ---
 
@@ -174,7 +236,11 @@ rejection notes and resubmit.
 | Path | What it is |
 |---|---|
 | `www/index.html` | The game UI (self-contained, no network needed). |
-| `www/game.js` | Gameplay, skins, rewarded-ad revive. |
+| `www/game.js` | Gameplay, skins, rewarded-ad revive, say-it-back turns. |
+| `www/voice.js` | Device speech — the game saying each word. |
+| `www/listen.js` | The microphone / tap "say it back" modes. |
+| `www/match.js` | Decides whether what a child said counts. |
+| `www/tests/` | `npm test` — the matching rules (no browser needed). |
 | `www/money.js` | Ads + IAP bridge — **edit CONFIG with your real IDs**. |
 | `capacitor.config.json` | App id/name + AdMob app IDs. |
 | `assets/icon.svg` | Master icon → run the assets generator. |

@@ -56,15 +56,36 @@
     return true;                       // brand new discovery!
   }
 
+  // words the child has said out loud, per category (the Little Voices half)
+  let spoken = {};
+  try { spoken = JSON.parse(localStorage.getItem("fs_spoken") || "{}"); } catch(e){ spoken = {}; }
+  const spokenSet = () => new Set(spoken[category.id] || []);
+  function markSpoken(name){
+    const s = spokenSet();
+    const first = !s.has(name);
+    s.add(name);
+    spoken[category.id] = [...s];
+    localStorage.setItem("fs_spoken", JSON.stringify(spoken));
+    return first;
+  }
+
   let snake, dir, nextDir, food, foodItem, score, best, state, prevSnake, renderFrom;
   let stepMs, lastTick, popAt, cheer, cheerAt, reviveUsed;
   let sparkles = [];
   let muted = localStorage.getItem("fs_muted") === "1";
+  let stars = +(localStorage.getItem("fs_stars") || 0);
+  let sinceAsk = 0;                    // collects since the last say-it-back turn
 
   best = +(localStorage.getItem("fs_best") || 0);
   $("best").textContent = best;
+  $("stars").textContent = stars;
+
+  let runStars = 0;                    // words said out loud in this run
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   function reset(){
+    abandonSay();
+    sinceAsk = 0; runStars = 0;
     const mid = Math.floor(GRID/2);
     snake = [{x:mid,y:mid},{x:mid-1,y:mid},{x:mid-2,y:mid}];
     prevSnake = snake.map(s => ({...s}));
@@ -115,6 +136,7 @@
 
   // ---- input -------------------------------------------------------------
   function setDir(name){
+    if (state==="listening") return;   // the snake waits while the child speaks
     const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
     const d=map[name]; if(!d) return;
     if (d.x===-dir.x && d.y===-dir.y) return;
@@ -143,6 +165,7 @@
   function hideAll(){ [startOv,overOv,pauseOv,shopOv].forEach(o=>o.hidden=true); }
   function start(){ hideAll(); state="playing"; lastTick=performance.now(); }
   function togglePause(){
+    if (state==="listening") abandonSay();      // drops back to "playing" first
     if (state==="playing"){ state="paused"; pauseOv.hidden=false; }
     else if (state==="paused"){ pauseOv.hidden=true; state="playing"; lastTick=performance.now(); }
   }
@@ -172,8 +195,215 @@
   };
   paintVoice();
 
+  // ---- Little Voices: the child says the word back ------------------------
+  // The game freezes (nobody should crash while they are talking), shows the
+  // word big, listens, and celebrates. Every path is generous: a close-enough
+  // attempt counts, and a miss is answered with the word said slowly again —
+  // never a "wrong".
+  const sayOv=$("sayOverlay"), sayMic=$("sayMic");
+  const sayOn = () => !!(window.Listen && window.Listen.isOn());
+  let sayTurn = 0;              // bumped to abandon whatever a turn is awaiting
+  let sayResolve = null;        // resolver for "waiting on a tap"
+  let micFails = 0;             // consecutive turns where the mic couldn't work
+
+  const PRAISE=["Great job!","Well done!","Super!","Brilliant!","You said it!","Lovely!"];
+
+  function setMic(cls){ sayMic.className = "mic" + (cls ? " " + cls : ""); }
+  function settleSay(v){ const f=sayResolve; sayResolve=null; if (f) f(v); }
+
+  // Freeze the game and show the word — called the moment the item is eaten.
+  // This panel replaces the usual banner, so it carries the "NEW!" badge too.
+  function openSay(item, isNew){
+    state="listening";
+    $("sayWord").innerHTML="";
+    const e=document.createElement("span"); e.textContent=item.e;
+    const w=document.createElement("span"); w.textContent=DATA.cap(item.n);
+    $("sayWord").append(e,w);
+    if (isNew){
+      const tag=document.createElement("span");
+      tag.className="new"; tag.textContent="NEW!";
+      $("sayWord").appendChild(tag);
+    }
+    $("sayHeard").textContent="";
+    $("sayHint").textContent="Listen…";
+    $("saidItBtn").hidden = true;
+    setMic("");
+    sayOv.hidden=false;
+  }
+  function closeSay(){
+    sayOv.hidden=true; $("saidItBtn").hidden=true; setMic("");
+    if (state==="listening"){ state="playing"; lastTick=performance.now(); }
+  }
+  // Give up on the current turn (skip, pause, new game) and hand the game back.
+  function abandonSay(){
+    if (sayOv.hidden && state!=="listening") return;
+    sayTurn++;
+    if (window.Listen) window.Listen.abort();
+    settleSay(false);
+    closeSay();
+  }
+  $("saySkipBtn").onclick = abandonSay;
+  $("saidItBtn").onclick  = () => settleSay(true);
+
+  const waitForTap = () => new Promise(res => { sayResolve = res; });
+  function askForTap(){
+    setMic("");
+    $("sayHint").textContent = "Say it out loud, then tap ⭐";
+    $("saidItBtn").hidden = false;
+    return waitForTap();
+  }
+
+  // Should we ask about this one? New discoveries always; otherwise often
+  // enough to practise, rarely enough to keep the game a game.
+  function shouldAsk(item, isNew){
+    if (!sayOn() || state!=="playing") return false;
+    sinceAsk++;
+    if (isNew){ sinceAsk=0; return true; }
+    const unspoken = !spokenSet().has(item.n);
+    if (unspoken && sinceAsk>=2){ sinceAsk=0; return true; }
+    if (sinceAsk>=4){ sinceAsk=0; return true; }
+    return false;
+  }
+
+  // Runs after the game has finished saying the name, so the mic doesn't hear
+  // the game talking to itself.
+  async function runSayTurn(item){
+    if (state!=="listening") return;               // skipped while we spoke
+    const mine = ++sayTurn;
+    const useMic = window.Listen.mode()==="mic" && window.Listen.available();
+    let ok=false, quality="none";
+
+    if (useMic){
+      for (let attempt=1; attempt<=2 && !ok; attempt++){
+        $("sayHint").textContent = attempt===1 ? "Your turn — say it! 🎤" : "One more try? 🎤";
+        $("sayHeard").textContent = "";
+        setMic("hot");
+        const r = await window.Listen.listenFor(item.n, {
+          ms: 6000,
+          onHeard: (h) => { if (mine===sayTurn && h) $("sayHeard").textContent = `I heard: “${h}”`; }
+        });
+        if (mine!==sayTurn) return;                // skipped / paused mid-listen
+        if (r.ok){ ok=true; quality=r.quality; micFails=0; break; }
+        if (r.reason==="denied"){                  // no permission: keep learning without it
+          window.Listen.setMode("tap"); paintSay();
+          ok = await askForTap();
+          break;
+        }
+        if (r.reason==="unavailable" || r.reason==="network"){
+          if (++micFails>=2){ window.Listen.setMode("tap"); paintSay(); }
+          ok = await askForTap();
+          break;
+        }
+        setMic("");
+        // model the word again before the second try
+        if (attempt===1 && window.Voice) window.Voice.speak(item.n, {rate:0.72, pitch:1.3});
+        await sleep(900);
+        if (mine!==sayTurn) return;
+      }
+    } else {
+      ok = await askForTap();
+    }
+
+    if (mine!==sayTurn) return;
+    if (ok) await sayWin(item, quality);
+    else    await sayEncourage(item);
+    if (mine!==sayTurn) return;
+    closeSay();
+  }
+
+  async function sayWin(item, quality){
+    const first = markSpoken(item.n);
+    stars++; runStars++;
+    localStorage.setItem("fs_stars", stars);
+    $("stars").textContent = stars;
+    setMic("win");
+    $("sayHint").textContent = first ? "⭐ You said it — new word!" : "⭐ You said it!";
+    $("sayHeard").textContent = "";
+    sYay();
+    burst(snake[0].x, snake[0].y, 14);
+    updateTracker();
+    if (window.Voice){
+      const praise = PRAISE[(Math.random()*PRAISE.length)|0];
+      // if it was only close, say the word again clearly — a model, not a correction
+      window.Voice.sayItem(praise, quality==="close" ? item.n : null);
+    }
+    await sleep(1150);
+  }
+
+  async function sayEncourage(item){
+    setMic("");
+    $("sayHint").textContent = "Nice try! Listen…";
+    $("sayHeard").textContent = "";
+    if (window.Voice) window.Voice.speak(item.n, {rate:0.7, pitch:1.3});
+    await sleep(1300);
+  }
+
+  // ---- Little Voices: the switch, behind a grown-up gate ------------------
+  const sayBtn=$("sayBtn"), gateOv=$("gateOverlay");
+  let gateWasPlaying=false;
+
+  function paintSay(){
+    const m = window.Listen ? window.Listen.mode() : "off";
+    sayBtn.textContent = m==="tap" ? "👆 Say it" : "🎤 Say it";
+    sayBtn.setAttribute("aria-pressed", String(m!=="off"));
+    sayBtn.style.opacity = m==="off" ? ".55" : "1";
+    $("starChip").hidden = m==="off";
+    updateTracker();
+  }
+  sayBtn.onclick=()=>{
+    if (!window.Listen) return;
+    if (window.Listen.isOn()){ abandonSay(); window.Listen.setMode("off"); paintSay(); return; }
+    openGate();
+  };
+
+  function openGate(){
+    if (state==="listening") abandonSay();
+    gateWasPlaying = (state==="playing");
+    if (gateWasPlaying) state="paused";
+    hideAll();
+    buildGate();
+    gateOv.hidden=false;
+  }
+  function closeGate(){
+    gateOv.hidden=true;
+    if (gateWasPlaying){ gateWasPlaying=false; state="playing"; lastTick=performance.now(); }
+    else if (state==="ready") startOv.hidden=false;
+  }
+  // A sum a preschooler can't do but a grown-up can — the microphone shouldn't
+  // switch on without an adult in the loop.
+  function buildGate(){
+    const a=5+(Math.random()*5|0), b=5+(Math.random()*5|0), answer=a+b;
+    $("gateQ").textContent = `${a} + ${b}`;
+    const opts=new Set([answer]);
+    while (opts.size<3){
+      const d = answer + (Math.random()<0.5?-1:1)*(1+(Math.random()*4|0));
+      if (d>0) opts.add(d);
+    }
+    const wrap=$("gateChoices"); wrap.innerHTML="";
+    [...opts].sort(()=>Math.random()-0.5).forEach(n=>{
+      const el=document.createElement("button");
+      el.className="btn small"; el.textContent=n;
+      el.onclick=()=>{ if (n!==answer){ sOops(); buildGate(); return; } enableSay("mic"); };
+      wrap.appendChild(el);
+    });
+  }
+  function enableSay(m){
+    micFails=0;
+    const set = window.Listen.setMode(m);
+    paintSay(); closeGate();
+    if (window.Voice){
+      window.Voice.unlock();
+      window.Voice.speak(set==="mic" ? "Say it back! I am listening."
+                                     : "Say it back! Tap the star when you say it.", {rate:0.9});
+    }
+    // ask for the microphone now, in a calm moment, not mid-word
+    if (set==="mic") window.Listen.listenFor(" ", {ms:900});
+  }
+  $("gateTapBtn").onclick    = ()=>enableSay("tap");
+  $("gateCancelBtn").onclick = closeGate;
+
   // ---- shop --------------------------------------------------------------
-  $("shopBtn").onclick=()=>{ if(state==="playing") togglePause(); hideAll(); refreshShop(); shopOv.hidden=false; };
+  $("shopBtn").onclick=()=>{ if(state==="listening") abandonSay(); if(state==="playing") togglePause(); hideAll(); refreshShop(); shopOv.hidden=false; };
   $("shopCloseBtn").onclick=()=>{ shopOv.hidden=true; if(state==="ready"){ startOv.hidden=false; } };
   $("buyBtn").onclick=async()=>{
     $("buyBtn").disabled=true;
@@ -210,15 +440,18 @@
 
   function updateTracker(){
     const s=learnedSet(), total=category.items.length, got=category.items.filter(i=>s.has(i.n)).length;
+    const said=spokenSet(), on=sayOn();
+    const saidGot=category.items.filter(i=>said.has(i.n)).length;
     $("trackTitle").textContent = `${category.icon} ${category.label} learned`;
-    $("trackCount").textContent = `${got} / ${total}`;
+    $("trackCount").textContent = `${got} / ${total}` + (on ? ` · 🎤 ${saidGot}` : "");
     $("trackFill").style.width = `${Math.round(got/total*100)}%`;
     const found=$("trackFound"); found.innerHTML="";
     category.items.forEach(i=>{
       const sp=document.createElement("span");
       sp.textContent=i.e;
-      sp.title = s.has(i.n) ? i.n : "not found yet";
-      if (s.has(i.n)) sp.className="got";
+      const heard=s.has(i.n), spoke=on && said.has(i.n);
+      sp.title = spoke ? `${i.n} — said it out loud!` : heard ? i.n : "not found yet";
+      sp.className = (heard?"got":"") + (spoke?" said":"");
       found.appendChild(sp);
     });
   }
@@ -245,37 +478,47 @@
   }
 
   // ---- game tick ---------------------------------------------------------
-  // The learning moment: say the name, show the word, sparkle, track progress.
-  function celebrate(item, atCell){
-    const isNew = markLearned(item.n);
-    const sentence = DATA.reaction(item);
-
-    // 1) big readable word on screen
-    const banner = $("learnBanner");
-    banner.innerHTML = "";
-    const txt = document.createElement("span");
-    txt.textContent = DATA.label(item);
-    banner.appendChild(txt);
-    if (isNew){
-      const tag = document.createElement("span");
-      tag.className = "new"; tag.textContent = "NEW!";
-      banner.appendChild(tag);
-    }
-    banner.classList.remove("show"); void banner.offsetWidth;  // restart anim
-    banner.classList.add("show");
-
-    // 2) say the name clearly, then the fun reaction
-    if (window.Voice) window.Voice.sayItem(item.n, sentence);
-
-    // 3) sparkle burst where it was eaten
-    for (let i=0;i<12;i++){
-      const ang = (Math.PI*2*i)/12 + Math.random()*0.4;
+  function burst(gx, gy, n){
+    for (let i=0;i<n;i++){
+      const ang = (Math.PI*2*i)/n + Math.random()*0.4;
       const sp = 0.9 + Math.random()*1.1;
-      sparkles.push({ x:atCell.x+0.5, y:atCell.y+0.5,
+      sparkles.push({ x:gx+0.5, y:gy+0.5,
                       vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,
                       born:performance.now(), life:620 + Math.random()*260,
                       hue:(Math.random()*360)|0 });
     }
+  }
+
+  // The learning moment: say the name, show the word, sparkle, track progress.
+  // When a say-it-back turn follows, we skip the fun sentence and hand over as
+  // soon as the name has been spoken — the child's turn is the point.
+  function celebrate(item, atCell, onSpoken){
+    const isNew = markLearned(item.n);
+    const sentence = onSpoken ? null : DATA.reaction(item);
+
+    // 1) big readable word on screen — unless the child's turn is about to show
+    //    the same word bigger, in which case one word on screen is plenty
+    if (!onSpoken){
+      const banner = $("learnBanner");
+      banner.innerHTML = "";
+      const txt = document.createElement("span");
+      txt.textContent = DATA.label(item);
+      banner.appendChild(txt);
+      if (isNew){
+        const tag = document.createElement("span");
+        tag.className = "new"; tag.textContent = "NEW!";
+        banner.appendChild(tag);
+      }
+      banner.classList.remove("show"); void banner.offsetWidth;  // restart anim
+      banner.classList.add("show");
+    }
+
+    // 2) say the name clearly, then the fun reaction (or the child's turn)
+    if (window.Voice) window.Voice.sayItem(item.n, sentence, onSpoken || null);
+    else if (onSpoken) setTimeout(onSpoken, 500);
+
+    // 3) sparkle burst where it was eaten
+    burst(atCell.x, atCell.y, 12);
 
     // 4) progress panel
     updateTracker();
@@ -294,26 +537,34 @@
     if (ate){
       score++; $("score").textContent=score;
       popAt=performance.now(); stepMs=Math.max(110, stepMs-2.5);
-      const isNew = celebrate(foodItem, {x:food.x,y:food.y});
+      const item=foodItem, cell={x:food.x,y:food.y};
+      const isNew = !learnedSet().has(item.n);
+      const ask = shouldAsk(item, isNew);
+      celebrate(item, cell, ask ? () => runSayTurn(item) : null);
       if (isNew) sYay(); else sEat();
       if (CHEERS[score]){ cheer=CHEERS[score]; cheerAt=performance.now(); }
       placeFood();
+      // freeze right away so the snake can't crash while the child is talking
+      if (ask) openSay(item, isNew);
     } else snake.pop();
     renderFrom=snake.map((s,i)=> prevSnake[i]?{...prevSnake[i]}:{...s});
   }
 
   function gameOver(){
-    state="over"; sOops();
+    state="over"; abandonSay(); sOops();   // never leave a say-turn hanging
     if (score>best){ best=score; localStorage.setItem("fs_best",best); $("best").textContent=best; }
     const bonus = score>=best && score>0;
     $("overEmoji").textContent = bonus?"🏆":"🙈";
     $("overTitle").textContent = bonus?"New best!":"Oops!";
     const s=learnedSet(), total=category.items.length;
     const got=category.items.filter(i=>s.has(i.n)).length;
+    const saidBit = runStars>0
+      ? ` And you said ${runStars} ${runStars===1?"word":"words"} out loud! 🎤`
+      : "";
     $("overMsg").textContent = score===0
       ? "So close! Tap Play again to keep learning."
       : `You collected ${score} ${score===1?"thing":"things"}${bonus?" — a new record!":""} ` +
-        `You know ${got} of ${total} ${category.label.toLowerCase()}!`;
+        `You know ${got} of ${total} ${category.label.toLowerCase()}!` + saidBit;
     // offer a rewarded-ad revive once per run (and only if it's worth it)
     const canRevive = !reviveUsed && score>=3;
     const rb=$("reviveBtn"); rb.hidden=!canRevive;
@@ -435,7 +686,7 @@
   if (window.Money) window.Money.init();
   // if the saved skin is locked (e.g. refund), fall back to a free one
   if (!skinUnlocked(skinById(selSkin))) selSkin="grape";
-  buildCats(); buildSkins(); updateTracker();
+  buildCats(); buildSkins(); updateTracker(); paintSay();
   // browsers need a gesture before audio — unlock voice on the first tap
   ["pointerdown","keydown"].forEach(ev =>
     addEventListener(ev, () => { if (window.Voice) window.Voice.unlock(); }, {once:true}));

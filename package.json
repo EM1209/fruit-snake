@@ -4,6 +4,7 @@
   "description": "Fruit Snake \u2014 a friendly, kid-safe Snake game for iOS and Android (Capacitor).",
   "license": "MIT",
   "scripts": {
+    "test": "node --test www/tests/*.test.mjs",
     "serve": "npx --yes http-server www -p 8080 -c-1 -o",
     "sync": "npx cap sync",
     "add:android": "npx cap add android",

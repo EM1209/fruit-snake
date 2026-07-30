@@ -34,6 +34,7 @@
   .chip{flex:1; background:var(--card); border-radius:18px; padding:9px 14px;
     box-shadow:0 4px 0 rgba(124,194,74,.35), 0 8px 18px rgba(52,35,79,.08);
     display:flex; align-items:center; justify-content:center; gap:8px; font-size:clamp(15px,4.4vw,19px); font-weight:700}
+  .chip[hidden]{display:none}   /* an explicit display would beat [hidden] */
   .chip small{display:block; font-size:.62em; color:var(--plum-soft); font-weight:700}
   .chip .val{font-variant-numeric:tabular-nums; min-width:1.4em; text-align:center}
 
@@ -109,6 +110,26 @@
   .tracker .found{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; font-size:19px; line-height:1.1}
   .tracker .found span{filter:grayscale(1); opacity:.28}
   .tracker .found span.got{filter:none; opacity:1}
+  /* a green ring means "and I said it out loud" */
+  .tracker .found span.said{box-shadow:0 0 0 2px var(--mint); border-radius:7px}
+
+  /* say-it-back ("Little Voices") turn */
+  .say{gap:10px}
+  .say .word{display:flex; align-items:center; gap:12px; background:#fff; color:var(--plum);
+    padding:10px 22px; border-radius:999px; font-weight:800; font-size:clamp(24px,7vw,36px);
+    box-shadow:0 6px 0 rgba(52,35,79,.18)}
+  .say .word .new{font-size:.5em; background:var(--sun); color:#5a4600; padding:3px 9px; border-radius:999px}
+  .say .hint{font-size:clamp(15px,4.4vw,19px); font-weight:800}
+  .say .heard{min-height:1.3em; font-size:14px; opacity:.85; font-style:italic}
+  .mic{width:96px; height:96px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:44px; background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 4px rgba(255,255,255,.6)}
+  .mic.hot{background:rgba(255,107,107,.35); box-shadow:inset 0 0 0 4px #fff; animation:ring 1.1s ease-in-out infinite}
+  .mic.win{background:rgba(36,201,138,.45); box-shadow:inset 0 0 0 4px #fff; animation:none}
+  @keyframes ring{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+  @media (prefers-reduced-motion: reduce){ .mic.hot{animation:none} }
+  .gate .q{font-weight:800; font-size:clamp(17px,5vw,22px)}
+  .gate .note{font-size:12px; opacity:.85; max-width:30ch}
+  .gate .row{gap:8px}
 
   .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   .mini{border:0; cursor:pointer; font-family:var(--font); font-weight:800; color:var(--plum); background:var(--card);
@@ -123,12 +144,13 @@
   <div class="wrap">
     <header>
       <h1>🍓 Fruit Snake 🐍</h1>
-      <p class="tag">Eat, listen, and learn new words!</p>
+      <p class="tag">Eat it, hear it, say it — learn new words!</p>
     </header>
 
     <div class="hud">
       <div class="chip"><span>🍎</span><span><small>FOUND</small><span class="val" id="score">0</span></span></div>
       <div class="chip"><span>⭐</span><span><small>BEST</small><span class="val" id="best">0</span></span></div>
+      <div class="chip" id="starChip" hidden><span>🎤</span><span><small>SAID</small><span class="val" id="stars">0</span></span></div>
     </div>
 
     <div class="stage">
@@ -150,6 +172,30 @@
         <p id="overMsg">Great try — go again!</p>
         <button class="btn gold" id="reviveBtn" hidden>❤️ Continue (watch ad)</button>
         <button class="btn play" id="againBtn">↺ Play again</button>
+      </div>
+
+      <div class="overlay say" id="sayOverlay" hidden aria-live="polite">
+        <div class="word" id="sayWord"></div>
+        <div class="mic" id="sayMic">🎤</div>
+        <p class="hint" id="sayHint">Your turn — say it!</p>
+        <p class="heard" id="sayHeard"></p>
+        <div class="row">
+          <button class="btn play" id="saidItBtn" hidden>⭐ I said it!</button>
+          <button class="mini" id="saySkipBtn">Skip ⏭</button>
+        </div>
+      </div>
+
+      <div class="overlay gate" id="gateOverlay" hidden>
+        <div class="big-emoji">🎤</div>
+        <h2>Say it back!</h2>
+        <p>After each word, your child says it out loud and earns a ⭐.</p>
+        <p class="note">Grown-ups: the microphone listens only during a word's
+          turn. Nothing is recorded or saved by this game. Speech is handled by
+          your device's speech service.</p>
+        <p class="q">To turn the microphone on, tap <span id="gateQ">7 + 5</span></p>
+        <div class="row" id="gateChoices"></div>
+        <button class="mini" id="gateTapBtn">👆 No microphone — tap instead</button>
+        <button class="mini" id="gateCancelBtn">Not now</button>
       </div>
 
       <div class="overlay" id="pauseOverlay" hidden>
@@ -184,6 +230,7 @@
     <div class="row">
       <button class="mini" id="pauseBtn">⏸ Pause</button>
       <button class="mini" id="voiceBtn" aria-pressed="true">🗣️ Voice</button>
+      <button class="mini" id="sayBtn" aria-pressed="false">🎤 Say it</button>
       <button class="mini" id="soundBtn" aria-pressed="false">🔊 Sound</button>
       <button class="mini" id="shopBtn">🛍️ Shop</button>
     </div>
@@ -191,7 +238,9 @@
   </div>
 
 <script src="data.js"></script>
+<script src="match.js"></script>
 <script src="voice.js"></script>
+<script src="listen.js"></script>
 <script src="money.js"></script>
 <script src="game.js"></script>
 </body>

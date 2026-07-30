@@ -7,8 +7,8 @@ but keep it honest — misleading listings get rejected.
 - **Fruit Snake** (add a subtitle if the name is taken, e.g. *Fruit Snake: Munch & Grow*)
 
 ## Subtitle (Apple, 30 chars) / Short description (Google, 80 chars)
-- Apple subtitle: `Learn fruit & veggie names!`
-- Google short: `A talking snake game that teaches toddlers fruit, vegetable & healthy food names!`
+- Apple subtitle: `Hear it, say it, learn it!`
+- Google short: `A talking snake game: hear each word, say it back, and learn 36 food words!`
 
 ## Full description
 ```
@@ -24,6 +24,16 @@ Steer your happy snake around the garden, collect healthy food, and grow as long
 as you can. The walls are friendly: instead of a harsh "game over," your snake
 pops out the other side — so young players stay in the game and keep smiling.
 
+NEW: SAY IT BACK! Switch on "Say it" and your child gets a turn. After the game
+says a word, the snake stops and waits while your child says it out loud — and
+earns a ⭐ for every word they say. It's warmly forgiving: "brockly" counts as
+broccoli, and a miss just hears the word again, slowly and kindly. Never a
+"wrong."
+
+Grown-ups are in charge of it: the mode is OFF until an adult turns it on, no
+audio is ever recorded or saved, and there's a "no microphone" version where
+your child says the word and simply taps a star.
+
 WHAT YOUR CHILD LEARNS
 🍎 Fruits — apple, banana, strawberry, grapes, mango and more
 🥕 Vegetables — carrot, broccoli, corn, tomato, cucumber and more
@@ -32,6 +42,7 @@ WHAT YOUR CHILD LEARNS
 
 MADE FOR LITTLE LEARNERS
 🗣️ Clear speech — the name is spoken on its own, then a fun sentence
+🎤 Say it back — your child speaks each word and earns a star (optional)
 ⭐ "NEW!" celebration the first time they discover a word
 📊 Progress tracker — see "7 of 12 Fruits learned" fill up as they play
 🍓 Colorful boards, googly-eyed snake, sparkles and happy sounds
@@ -49,7 +60,7 @@ remove ads and unlock all snake skins.
 
 ## Keywords (Apple, 100 chars, comma-separated)
 ```
-learning,toddler,preschool,fruit,vegetable,words,talking,educational,kids,snake,healthy,food,abc
+learning,toddler,preschool,fruit,vegetable,words,talking,speech,educational,kids,snake,food,abc
 ```
 
 ## Category
@@ -61,16 +72,17 @@ learning,toddler,preschool,fruit,vegetable,words,talking,educational,kids,snake,
 
 ## Screenshot plan (take on a device, both phone & tablet sizes)
 1. The learning moment: "🍎 Apple NEW!" banner + sparkles — caption "Hears and sees every word!"
-2. Category picker — caption "Fruits, Vegetables & Healthy Snacks"
-3. Progress tracker filling up — caption "Watch them learn 36 words"
-4. Mid-game with a veggie board — caption "Learn while you play"
-5. Big friendly controls close-up — caption "Easy for little hands"
-6. (Tablet) the whole cheerful board — caption "Fun for the whole family"
+2. The say-it-back turn: big word + glowing 🎤 — caption "Now YOU say it!"
+3. Category picker — caption "Fruits, Vegetables & Healthy Snacks"
+4. Progress tracker filling up — caption "Watch them learn 36 words"
+5. Mid-game with a veggie board — caption "Learn while you play"
+6. Big friendly controls close-up — caption "Easy for little hands"
+7. (Tablet) the whole cheerful board — caption "Fun for the whole family"
 
 ## Promo text (Apple, 170 chars — updatable anytime)
 ```
-New! Your snake now SAYS every word out loud — learn 36 fruits, vegetables and
-healthy snacks while you play. Track the words your child has learned!
+New! Now your child says the words BACK. Hear it, say it, earn a star — 36
+fruits, vegetables and healthy snacks. Kind, forgiving, and grown-up controlled.
 ```
 
 ## What to enter for pricing

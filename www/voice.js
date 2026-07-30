@@ -41,28 +41,48 @@
 
   function speak(text, opts) {
     if (!enabled || !synth || !text) return false;
+    const o = opts || {};
     try {
       const u = new SpeechSynthesisUtterance(text);
       if (voice) u.voice = voice;
       u.lang = (voice && voice.lang) || "en-US";
-      u.rate = (opts && opts.rate) || 0.9;   // a little slower for clarity
-      u.pitch = (opts && opts.pitch) || 1.25; // bright and playful
+      u.rate = o.rate || 0.9;    // a little slower for clarity
+      u.pitch = o.pitch || 1.25; // bright and playful
       u.volume = 1;
+      if (o.onDone) {
+        let fired = false;
+        const once = () => { if (!fired) { fired = true; o.onDone(); } };
+        u.onend = once;
+        u.onerror = once;
+        // some webviews never fire onend — don't leave the caller waiting
+        setTimeout(once, Math.max(1200, text.length * 130));
+      }
       synth.speak(u);
       return true;
     } catch (e) { return false; }
   }
 
-  // Say the NAME clearly, then the fun sentence just after.
-  function sayItem(name, sentence) {
-    if (!enabled || !synth) return false;
+  // Say the NAME clearly, then the fun sentence just after. `onDone` (optional)
+  // fires when the last utterance finishes — the say-it-back turn waits for it
+  // so the microphone never hears the game talking to itself.
+  function sayItem(name, sentence, onDone) {
+    if (!enabled || !synth) { if (onDone) setTimeout(onDone, 0); return false; }
     cancel();
-    const said = speak(name, { rate: 0.78, pitch: 1.3 });
+    const said = speak(name, { rate: 0.78, pitch: 1.3, onDone: sentence ? null : onDone });
     if (sentence) {
       // small gap so the name lands on its own first
-      setTimeout(() => speak(sentence, { rate: 0.92, pitch: 1.22 }), 30);
-    }
+      setTimeout(() => {
+        const ok = speak(sentence, { rate: 0.92, pitch: 1.22, onDone });
+        if (!ok && onDone) onDone();
+      }, 30);
+    } else if (!said && onDone) setTimeout(onDone, 0);
     return said;
+  }
+
+  // Say something and then run a callback (used before we start listening).
+  function sayThen(text, onDone, opts) {
+    const o = Object.assign({}, opts || {}, { onDone });
+    if (!speak(text, o) && onDone) setTimeout(onDone, 0);
   }
 
   function cancel() { try { synth && synth.cancel(); } catch (e) {} }
@@ -80,7 +100,7 @@
   }
 
   window.Voice = {
-    speak, sayItem, cancel, unlock,
+    speak, sayItem, sayThen, cancel, unlock,
     setEnabled,
     isEnabled: () => enabled,
     available: () => !!synth
