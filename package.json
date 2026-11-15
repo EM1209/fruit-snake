@@ -5,7 +5,11 @@
   "license": "MIT",
   "scripts": {
     "test": "node --test www/tests/*.test.mjs",
+    "test:explorers": "node --test explorers/tests/*.test.mjs",
+    "test:all": "node --test www/tests/*.test.mjs explorers/tests/*.test.mjs",
     "serve": "npx --yes http-server www -p 8080 -c-1 -o",
+    "serve:explorers": "npx --yes http-server . -p 8770 -c-1 -o /explorers/",
+    "build:explorers": "node tools/build-explorers.mjs",
     "sync": "npx cap sync",
     "add:android": "npx cap add android",
     "add:ios": "npx cap add ios",

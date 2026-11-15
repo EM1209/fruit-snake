@@ -1,5 +1,10 @@
 # 🍓 Fruit Snake 🐍
 
+> **New: [Snake Explorers](explorers/README.md)** is a learning-through-play garden adventure with six worlds,
+> six ways to play, and Explore / Practice / Challenge modes. It lives in `explorers/`
+> (`npm run serve:explorers`, `npm run test:explorers`). The original Fruit Snake game below is unchanged
+> and is reachable from Snake Explorers as **Classic Snake**.
+
 A bright, kid-friendly **Snake** game built to ship to the **App Store** and
 **Google Play** and earn from ads + an in-app purchase. One HTML5 codebase,
 wrapped as a real native app with [Capacitor](https://capacitorjs.com).

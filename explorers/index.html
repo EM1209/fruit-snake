@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snake Explorers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <div class="storage-note" id="storageNote" hidden role="status">
+    <span>Saving isn't available here, so your progress lasts until this page closes.</span>
+    <button type="button" class="link-btn" id="storageDismiss">OK</button>
+  </div>
+
+  <!-- HOME -->
+  <section class="screen home" id="scr-home" aria-labelledby="homeTitle">
+    <div class="home-hero">
+      <div class="home-mascot" id="homeMascot"></div>
+      <h1 id="homeTitle" tabindex="-1" data-focus>Snake Explorers</h1>
+      <p class="home-invite">What will you discover?</p>
+      <div class="home-actions">
+        <button type="button" class="btn primary big" id="exploreBtn">Let’s explore</button>
+        <button type="button" class="btn ghost" id="continueBtn" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg><span>Continue</span></button>
+      </div>
+      <p class="home-stats" id="homeStats" aria-live="polite"></p>
+    </div>
+    <nav class="home-links" aria-label="More">
+      <button type="button" class="tile-link" data-go="mysnake"><span class="tl-ico" data-icon="palette"></span>My Snake</button>
+      <button type="button" class="tile-link" data-go="book"><span class="tl-ico" data-icon="book"></span>Discovery Book</button>
+      <button type="button" class="tile-link" data-go="settings"><span class="tl-ico" data-icon="gear"></span>Settings</button>
+      <button type="button" class="tile-link" data-go="classic"><span class="tl-ico" data-icon="snake"></span>Classic Snake</button>
+    </nav>
+  </section>
+
+  <!-- WORLD SELECTION -->
+  <section class="screen" id="scr-worlds" hidden aria-labelledby="worldsTitle">
+    <header class="topbar">
+      <button type="button" class="icon-btn" data-go="home" aria-label="Home"><span data-icon="home"></span><span class="ib-lab">Home</span></button>
+      <h1 id="worldsTitle" tabindex="-1" data-focus>Choose a world</h1>
+    </header>
+    <div class="world-grid" id="worldGrid"></div>
+  </section>
+
+  <!-- ONE WORLD: mode + activities -->
+  <section class="screen world" id="scr-world" hidden aria-labelledby="worldTitle">
+    <header class="topbar">
+      <button type="button" class="icon-btn" data-go="worlds" aria-label="Back to worlds"><span data-icon="back"></span><span class="ib-lab">Worlds</span></button>
+      <div class="world-head"><span class="wh-art" id="worldArt"></span><div><h1 id="worldTitle" tabindex="-1" data-focus></h1><p id="worldSkill" class="sub"></p></div></div>
+    </header>
+    <fieldset class="mode-picker" id="modePicker">
+      <legend>How would you like to play?</legend>
+      <div class="seg">
+        <label><input type="radio" name="mode" value="explore"><span>Explore</span></label>
+        <label><input type="radio" name="mode" value="practice"><span>Practice</span></label>
+        <label><input type="radio" name="mode" value="challenge"><span>Challenge</span></label>
+      </div>
+      <p class="mode-line" id="modeLine" aria-live="polite"></p>
+      <label class="check-row" id="stopwatchRow" hidden><input type="checkbox" id="stopwatchToggle"> <span>Add a stopwatch (optional — just for fun, no time limit)</span></label>
+    </fieldset>
+    <div class="activity-list" id="activityList"></div>
+  </section>
+
+  <!-- ACTIVITY -->
+  <section class="screen play" id="scr-play" hidden aria-labelledby="playTitle">
+    <header class="playbar">
+      <button type="button" class="icon-btn" id="leaveBtn" aria-label="Leave activity"><span data-icon="home"></span><span class="ib-lab">Leave</span></button>
+      <div class="pb-title">
+        <h1 id="playTitle" tabindex="-1" data-focus></h1>
+        <p class="pb-sub"><span class="mode-chip" id="playMode"></span> <span id="playObjective"></span></p>
+      </div>
+      <div class="pb-progress"><span id="playCount"></span><span class="pips" id="playPips" aria-hidden="true"></span></div>
+      <span class="stopwatch" id="stopwatch" hidden><span>0:00</span></span>
+      <div class="pb-tools">
+        <button type="button" class="icon-btn" id="replayBtn" aria-label="Hear the instructions again"><span data-icon="speaker"></span><span class="ib-lab">Repeat</span></button>
+        <button type="button" class="icon-btn" id="helpBtn" aria-label="Get a hint"><span data-icon="help"></span><span class="ib-lab">Hint</span></button>
+        <button type="button" class="icon-btn" id="pauseBtn" aria-label="Pause"><span data-icon="pause"></span><span class="ib-lab">Pause</span></button>
+      </div>
+    </header>
+    <div class="guide">
+      <div class="guide-snake" id="playGuide"></div>
+      <div class="bubble">
+        <p class="instr" id="instr" aria-live="polite"></p>
+        <p class="tip" id="tip" hidden></p>
+        <div class="fb" id="feedback" aria-live="polite"></div>
+        <div class="bubble-actions" id="bubbleActions"></div>
+      </div>
+    </div>
+    <div class="stage" id="stage"></div>
+
+    <div class="overlay" id="pauseOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+      <div class="panel">
+        <h2 id="pauseTitle">Paused</h2>
+        <p>Take your time. Nothing moves until you come back.</p>
+        <button type="button" class="btn primary big" id="resumeBtn"><span data-icon="play"></span>Keep going</button>
+        <fieldset class="speed-pick" id="pauseSpeed">
+          <legend>Snake movement</legend>
+          <label><input type="radio" name="pspeed" value="step"><span>One step per press</span></label>
+          <label><input type="radio" name="pspeed" value="relaxed"><span>Relaxed</span></label>
+          <label><input type="radio" name="pspeed" value="steady"><span>Steady</span></label>
+          <label><input type="radio" name="pspeed" value="lively"><span>Lively</span></label>
+        </fieldset>
+        <div class="row">
+          <button type="button" class="btn ghost" id="restartBtn"><span data-icon="refresh"></span>Start this round again</button>
+          <button type="button" class="btn ghost" id="pauseLeaveBtn"><span data-icon="home"></span>Leave activity</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="screen results" id="scr-results" hidden aria-labelledby="resTitle">
+    <div class="res-card">
+      <div class="res-mascot" id="resMascot"></div>
+      <h1 id="resTitle" tabindex="-1" data-focus></h1>
+      <p class="res-line" id="resLine"></p>
+      <ul class="res-chips" id="resChips"></ul>
+      <div class="res-unlock" id="resUnlock" hidden></div>
+      <div class="res-lists">
+        <div id="resNewWrap"><h2>New discoveries</h2><ul class="mini-list" id="resNew"></ul></div>
+        <div id="resPracWrap"><h2>Practiced this round</h2><ul class="mini-list" id="resPrac"></ul></div>
+      </div>
+      <div class="res-suggest" id="resSuggest"></div>
+      <div class="res-actions">
+        <button type="button" class="btn primary" id="againBtn"><span data-icon="refresh"></span>Play again</button>
+        <button type="button" class="btn ghost" id="newBtn"><span data-icon="leaf"></span>Try something new</button>
+        <button type="button" class="btn ghost" id="breakBtn"><span data-icon="home"></span>Take a break</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MY SNAKE -->
+  <section class="screen" id="scr-mysnake" hidden aria-labelledby="snakeTitle">
+    <header class="topbar">
+      <button type="button" class="icon-btn" data-go="home" aria-label="Home"><span data-icon="home"></span><span class="ib-lab">Home</span></button>
+      <h1 id="snakeTitle" tabindex="-1" data-focus>My Snake</h1>
+    </header>
+    <div class="mysnake">
+      <div class="preview-card"><div id="snakePreview"></div><p class="look-note" id="lookNote" aria-live="polite"></p>
+        <p class="sub">New looks are earned by exploring and practicing. Nothing here costs money.</p></div>
+      <div class="look-groups">
+        <section><h2>Color</h2><div class="look-row" id="lookColors"></div></section>
+        <section><h2>Pattern</h2><div class="look-row" id="lookPatterns"></div></section>
+        <section><h2>Accessory</h2><div class="look-row" id="lookAccessories"></div></section>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVERY BOOK -->
+  <section class="screen" id="scr-book" hidden aria-labelledby="bookTitle">
+    <header class="topbar">
+      <button type="button" class="icon-btn" data-go="home" aria-label="Home"><span data-icon="home"></span><span class="ib-lab">Home</span></button>
+      <h1 id="bookTitle" tabindex="-1" data-focus>Discovery Book</h1>
+    </header>
+    <p class="book-key"><span class="tag seen"><span data-icon="star"></span>Discovered</span> means you met it. <span class="tag prac"><span data-icon="check"></span>Practiced</span> means you answered a question about it.</p>
+    <div class="book-tabs" id="bookTabs" role="tablist" aria-label="Worlds"></div>
+    <div class="book-page" id="bookPage" role="tabpanel">
+      <p class="book-summary" id="bookSummary"></p>
+      <div class="entry-detail" id="entryDetail" hidden></div>
+      <div class="book-grid" id="bookGrid"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="screen" id="scr-settings" hidden aria-labelledby="setTitle">
+    <header class="topbar">
+      <button type="button" class="icon-btn" data-go="home" aria-label="Home"><span data-icon="home"></span><span class="ib-lab">Home</span></button>
+      <h1 id="setTitle" tabindex="-1" data-focus>Settings</h1>
+    </header>
+    <div class="settings">
+      <div class="set-row">
+        <div><h2 id="voiceLab">Voice</h2><p class="sub" id="voiceNote"></p></div>
+        <button type="button" class="switch" role="switch" id="setVoice" aria-labelledby="voiceLab"><span class="knob"></span><span class="sw-on">On</span><span class="sw-off">Off</span></button>
+      </div>
+      <div class="set-row">
+        <div><h2 id="soundLab">Sound effects</h2><p class="sub">Little chimes for taps and answers. Every sound also has something you can see.</p></div>
+        <button type="button" class="switch" role="switch" id="setSound" aria-labelledby="soundLab"><span class="knob"></span><span class="sw-on">On</span><span class="sw-off">Off</span></button>
+      </div>
+      <fieldset class="set-row col"><legend><h2>Snake movement</h2></legend>
+        <p class="sub">Separate from how hard the questions are. Choose what feels comfortable.</p>
+        <div class="seg wrap">
+          <label><input type="radio" name="speed" value="step"><span>One step per press</span></label>
+          <label><input type="radio" name="speed" value="relaxed"><span>Relaxed</span></label>
+          <label><input type="radio" name="speed" value="steady"><span>Steady</span></label>
+          <label><input type="radio" name="speed" value="lively"><span>Lively</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="set-row col"><legend><h2>Motion</h2></legend>
+        <div class="seg wrap">
+          <label><input type="radio" name="motion" value="system"><span>Match my device</span></label>
+          <label><input type="radio" name="motion" value="reduce"><span>Reduce motion</span></label>
+          <label><input type="radio" name="motion" value="full"><span>Full motion</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="set-row col"><legend><h2>Text size</h2></legend>
+        <div class="seg">
+          <label><input type="radio" name="textSize" value="standard"><span>Standard</span></label>
+          <label><input type="radio" name="textSize" value="large"><span>Large</span></label>
+        </div>
+      </fieldset>
+      <div class="set-row col">
+        <h2>Progress</h2>
+        <p class="sub" id="storageStatus"></p>
+        <p class="sub">No account, no personal details, no microphone. Speech uses your device's built-in voice.</p>
+        <button type="button" class="btn ghost small" id="resetBtn"><span data-icon="trash"></span>Reset progress…</button>
+        <div class="confirm" id="resetConfirm" hidden role="group" aria-label="Confirm reset">
+          <p>Reset all discoveries, practice, and My Snake looks? Settings stay.</p>
+          <div class="row"><button type="button" class="btn danger small" id="resetYes">Yes, reset</button><button type="button" class="btn ghost small" id="resetNo">Keep my progress</button></div>
+        </div>
+        <p class="sub" id="resetDone" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSIC (the original Fruit Snake game, unchanged) -->
+  <section class="screen classic" id="scr-classic" hidden aria-labelledby="classicTitle">
+    <header class="topbar classic-bar">
+      <button type="button" class="btn primary small" data-go="home"><span data-icon="back"></span>Back to Snake Explorers</button>
+      <div><h1 id="classicTitle" tabindex="-1" data-focus>Classic Snake</h1><p class="sub">The original Fruit Snake game, kept exactly as it was.</p></div>
+    </header>
+    <iframe id="classicFrame" title="Classic Snake — the original Fruit Snake game" allow="microphone 'none'; camera 'none'"></iframe>
+  </section>
+</div>
+
+<script src="js/logic.js"></script>
+<script src="js/content.js"></script>
+<script src="js/art.js"></script>
+<script src="js/store.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/mech-collect.js"></script>
+<script src="js/mech-choose.js"></script>
+<script src="js/mech-sort.js"></script>
+<script src="js/mech-sequence.js"></script>
+<script src="js/mech-plan.js"></script>
+<script src="js/mech-explore.js"></script>
+<script src="js/icons-static.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
