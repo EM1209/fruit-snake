@@ -461,7 +461,9 @@ async function playRound(page, world, idx, aid, mode) {
         const b = await page.locator(".board").boundingBox();
         const pad = await page.locator(aid === "snack-hunt" ? ".dpad" : ".palette").boundingBox();
         const run = aid === "code-snake" ? await page.locator(".plan .run").boundingBox() : pad;
-        const overlap = !(pad.x >= b.x + b.width || pad.x + pad.width <= b.x || pad.y >= b.y + b.height || pad.y + pad.height <= b.y);
+        const side = await page.locator(".side").boundingBox();
+        const hit = (r) => !(r.x >= b.x + b.width || r.x + r.width <= b.x || r.y >= b.y + b.height || r.y + r.height <= b.y);
+        const overlap = hit(pad) || hit(side);
         ok(!overlap, `${name}/${aid}: controls never cover the board`);
         ok(b.y + b.height <= vp.height + 1 && pad.y + pad.height <= vp.height + 1 && run.y + run.height <= vp.height + 1, `${name}/${aid}: board and controls fit the screen height`);
         ok(b.width >= Math.min(160, vp.width * .4), `${name}/${aid}: board is a usable size (${Math.round(b.width)}px)`);

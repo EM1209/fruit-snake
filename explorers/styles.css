@@ -180,8 +180,8 @@ p { margin: 0; }
 .stage { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; padding: 2px 2px 6px; }
 
 /* ---------- board-based mechanics (collect, plan) ---------- */
-.collect, .plan { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; }
-.board-box { container-type: size; min-height: 200px; display: grid; place-items: center; }
+.collect, .plan { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(150px, 1fr) auto; gap: 10px; }
+.board-box { container-type: size; min-height: 0; display: grid; place-items: center; }
 .board { position: relative; width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); border-radius: 22px; touch-action: none; user-select: none; -webkit-user-select: none; }
 .grid-board { background-color: #D9EFDF; background-image: conic-gradient(#E7F6EB 25%, transparent 0 50%, #E7F6EB 0 75%, transparent 0); background-size: calc(200% / 9) calc(200% / 9);
   box-shadow: inset 0 0 0 4px #fff, 0 0 0 2px var(--mint2), var(--shadow); overflow: hidden; }
@@ -232,7 +232,7 @@ p { margin: 0; }
 .dpad .up { grid-area: 1 / 2; } .dpad .left { grid-area: 2 / 1; } .dpad .right { grid-area: 2 / 3; } .dpad .down { grid-area: 3 / 2; }
 .dpad-mid { grid-area: 2 / 2; display: grid; place-items: center; text-align: center; font-size: .66rem; line-height: 1.15; color: var(--ink-soft); font-weight: 700; }
 @media (min-aspect-ratio: 5/4) {
-  .collect, .plan { grid-template-rows: none; grid-template-columns: minmax(0, 1fr) auto; }
+  .collect, .plan { grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr) auto; }
   .side { flex-direction: column; width: min(320px, 36vw); flex-wrap: nowrap; }
   .status-card, .program-card { width: 100%; flex: none; }
 }
@@ -501,7 +501,6 @@ fieldset.set-row > * + * { margin-top: 8px; }
   .palette { grid-template-columns: repeat(4, 50px); } .palette .dir { height: 50px; }
   .status-card, .program-card { padding: 6px 10px; gap: 4px; }
   .frame { max-width: 150px; }
-  .board-box { min-height: 140px; }
   .plan-foot .btn { min-height: 42px; padding: .3em .8em; font-size: .95rem; }
   .plan-foot .undo .lbl, .plan-foot .clear .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .program { min-height: 40px; }
