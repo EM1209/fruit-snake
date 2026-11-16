@@ -24,8 +24,27 @@
   const MODE_INFO = {
     explore: { name: "Explore", line: "Relaxed. Tips shown, no timer." },
     practice: { name: "Practice", line: "Short goals with helpful feedback." },
-    challenge: { name: "Challenge", line: "Harder puzzles. Extra hints if you ask." }
+    challenge: { name: "Challenge", line: "Harder puzzles. Extra hints if you ask." },
+    free: { name: "Free play", line: "Build anything you like. There are no wrong answers." }
   };
+  /* Playful Worlds difficulty. The game offers two clear choices (plus Free play
+   * where it makes sense). Saved rounds still use the original mode ids, so old
+   * progress, history and suggestions stay meaningful:
+   *   Easy           -> "explore" pool
+   *   More challenge -> "practice" and "challenge" pools, taking turns, for the
+   *                     activities that already had both; "challenge" for new ones. */
+  const DIFFICULTY = {
+    easy: { name: "Easy", line: "Big pictures, spoken help, and a demo to watch first." },
+    more: { name: "More challenge", line: "Deeper puzzles to think through. Never faster — take your time." }
+  };
+  function modeFor(activityId, difficulty, playedCount) {
+    const a = ACTIVITY[activityId];
+    if (difficulty === "free") return a && a.free ? "free" : "explore";
+    if (difficulty !== "more") return "explore";
+    if (!a || a.morePools === "challenge") return "challenge";
+    return (playedCount || 0) % 2 === 0 ? "practice" : "challenge";
+  }
+  const difficultyOf = (mode) => mode === "free" ? "free" : mode === "explore" ? "easy" : "more";
 
   // ====================================================================== SHAPES & COLORS
   const COLORS = { berry: { name: "red", hex: "#D2456B" }, sky: { name: "blue", hex: "#3E86C9" }, sun: { name: "yellow", hex: "#E7B22C" }, leaf: { name: "green", hex: "#3D9A63" }, plum: { name: "purple", hex: "#7B4FD6" } };
@@ -60,6 +79,7 @@
     addC("word", id, w[0], w[1], fact);
   });
   addC("word", "sentences", "Building sentences", "s-letters", "A sentence starts with a capital letter and ends with a full stop.");
+  CONCEPTS[CONCEPTS.length - 1].retired = true;   // from the retired Sentence Builder: kept for old saves, shown only if earned
   addC("number", "count", "Counting", "s-count", "When you count, the last number you say tells how many.");
   addC("number", "compare", "More and less", "s-compare", "Matching items in pairs shows which group has more.");
   addC("number", "add", "Adding", "s-plus", "Adding puts groups together to make a bigger group.");
@@ -117,8 +137,25 @@
   addC("everyday", "kindness", "Kind choices", "s-kind", "Asking “Do you want help?” is often a kind first step.");
   addC("everyday", "tidy-up", "Tidying up", "room-bedroom", "Things are easier to find when each has a place — and some fit in more than one.");
   function routineArt(r) { const s = r.steps.find(x => x.art) || r.steps[0]; return s.art || s.v; }
+  addC("nature", "cycle-duck", "Duck life cycle", "duck", "A duckling hatches from an egg and grows into a duck.");
+  addC("nature", "cycle-grasshopper", "Grasshopper life cycle", "grasshopper", "Egg, nymph (a small grasshopper with no wings yet), grown grasshopper — just three stages.");
+  addC("nature", "cycle-turtle", "Turtle life cycle", "turtle", "A baby turtle hatches from an egg and grows slowly into an adult.");
+  addC("nature", "cycle-robin", "Robin life cycle", "robin", "Robin chicks hatch from blue eggs and grow feathers before they can fly.");
+  addC("nature", "cycle-fish", "Fish life cycle", "fish", "Tiny baby fish, called fry, hatch from eggs and grow into adults.");
+  addC("nature", "cycle-penguin", "Penguin life cycle", "penguin", "A fluffy penguin chick hatches from an egg and grows waterproof feathers.");
+  addC("nature", "cycle-snail", "Snail life cycle", "snail", "Snails hatch from eggs looking like tiny adults, then grow bigger shells.");
+  addC("nature", "eats-what", "Plant eaters and hunters", "s-chain", "Some animals eat plants, some hunt other animals, and some eat both.");
+  addC("logic", "small-code", "First code", "s-arrows", "Two or three arrows are a whole program: the snake follows them in order.");
   const CONCEPT = Object.fromEntries(CONCEPTS.map(c => [c.id, c]));
   const conceptWorld = Object.fromEntries(CONCEPTS.map(c => [c.id, c.world]));
+  // Playful Worlds modules (TypeScript) add their own concepts here.
+  function addConcept(world, id, label, art, fact) {
+    if (CONCEPT[id]) return CONCEPT[id];
+    addC(world, id, label, art, fact);
+    const c = CONCEPTS[CONCEPTS.length - 1];
+    CONCEPT[id] = c; conceptWorld[id] = world;
+    return c;
+  }
 
   // ====================================================================== helpers
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -661,7 +698,40 @@
     practice: [["butterfly", null], ["frog", null], ["plant", ["seed", "sprout", "flower", "fruit"]], ["chicken", null], ["seasons", null], ["day", null], ["ladybug", null], ["tree", null], ["appleyear", null]],
     challenge: [["plant", null], ["seasons", null], ["water", null], ["day", null], ["butterfly", null], ["frog", null], ["ladybug", null], ["appleyear", null], ["tree", null]]
   };
+  /* Easy: exactly three picture cards. Only animals and plants whose growth
+   * really is three stages (or whose stages merge honestly into three) — the
+   * four-stage cycles stay whole in More challenge. */
+  const EASY_CYCLES = [
+    { k: "chicken", concept: "cycle-chicken", title: "How does a chicken grow?", steps: [["egg-hen", "egg"], ["chick", "chick"], ["hen", "grown chicken"]] },
+    { k: "duck", concept: "cycle-duck", title: "How does a duck grow?", steps: [["duck-egg", "egg"], ["duckling", "duckling"], ["duck", "grown duck"]] },
+    { k: "grasshopper", concept: "cycle-grasshopper", title: "How does a grasshopper grow?", steps: [["hopper-eggs", "eggs"], ["nymph", "nymph — no wings yet"], ["grasshopper", "grown grasshopper"]] },
+    { k: "turtle", concept: "cycle-turtle", title: "How does a turtle grow?", steps: [["turtle-egg", "egg in the sand"], ["hatchling", "baby turtle"], ["turtle", "grown turtle"]] },
+    { k: "snail", concept: "cycle-snail", title: "How does a snail grow?", steps: [["snail-eggs", "eggs"], ["baby-snail", "baby snail"], ["snail", "grown snail"]] },
+    { k: "tree", concept: "cycle-tree", title: "How does a tree grow?", steps: [["seed", "seed"], ["seedling", "young tree"], ["tree", "tall tree"]] },
+    { k: "robin", concept: "cycle-robin", title: "How does a robin grow?", steps: [["nest", "eggs in a nest"], ["nestling", "baby bird"], ["robin", "grown robin"]] },
+    { k: "fish", concept: "cycle-fish", title: "How does a fish grow?", steps: [["fish-eggs", "eggs"], ["fry", "baby fish"], ["fish", "grown fish"]] },
+    { k: "penguin", concept: "cycle-penguin", title: "How does a penguin grow?", steps: [["penguin-egg", "egg"], ["penguin-chick", "fluffy chick"], ["penguin", "grown penguin"]] }
+  ];
+  function easySequence(item, demo, rand, extra) {
+    const steps = item.steps.map(([v, label]) => ({ v, label }));
+    return graded(Object.assign({ id: pid("seq3"), mechanic: "sequence", kind: "steps", easy: true,
+      instruction: item.title + " Put the 3 pictures in order.", say: item.title + " Put the three pictures in order.",
+      tiles: shuffle(steps.map(s => ({ id: "e-" + s.v, value: s.v, art: s.v, label: s.label })), rand),
+      slots: 3, answers: [steps.map(s => s.v)], fixed: [],
+      stepHints: Object.fromEntries(steps.map((s, i) => [s.v, i === 0 ? "The " + s.label + " comes first." : "The " + s.label + " comes after the " + steps[i - 1].label + "."])),
+      hints: ["What comes first? " + cap(steps[0].label) + ".", cap(steps[0].label) + ", then " + steps[1].label + ", then " + steps[2].label + "."],
+      explanation: steps.map(s => cap(s.label)).join(", then ") + ".",
+      demo: demo ? { title: demo.title, cards: demo.steps.map(([v, label]) => ({ art: v, label })) } : null,
+      concepts: [item.concept], seen: [item.concept] }, extra || {}));
+  }
   function buildLifeCycles(mode, ctx) {
+    if (mode === "explore") {
+      const chosen = ctx.pick(EASY_CYCLES.map(c => ({ cid: "cyc3:" + c.k, c })), 3);
+      return chosen.map((x, i) => {
+        const demo = EASY_CYCLES.filter(c => !chosen.some(y => y.c === c))[i % 3] || EASY_CYCLES.find(c => c !== x.c);
+        return Object.assign(easySequence(x.c, demo, ctx.rand), { cids: [x.cid] });
+      });
+    }
     const n = 3;
     return ctx.pick(CYCLE_SETS[mode].map(([k, sub]) => ({ cid: "cyc:" + k + ":" + (sub ? sub.join("-") : "all"), topic: k, k, sub })), n, { spread: true })
       .map(c => Object.assign(cyclePrompt(c.k, mode, ctx.rand, c.sub), { cids: [c.cid] }));
@@ -725,16 +795,47 @@
       hints: [multi ? "There's more than one answer. Check each picture." : "Think about what each one eats or needs.", q.why], explanation: q.why,
       concepts: q.id === "plants-need" || q.id === "sunlight-food" ? ["plants-need"] : q.id.includes("living") || q.id === "producer" ? ["living-things"] : ["food-chains"], seen: ["food-chains"] });
   }
+  /* Food Chains (Playful Worlds): picture sorting and questions only — no
+   * ordering. Chain questions show the chain as pictures and ask about one link. */
+  const DIET = {
+    plants: ["rabbit", "cow", "deer", "grasshopper", "caterpillar", "snail", "squirrel"],
+    hunts: ["fox", "owl", "frog", "wolf", "penguin", "robin", "snake"]
+  };
+  function dietSort(ctx, n) {
+    const p = ctx.pick(DIET.plants.map(id => ({ cid: "diet:" + id, id, bin: "plants" })), Math.ceil(n / 2));
+    const h = ctx.pick(DIET.hunts.map(id => ({ cid: "diet:" + id, id, bin: "hunts" })), Math.floor(n / 2));
+    const all = p.concat(h);
+    const nm = (id) => (ANIMAL[id] ? ANIMAL[id].name : id);
+    return { id: pid("diet"), cids: all.map(c => c.cid), mechanic: "sort", graded: true, instruction: "Sort the animals: plant eaters, and hunters.",
+      say: "Sort the animals. Some eat plants. Some hunt other animals.",
+      bins: [{ id: "plants", label: "Eats plants", note: "leaves, grass, seeds", art: "grass" }, { id: "hunts", label: "Hunts animals", note: "catches other animals", art: "s-chain" }],
+      items: shuffle(all, ctx.rand).map(c => ({ id: c.id, art: c.id, label: nm(c.id), bins: [c.bin],
+        hint: c.bin === "plants" ? "What does a " + nm(c.id) + " munch on?" : "Does a " + nm(c.id) + " catch other animals?",
+        explain: c.bin === "plants" ? "A " + nm(c.id) + " eats plants." : "A " + nm(c.id) + " hunts or catches other animals.", concepts: ["eats-what"] })),
+      hints: ["Think: does it nibble plants, or catch other animals?"], explanation: "Sorted! Plant eaters on one side, hunters on the other.",
+      concepts: ["eats-what"], seen: ["eats-what"].concat(all.map(c => c.id).filter(id => ANIMAL[id])) };
+  }
+  function chainQuestion(ch, rand) {
+    // Ask about one link, shown with the whole chain as pictures.
+    const i = int(rand, 1, ch.links.length - 1);
+    const eater = ch.labels[i], food = ch.links[i - 1], foodLabel = ch.labels[i - 1];
+    const pool = ["grass", "rabbit", "mouse", "fish", "leaf", "seed", "grasshopper", "frog", "caterpillar", "deer"].filter(x => !ch.links.includes(x));
+    const opts = shuffle([food].concat(sample(pool, 2, rand)), rand);
+    return graded({ id: pid("chq"), cids: ["chq:" + ch.id + ":" + i], mechanic: "choose", instruction: "Follow the arrows. What does the " + eater + " eat?",
+      say: ch.labels.join(", then ") + ". What does the " + eater + " eat?",
+      visual: { kind: "chain", items: ch.links.map((v, k) => ({ art: v, label: ch.labels[k] })) },
+      options: opts.map(o => ({ id: o, art: o, label: cap(o === food ? foodLabel : (ANIMAL[o] ? ANIMAL[o].name : o)) })), rule: { type: "one", valid: [food] },
+      hints: ["Find the " + eater + " in the chain. Look at the picture just before it.", "The arrow points from the " + foodLabel + " to the " + eater + "."],
+      explanation: "The " + eater + " eats the " + foodLabel + ". Each arrow means “is eaten by”.",
+      concepts: ["food-chains"], seen: ["food-chains"].concat(ch.links.filter(v => ANIMAL[v])) });
+  }
   function buildFoodChains(mode, ctx) {
     const rand = ctx.rand;
     const Qs = (n) => ctx.pick(B.NATURE_QUESTIONS.filter(q => q.m.includes(mode)).map(q => ({ cid: "nq:" + q.id, q })), n).map(c => natureQuestion(c.q, rand));
+    const chainQs = (len, n) => ctx.pick(B.CHAINS.filter(c => c.links.length === len).map(c => ({ cid: "chq:" + c.id, c })), n).map(x => Object.assign(chainQuestion(x.c, rand), { cids: [x.cid] }));
     if (mode === "explore") return [livingSort(ctx, 4)].concat(Qs(2));
-    if (mode === "practice") {
-      const ch = ctx.pick(B.CHAINS.filter(c => c.links.length === 3).map(c => ({ cid: "chain:" + c.id, c })), 2).map(x => chainPrompt(x.c, mode, rand));
-      return ch.concat(Qs(2));
-    }
-    const ch = ctx.pick(B.CHAINS.filter(c => c.links.length === 4).map(c => ({ cid: "chain:" + c.id, c })), 2).map(x => chainPrompt(x.c, mode, rand));
-    return ch.concat(Qs(1), [livingSort(ctx, 6)]);
+    if (mode === "practice") return chainQs(3, 2).concat([dietSort(ctx, 4)], Qs(1));
+    return chainQs(4, 2).concat(Qs(1), [dietSort(ctx, 4)]);
   }
 
   // ====================================================================== LOGIC LAB
@@ -760,7 +861,30 @@
       explanation: "There's more than one route — any path that reaches the leaf works. The shortest uses " + sol.moves + " arrows.",
       concepts: ["arrows"].concat(lv.rocks.length ? ["obstacles"] : []).concat(lv.key ? ["keys"] : []), seen: ["arrows"] }), extra || {});
   }
+  // Easy boards: 3×3, no rocks, the leaf 2–3 steps away. Every one is enumerated, so the pool is deterministic.
+  const SMALL_LEVELS = [];
+  for (let sy = 0; sy < 3; sy++) for (let sx = 0; sx < 3; sx++) for (let gy = 0; gy < 3; gy++) for (let gx = 0; gx < 3; gx++) {
+    const d = Math.abs(gx - sx) + Math.abs(gy - sy);
+    if (d === 2 || d === 3) SMALL_LEVELS.push({ w: 3, h: 3, start: { x: sx, y: sy }, goal: { x: gx, y: gy }, rocks: [] });
+  }
+  function demoFor(lv, rand) {
+    // a similar example: same size, a different start/leaf, same number of steps
+    const sol = L.solveLevel(lv);
+    const pool = SMALL_LEVELS.filter(o => levelId(o) !== levelId(lv) && L.solveLevel(o).moves === sol.moves);
+    const ex = pick(pool, rand);
+    return { level: ex, program: L.solveLevel(ex).path };
+  }
+  function easyCodePrompt(lv, rand) {
+    const sol = L.solveLevel(lv);
+    const level = Object.assign({}, lv, { maxMoves: sol.moves + 1 });
+    return graded({ id: pid("code3"), cids: ["lv3:" + levelId(lv)], mechanic: "plan", easy: true, level, minMoves: sol.moves,
+      instruction: "Add " + sol.moves + " arrows to reach the leaf, then press Run.", say: "Add " + sol.moves + " arrows to reach the leaf. Then press Run.",
+      demo: demoFor(lv, rand),
+      hints: ["Watch the demo again: each arrow moves the snake one square.", "Start with: " + ARROW[sol.path[0]] + "."],
+      explanation: "The snake followed your " + sol.moves + " arrows to the leaf.", concepts: ["arrows", "small-code"], seen: ["arrows", "small-code"] });
+  }
   function buildCodeSnake(mode, ctx) {
+    if (mode === "explore") return ctx.pick(SMALL_LEVELS.map(lv => ({ cid: "lv3:" + levelId(lv), lv })), 4, { spread: true }).map(c => easyCodePrompt(c.lv, ctx.rand));
     const n = mode === "practice" ? 5 : 4;
     return ctx.pick(LEVELS[mode].map(lv => ({ cid: "lv:" + levelId(lv), lv })), n).map(c => codePrompt(c.lv, mode));
   }
@@ -826,9 +950,23 @@
       hints: ["Press Run and watch where it goes wrong.", "Arrow " + (i + 1) + " is the one to change."],
       explanation: "Fixed! The bug was arrow " + (i + 1) + ". Any route that reaches the leaf counts.", concepts: ["debug", "arrows"] });
   }
+  function tapPredictPrompt(rand, lv, len) {
+    const prog = randomProgram(rand, lv, len, -1); if (!prog) return null;
+    const end = walk(lv, lv.start, prog).pos;
+    if (end.x === lv.start.x && end.y === lv.start.y) return null;
+    const ex = pick(SMALL_LEVELS.filter(o => levelId(o) !== levelId(lv)), rand);
+    const exProg = randomProgram(rand, ex, len, -1);
+    if (!exProg) return null;
+    if (ex.start.x === lv.start.x && ex.start.y === lv.start.y && exProg.join() === prog.join()) return null;   // the demo must be a different example
+    return { cid: "tap:" + levelId(lv) + ":" + prog.join(""), mechanic: "predict", easy: true, level: { w: lv.w, h: lv.h, start: lv.start, rocks: [] }, program: prog, answer: end,
+      demo: { level: { w: ex.w, h: ex.h, start: ex.start, rocks: [] }, program: exProg },
+      instruction: "Where will the snake stop? Tap that square.", say: "Follow the arrows. Where will the snake stop? Tap that square.",
+      hints: ["Move your finger one square for each arrow.", "After the first arrow, the snake is one square " + prog[0] + "."],
+      explanation: "Following " + prog.map(d => ARROW[d]).join(" ") + " one square at a time ends right there.", concepts: ["predict", "small-code"] };
+  }
   function buildBugHunt(mode, ctx) {
-    if (mode === "explore") return ctx.generate((r) => predictPrompt(r, pick(LEVELS.explore, r), int(r, 2, 3), "pred"), 4, { tries: 20 })
-      .map(p => Object.assign({ id: pid("bug"), mechanic: "choose", graded: true, cids: [p.cid] }, p, { say: p.instruction, seen: ["predict"] }));
+    if (mode === "explore") return ctx.generate((r) => tapPredictPrompt(r, pick(SMALL_LEVELS, r), int(r, 2, 3)), 4, { tries: 30 })
+      .map(p => Object.assign({ id: pid("bug"), graded: true, cids: [p.cid] }, p, { seen: ["predict", "small-code"] }));
     if (mode === "practice") return ctx.generate((r) => (r() < 0.5 ? bumpPrompt(r, pick(LEVELS.practice, r)) : predictPrompt(r, pick(LEVELS.practice, r), int(r, 3, 5), "pred5")), 4, { spread: true, tries: 25 })
       .map(p => Object.assign({ id: pid("bug"), mechanic: "choose", graded: true, cids: [p.cid] }, p, { say: p.instruction, seen: ["debug"] }));
     const fixes = ctx.generate((r) => { const p = fixPrompt(r, pick(LEVELS.practice.concat(LEVELS.explore), r)); return p && Object.assign(p, { cid: p.cids[0] }); }, 2, { tries: 20 });
@@ -853,7 +991,27 @@
       hints: ["What has to happen first, before anything else can?", steps[0].label + " comes first, then " + steps[1].label.toLowerCase() + "."],
       explanation: steps.map(s => s.label).join(" → ") + ".", concepts: [r.concept], seen: [r.concept] });
   }
+  const EASY_ROUTINES = [
+    { k: "handwashing", concept: "handwashing", title: "Wash your hands.", steps: [["wet", "wet your hands"], ["scrub", "soap and scrub"], ["dry", "rinse and dry"]] },
+    { k: "teeth", concept: "teeth", title: "Brush your teeth.", steps: [["toothpaste", "toothpaste on the brush"], ["brush", "brush all your teeth"], ["spit", "spit and rinse"]] },
+    { k: "planting", concept: "planting", title: "Plant a seed.", steps: [["shovel", "dig a hole"], ["seed", "drop the seed in and cover it"], ["wateringcan", "water it"]] },
+    { k: "sandwich", concept: "sandwich", title: "Make a sandwich.", steps: [["bread", "a slice of bread"], ["filling", "spread and filling"], ["sandwich", "top slice on"]] },
+    { k: "crossing", concept: "crossing", title: "Cross the street.", steps: [["s-stop", "stop at the edge"], ["s-look", "look, listen and wait"], ["s-walk", "walk across, still looking"]] },
+    { k: "dishes", concept: "dishes", title: "Wash the dishes.", steps: [["plate", "scrape off the food"], ["soap", "wash and rinse"], ["dry", "dry and put away"]] },
+    { k: "smoothie", concept: "smoothie", title: "Make a smoothie.", steps: [["rinse", "wash and cut the fruit"], ["blender", "blend it"], ["cup", "pour it in a cup"]] },
+    { k: "spill", concept: "spill", title: "Clean up a spill.", steps: [["cup-tipped", "stand the cup up"], ["sponge", "wipe it with a cloth"], ["rinse", "rinse the cloth"]] },
+    { k: "gift", concept: "gift", title: "Wrap a present.", steps: [["giftbox", "gift in the box"], ["gift", "wrap and tape"], ["tag", "add a name tag"]] },
+    { k: "letter", concept: "letter", title: "Send a letter.", steps: [["book", "write the letter"], ["envelope", "put it in an envelope"], ["mailbox", "post it"]] },
+    { k: "muffins", concept: "muffins", title: "Bake muffins with a grown-up.", steps: [["bowl", "mix the batter"], ["oven", "a grown-up bakes them"], ["muffin", "let them cool"]] }
+  ];
   function buildStepByStep(mode, ctx) {
+    if (mode === "explore") {
+      const chosen = ctx.pick(EASY_ROUTINES.map(c => ({ cid: "rt3:" + c.k, c })), 3);
+      return chosen.map((x, i) => {
+        const demo = EASY_ROUTINES.filter(c => !chosen.some(y => y.c === c))[i] || EASY_ROUTINES.find(c => c !== x.c);
+        return Object.assign(easySequence(x.c, demo, ctx.rand), { cids: [x.cid] });
+      });
+    }
     const n = 3;
     return ctx.pick(Object.keys(B.ROUTINES).map(k => ({ cid: "rt:" + k, k })), n).map(c => routinePrompt(c.k, mode, ctx.rand));
   }
@@ -941,10 +1099,6 @@
   const ACTIVITIES = [
     { id: "snack-hunt", world: "word", title: "Snack Hunt", mechanic: "collect", art: "pear", objective: "Name fruits and vegetables", example: "Steer the snake to the pear.",
       modes: { explore: "Eat any snack to hear its name.", practice: "Find the snack you hear named.", challenge: "Read a clue — some have more than one answer." }, build: buildSnackHunt },
-    { id: "letter-line", world: "word", title: "Letter Line", mechanic: "sequence", art: "s-letters", objective: "Spell words letter by letter", example: "Put the letters in order to spell FROG.",
-      modes: { explore: "Copy 3-letter words.", practice: "Spell 4-letter words you hear.", challenge: "Spell longer words from a picture, with a spare letter." }, build: buildLetterLine },
-    { id: "sentence-builder", world: "word", title: "Sentence Builder", mechanic: "sequence", art: "s-sentence", objective: "Put words in order to make a sentence", example: "The · frog · hops.", isNew: true,
-      modes: { explore: "Copy short sentences.", practice: "Build 4–5 word sentences.", challenge: "Longer sentences with a spare word." }, build: buildSentenceBuilder },
     { id: "berry-count", world: "number", title: "Berry Basket", mechanic: "collect", art: "basket", objective: "Count an exact amount", example: "Collect exactly five berries.",
       modes: { explore: "Counts to 6 with a filling frame.", practice: "Counts up to 10.", challenge: "Work it out first: sums, doubles, take-aways." }, build: buildBerryCount },
     { id: "number-questions", world: "number", title: "Meadow Math", mechanic: "choose", art: "s-plus", objective: "Compare, add, subtract, and find number patterns", example: "Complete 2, 4, 6, __.",
@@ -960,17 +1114,17 @@
     { id: "habitat-homes", world: "nature", title: "Habitat Homes", mechanic: "sort", art: "hab-pond", objective: "Match animals with habitats that suit them", example: "Where could a duck live?",
       modes: { explore: "2 habitats with clues.", practice: "3 habitats, 5 animals.", challenge: "4 habitats; some animals fit more than one." }, build: buildHabitatHomes },
     { id: "life-cycles", world: "nature", title: "Life Cycles", mechanic: "sequence", art: "sprout", objective: "Order how living things grow and change", example: "Seed, sprout, flower — what comes next?",
-      modes: { explore: "3 stages, first one placed.", practice: "Full animal cycles, seasons, and days.", challenge: "Plants, the water cycle, and other cycles." }, build: buildLifeCycles },
+      modes: { explore: "Three big pictures, with a demo to watch.", practice: "Full animal cycles, seasons, and days.", challenge: "Longer picture cycles: plants, water, and more." }, build: buildLifeCycles },
     { id: "nature-walk", world: "nature", title: "Nature Walk", mechanic: "explore", art: "owl", objective: "Learn facts about animals", example: "Tap the owl to discover a fact.",
       modes: { explore: "Discover six animal facts.", practice: "Read facts, then answer questions.", challenge: "Solve “Who am I?” riddles." }, build: buildNatureWalk },
-    { id: "food-chains", world: "nature", title: "Food Chains", mechanic: "sequence", art: "s-chain", objective: "Living things, and what eats what", example: "Grass → rabbit → fox.", isNew: true,
-      modes: { explore: "Living or not living?", practice: "3-step food chains.", challenge: "4-step chains and what-if questions." }, build: buildFoodChains },
+    { id: "food-chains", world: "nature", title: "Food Chains", mechanic: "choose", art: "s-chain", objective: "Living things, and what eats what", example: "Grass → rabbit → fox.", isNew: true,
+      modes: { explore: "Living or not living?", practice: "Who eats what: chain questions and sorting.", challenge: "Longer chains and what-if questions." }, build: buildFoodChains },
     { id: "code-snake", world: "logic", title: "Code the Snake", mechanic: "plan", art: "s-arrows", objective: "Plan a sequence of moves and debug it", example: "→ → ↓ then Run to reach the leaf.",
-      modes: { explore: "Small grids, no rocks.", practice: "Plan around rocks.", challenge: "Get the key first, with an arrow limit." }, build: buildCodeSnake },
+      modes: { explore: "Tiny boards, 2–3 arrows, watch a demo first.", practice: "Plan around rocks.", challenge: "Get the key first, with an arrow limit." }, build: buildCodeSnake },
     { id: "bug-hunt", world: "logic", title: "Bug Hunt", mechanic: "choose", art: "s-bug", objective: "Predict what code does, then find and fix bugs", example: "Where does → → ↓ end?", isNew: true,
-      modes: { explore: "Predict where short code ends.", practice: "Find the step that bumps a rock.", challenge: "Fix buggy code, then run it." }, build: buildBugHunt },
+      modes: { explore: "Tap where 2–3 arrows lead, after a demo.", practice: "Find the step that bumps a rock.", challenge: "Fix buggy code, then run it." }, build: buildBugHunt },
     { id: "step-by-step", world: "everyday", title: "Step by Step", mechanic: "sequence", art: "soap", objective: "Order everyday routines", example: "Wet hands, soap, scrub, rinse, dry.",
-      modes: { explore: "3 steps, first one placed.", practice: "Full 4–5 step routines.", challenge: "Full routines, plus a card that doesn't belong." }, build: buildStepByStep },
+      modes: { explore: "Three big pictures, with a demo to watch.", practice: "Full 4-step picture routines.", challenge: "Full routines, plus a card that doesn't belong." }, build: buildStepByStep },
     { id: "ready-weather", world: "everyday", title: "Ready for Weather", mechanic: "choose", art: "umbrella", objective: "Choose what helps for the weather, stay safe, and pack from a list", example: "Pick two things for a rainy day.",
       modes: { explore: "Pick one helpful thing or safe choice.", practice: "Pick two, pack from a list.", challenge: "Pick everything that fits; plan for a twist." }, build: buildWeather },
     { id: "kind-choices", world: "everyday", title: "Kind Choices", mechanic: "choose", art: "s-kind", objective: "Think about kind ways to respond", example: "A friend dropped their crayons. What could you do?",
@@ -979,11 +1133,36 @@
       modes: { explore: "2 rooms, 4 things.", practice: "3 rooms, 5 things.", challenge: "4 rooms; some things fit more than one." }, build: buildTidyUp }
   ];
   const ACTIVITY = Object.fromEntries(ACTIVITIES.map(a => [a.id, a]));
+  /* Retired in Playful Worlds. Their builders stay (old tests, old saves), but
+   * they are no longer offered. Continue maps to the replacement, and old
+   * records keep their original names — they are never relabelled. */
+  const RETIRED = {
+    "letter-line": { title: "Letter Line", world: "word", replacedBy: "sound-safari", build: buildLetterLine },
+    "sentence-builder": { title: "Sentence Builder", world: "word", replacedBy: "listen-find", build: buildSentenceBuilder }
+  };
+  // Playful Worlds modules register their activities here (kept in world order).
+  const WORLD_ORDER = WORLDS.map(w => w.id);
+  function registerActivity(a) {
+    if (ACTIVITY[a.id]) throw new Error("duplicate activity " + a.id);
+    let at = ACTIVITIES.length;
+    const wi = WORLD_ORDER.indexOf(a.world);
+    for (let i = ACTIVITIES.length - 1; i >= 0; i--) { if (WORLD_ORDER.indexOf(ACTIVITIES[i].world) <= wi) { at = i + 1; break; } if (i === 0) at = 0; }
+    ACTIVITIES.splice(at, 0, a);
+    ACTIVITY[a.id] = a;
+    return a;
+  }
+  function continueTarget(last) {
+    if (!last || !last.activityId) return null;
+    if (ACTIVITY[last.activityId]) return { activityId: last.activityId, mode: last.mode, migrated: false };
+    const r = RETIRED[last.activityId];
+    if (r && ACTIVITY[r.replacedBy]) return { activityId: r.replacedBy, mode: "explore", migrated: true, from: r.title };
+    return null;
+  }
 
   /* Build a round. history is the persisted history object (or null); the
    * deck chooses freshest-first for this activity+mode. Seeded for tests. */
   function buildRound(activityId, mode, seed, history) {
-    const a = ACTIVITY[activityId];
+    const a = ACTIVITY[activityId] || (RETIRED[activityId] && Object.assign({ id: activityId }, RETIRED[activityId]));
     if (!a) throw new Error("unknown activity " + activityId);
     const rand = L.rng(seed == null ? Date.now() : seed);
     const rec = Deck.rec(history ? Deck.sanitize(history) : null, Deck.keyOf(activityId, mode));
@@ -1021,7 +1200,7 @@
       { id: "hat", name: "Explorer hat", goal: { stat: "rounds", n: 1, text: "Finish your first round" } },
       { id: "crown", name: "Flower crown", goal: { stat: "natureDiscovered", n: 6, text: "Discover 6 nature things" } },
       { id: "glasses", name: "Reading glasses", goal: { stat: "wordPractice", n: 10, text: "Practice 10 words" } },
-      { id: "bowtie", name: "Bow tie", goal: { stat: "modesTried", n: 3, text: "Try Explore, Practice, and Challenge" } },
+      { id: "bowtie", name: "Bow tie", goal: { stat: "modesTried", n: 2, text: "Try Easy and More challenge" } },
       { id: "scarf", name: "Cozy scarf", goal: { stat: "worldsVisited", n: 6, text: "Finish a round in all 6 worlds" } }
     ]
   };
@@ -1030,7 +1209,8 @@
     COSMETICS.pattern.map(c => Object.assign({ kind: "pattern" }, c, { id: "pattern:" + c.id, key: c.id })),
     COSMETICS.accessory.map(c => Object.assign({ kind: "accessory" }, c, { id: "accessory:" + c.id, key: c.id })));
 
-  return { WORLDS, MODE_INFO, CONCEPTS, CONCEPT, conceptWorld, ACTIVITIES, ACTIVITY, buildRound, COSMETICS, COSMETIC_LIST, COLORS, SHAPES,
+  return { DIFFICULTY, modeFor, difficultyOf, RETIRED, registerActivity, addConcept, continueTarget, SMALL_LEVELS, EASY_CYCLES, EASY_ROUTINES, DIET,
+    WORLDS, MODE_INFO, CONCEPTS, CONCEPT, conceptWorld, ACTIVITIES, ACTIVITY, buildRound, COSMETICS, COSMETIC_LIST, COLORS, SHAPES,
     FOODS: B.FOODS, FOOD, ANIMALS: B.ANIMALS, ANIMAL, HABITATS: B.HABITATS, LEVELS, CYCLES: B.CYCLES, ROUTINES: B.ROUTINES, KIND: B.KIND, ARROW, levelId,
     _internals: { PAT, PAT_MODES, SORT_RULES, symmetryPrompt, rotationPrompt, growPrompt, predictPrompt, bumpPrompt, fixPrompt, walk, Q, SHARE, STORY_EASY, CYCLE_SETS } };
 });

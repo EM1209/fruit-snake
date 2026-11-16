@@ -1,0 +1,30 @@
+{
+  "name": "snake-explorers",
+  "private": true,
+  "version": "3.0.0",
+  "description": "Snake Explorers — Playful Worlds: a learning-through-play browser game (Vite + TypeScript build).",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run test:unit && npm run test:legacy",
+    "test:unit": "vitest run",
+    "test:legacy": "node --test tests/*.test.mjs",
+    "test:e2e": "npm run build:artifact && playwright test",
+    "check": "npm run typecheck && npm test && npm run build:artifact",
+    "build:artifact": "vite build && node tools/export-artifact.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/atkinson-hyperlegible": "5.3.0",
+    "@fontsource/fredoka": "5.3.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vite-plugin-singlefile": "2.3.4",
+    "vitest": "5.0.5"
+  }
+}

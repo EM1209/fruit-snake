@@ -28,6 +28,9 @@
     star: `<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" ${P}/>`,
     clock: `<circle cx="12" cy="12" r="9" ${P}/><path d="M12 7v5l3 2" ${P}/>`,
     skip: `<path d="M6 6l8 6-8 6zM17 6v12" ${P}/>`,
+    sound: `<path d="M4 9h4l5-4v14l-5-4H4z" ${P}/><path d="M16.5 9.5a4 4 0 010 5" ${P}/>`,
+    sprout: `<path d="M12 20v-8M12 12c0-4-3-6-7-6 0 4 3 6 7 6zM12 12c0-4 3-7 7-7 0 4-3 7-7 7z" ${P}/>`,
+    peak: `<path d="M3 19l6-10 4 6 3-4 5 8z" ${P}/><path d="M9 9l1.5 2.5" ${P}/>`,
     leaf: `<path d="M5 19C5 10 10 5 19 5c0 9-5 14-14 14zM5 19l8-8" ${P}/>`
   };
   const icon = (name, label) => `<svg class="ico" viewBox="0 0 24 24" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'}>${ICONS[name] || ""}</svg>`;

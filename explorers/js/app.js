@@ -15,7 +15,13 @@
   let D = store.load();
   const S = { screen: "home", world: null, round: null, mech: null, paused: false, bookWorld: "word", stopwatchTimer: null };
   const SPEEDS = { step: { name: "One step per press", ms: null }, relaxed: { name: "Relaxed", ms: 560 }, steady: { name: "Steady", ms: 400 }, lively: { name: "Lively", ms: 270 } };
-  const MECH_NAME = { collect: "Steer & collect", choose: "Tap to choose", sort: "Sort", sequence: "Put in order", plan: "Plan & run", explore: "Explore" };
+  const MECH_NAME = { collect: "Steer & collect", choose: "Tap to choose", sort: "Sort", sequence: "Put in order", plan: "Plan & run", explore: "Explore",
+    safari: "Listen & tap", listenfind: "Listen & find", rescue: "Mission", detect: "Search the scene", market: "Shop", habitat: "Build", predict: "Tap to predict" };
+  const Clips = window.SE_Clips || null;
+  // Playful Worlds settings are additive: old saves keep every field; new ones get defaults.
+  if (!D.settings.difficulty) D.settings.difficulty = D.settings.mode === "explore" || !D.settings.mode ? "easy" : "more";
+  if (D.settings.captions == null) D.settings.captions = true;
+  const diffName = (d) => d === "free" ? "Free play" : (C.DIFFICULTY[d] || C.DIFFICULTY.easy).name;
   const save = () => store.save();
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const worldOf = (id) => C.WORLDS.find(w => w.id === id);
@@ -30,12 +36,16 @@
     root.dataset.text = D.settings.textSize;
     Audio.setVoice(D.settings.voice);
     Audio.setSound(D.settings.sound);
+    if (Clips) { Clips.setVoice(!!D.settings.voice); Clips.setSound(!!D.settings.sound); }
+    root.dataset.captions = D.settings.captions ? "on" : "off";
+    const mb = document.getElementById("muteBtn");
+    if (mb) { const muted = !D.settings.voice && !D.settings.sound; mb.setAttribute("aria-pressed", String(muted)); mb.querySelector(".ib-lab").textContent = muted ? "Sound off" : "Sound on"; }
     const c = lookColor();
     root.style.setProperty("--snake", c.hex);
     root.style.setProperty("--snake-dark", c.dark);
     root.dataset.pattern = D.look.pattern;
-    const ms = SPEEDS[D.settings.speed].ms;
-    root.style.setProperty("--step", ms ? (ms / 1000).toFixed(2) + "s" : ".16s");
+    // learning games move one step per press, whatever an old save says about speed
+    root.style.setProperty("--step", ".18s");
   }
   function mascot(mood, extra) {
     const c = lookColor();
@@ -64,25 +74,34 @@
   // ---------------------------------------------------------------- HOME
   function renderHome() {
     $("#homeMascot").innerHTML = mascot("happy", { label: "Your snake, smiling" });
-    const last = D.progress.last && C.ACTIVITY[D.progress.last.activityId];
+    $("#homeScene").innerHTML = window.SE_Scenes ? window.SE_Scenes.world("home") : "";
+    const t = C.continueTarget(D.progress.last);
     const cont = $("#continueBtn");
-    cont.hidden = !last;
-    if (last) cont.querySelector("span").textContent = "Continue: " + last.title + " · " + C.MODE_INFO[D.progress.last.mode].name;
+    cont.hidden = !t;
+    if (t) {
+      const a = C.ACTIVITY[t.activityId];
+      cont.querySelector("span").textContent = "Continue: " + a.title + " · " + diffName(C.difficultyOf(t.mode));
+      cont.title = t.migrated ? t.from + " has been replaced by " + a.title + ". Your old progress is kept." : "";
+    }
+    $("#continueNote").textContent = t && t.migrated ? t.from + " is now " + C.ACTIVITY[t.activityId].title + ". Everything you did before is still saved." : "";
     const d = derived();
     $("#homeStats").textContent = d.discovered ? d.discovered + " discovered · " + d.practiced + " practiced" : "";
   }
 
   // ---------------------------------------------------------------- WORLDS
   function renderWorlds() {
+    // a winding trail map: each world is a landmark stop along the path
+    $("#mapScene").innerHTML = window.SE_Scenes ? window.SE_Scenes.world("home") : "";
     const grid = $("#worldGrid");
     grid.innerHTML = "";
-    C.WORLDS.forEach(w => {
+    C.WORLDS.forEach((w, i) => {
       const n = C.ACTIVITIES.filter(a => a.world === w.id).length;
-      const b = el(`<button type="button" class="world-card" style="--tint:${w.tint}" data-world="${w.id}">
-        <span class="wc-art">${Art.item(w.art, "art")}</span>
+      const fresh = C.ACTIVITIES.some(x => x.world === w.id && x.isNew && !D.played[x.id]);
+      const b = el(`<li class="map-stop" style="--tint:${w.tint};--i:${i}"><button type="button" class="world-card" data-world="${w.id}">
+        <span class="wc-art"><span class="wc-ring">${Art.item(w.art, "art")}</span>${fresh ? `<span class="new-dot" aria-hidden="true">New</span>` : ""}</span>
         <span class="wc-text"><span class="wc-name">${esc(w.name)}</span><span class="wc-skill">${esc(w.skill)}</span>
-        <span class="wc-example">${esc(w.example)}</span><span class="wc-count">${n} ${n === 1 ? "activity" : "activities"}${C.ACTIVITIES.some(x => x.world === w.id && x.isNew && !D.played[x.id]) ? ` <span class="new-chip">New activity</span>` : ""}</span></span></button>`);
-      b.addEventListener("click", () => openWorld(w.id));
+        <span class="wc-count">${n} ${n === 1 ? "game" : "games"}${fresh ? ` <span class="new-chip">New games</span>` : ""}</span></span></button></li>`);
+      b.querySelector("button").addEventListener("click", () => openWorld(w.id));
       grid.appendChild(b);
     });
   }
@@ -97,27 +116,26 @@
     $("#worldSkill").textContent = w.skill;
     $("#worldArt").innerHTML = Art.item(w.art, "art");
     $("#scr-world").style.setProperty("--tint", w.tint);
-    // mode picker
-    $$("#modePicker input").forEach(r => { r.checked = r.value === D.settings.mode; });
+    $("#worldScene").innerHTML = window.SE_Scenes ? window.SE_Scenes.world(w.id) : "";
+    $$("#modePicker input").forEach(r => { r.checked = r.value === D.settings.difficulty; });
     paintModeLine();
     const list = $("#activityList");
     list.innerHTML = "";
     C.ACTIVITIES.filter(a => a.world === w.id).forEach(a => {
-      const card = el(`<article class="act-card">
-        <div class="ac-art">${Art.item(a.art, "art")}</div>
+      const card = el(`<article class="act-card station">
+        <div class="ac-art"><span class="ac-ring">${Art.item(a.art, "art")}</span></div>
         <div class="ac-body"><h3>${esc(a.title)}${a.isNew && !D.played[a.id] ? ` <span class="new-chip">New</span>` : ""}</h3><p class="ac-obj">${esc(a.objective)}</p>
-          <p class="ac-mode"><span class="mech-tag">${esc(MECH_NAME[a.mechanic])}</span> <span class="ac-mode-line" data-act="${a.id}"></span></p></div>
-        <button type="button" class="btn primary play-act" data-act="${a.id}">${icon("play")}Play <span class="sr-only">${esc(a.title)}</span></button></article>`);
-      card.querySelector(".play-act").addEventListener("click", () => startRound(a.id, D.settings.mode));
+          <p class="ac-mode"><span class="mech-tag">${esc(MECH_NAME[a.mechanic] || "Play")}</span> <span class="ac-mode-line" data-act="${a.id}"></span></p></div>
+        <div class="ac-actions"><button type="button" class="btn primary play-act" data-act="${a.id}">${icon("play")}Play <span class="sr-only">${esc(a.title)}</span></button>
+        ${a.free ? `<button type="button" class="btn ghost free-act" data-act="${a.id}">${icon("palette")}Free play <span class="sr-only">${esc(a.title)}</span></button>` : ""}</div></article>`);
+      card.querySelector(".play-act").addEventListener("click", () => startRound(a.id, C.modeFor(a.id, D.settings.difficulty, D.played[a.id])));
+      const fb = card.querySelector(".free-act"); if (fb) fb.addEventListener("click", () => startRound(a.id, "free"));
       list.appendChild(card);
     });
     paintActModes();
   }
-  function paintModeLine() {
-    $("#modeLine").textContent = C.MODE_INFO[D.settings.mode].line;
-    $("#stopwatchRow").hidden = D.settings.mode !== "challenge";
-  }
-  function paintActModes() { $$(".ac-mode-line").forEach(s => { s.textContent = C.ACTIVITY[s.dataset.act].modes[D.settings.mode]; }); }
+  function paintModeLine() { $("#modeLine").textContent = C.DIFFICULTY[D.settings.difficulty].line; }
+  function paintActModes() { $$(".ac-mode-line").forEach(s => { const m = C.ACTIVITY[s.dataset.act].modes; s.textContent = D.settings.difficulty === "easy" ? m.explore : (m.practice === m.challenge ? m.challenge : m.practice + " " + m.challenge); }); }
 
   // ---------------------------------------------------------------- PLAY: round controller
   function startRound(activityId, mode) {
@@ -125,12 +143,15 @@
     const prompts = C.buildRound(activityId, mode, (Math.random() * 1e9) | 0, D.history);
     D.played[activityId] = (D.played[activityId] || 0) + 1;
     S.round = { activity: a, mode, prompts, i: 0, results: [], newly: [], practicedIds: [], start: Date.now(), reviewUsed: false,
-      stopwatch: mode === "challenge" && $("#stopwatchToggle").checked, beforeUnlocks: unlockState() };
-    D.settings.mode = mode;
+      stopwatch: false, beforeUnlocks: unlockState() };
+    if (mode !== "free") { D.settings.mode = mode; D.settings.difficulty = C.difficultyOf(mode); }
     D.progress.last = { activityId, mode };
     save();
+    if (Clips) Clips.prepare(["prompt-well-done", "prompt-watch-me", "prompt-your-turn"]);
+    $("#scr-play").dataset.world = a.world;
+    $("#playScene").innerHTML = window.SE_Scenes ? window.SE_Scenes.world(a.world) : "";
     $("#playTitle").textContent = a.title;
-    $("#playMode").textContent = C.MODE_INFO[mode].name;
+    $("#playMode").textContent = diffName(C.difficultyOf(mode));
     $("#playObjective").textContent = a.objective;
     $("#playGuide").innerHTML = mascot("idle", { label: "Your snake guide" });
     S.paused = false; $("#pauseOverlay").hidden = true;
@@ -178,11 +199,17 @@
     // seeing a prompt's things counts as discovering them
     if (p.mechanic !== "explore" && p.kind !== "explore") noteSeen(p.seen || []);
     S.mech = window.SE_Mech[p.mechanic](stage, makeApi(p));
-    if (D.settings.voice) Audio.speak(p.say);
+    sayPrompt(p);
     const focusable = stage.querySelector("button:not([disabled])");
     if (focusable && document.activeElement && document.activeElement.closest && !document.activeElement.closest("#scr-play")) focusable.focus({ preventScroll: true });
   }
 
+  // Spoken instructions: bundled clips where the prompt has them, the device voice otherwise.
+  function sayPrompt(p) {
+    if (p.sayClips && p.sayClips.length && Clips && Clips.getStatus().status !== "unavailable" && p.sayClips.every(Clips.has)) {
+      Audio.stop(); Clips.chain(p.sayClips);
+    } else if (D.settings.voice) Audio.speak(p.say);
+  }
   function noteSeen(ids) {
     const fresh = ids.filter(id => C.CONCEPT[id] && !isSeen(id));
     if (!ids.length) return;
@@ -206,7 +233,7 @@
     fb.innerHTML = head + `<span class="fb-text">${esc(f.text || "")}</span>`;
     if (!reducedMotion()) { fb.classList.remove("pop"); void fb.offsetWidth; fb.classList.add("pop"); }
     if (f.mood) setGuideMood(f.mood);
-    if (D.settings.voice && (f.say || f.text)) Audio.speak(f.say || f.text);
+    if (D.settings.voice && (f.say || f.text) && f.kind !== "info-quiet") Audio.speak(f.say || f.text);
   }
 
   function makeApi(p) {
@@ -214,8 +241,14 @@
     const api = {
       prompt: p, mode: r.mode, Art, L, look: D.look,
       reducedMotion, isSeen,
-      speedName: () => D.settings.speed,
-      speedMs: () => SPEEDS[D.settings.speed].ms,
+      // One step per press in every learning game. Programmed routes move only after Run.
+      speedName: () => "step",
+      speedMs: () => null,
+      clip: (id) => Clips ? Clips.play(id) : Promise.resolve(false),
+      chain: (ids, gap) => Clips ? Clips.chain(ids, gap) : Promise.resolve(),
+      stopAudio: () => { if (Clips) Clips.stop(); },
+      captions: () => !!D.settings.captions,
+      store: (() => { try { return store.isPersistent() ? window.localStorage : null; } catch (e) { return null; } })(),
       food: (id) => C.FOOD[id] || { name: id, fact: "" },
       foodName: (id) => (C.FOOD[id] || { name: id }).name,
       sfx: (n) => Audio.sfx[n] && Audio.sfx[n](),
@@ -310,7 +343,7 @@
   }
   function advance() {
     const r = S.round;
-    Audio.stop();
+    Audio.stop(); if (Clips) Clips.stop();
     if (r.i < r.prompts.length - 1) { r.i++; renderPrompt(); }
     else finishRound();
   }
@@ -376,15 +409,16 @@
     // suggestion for next time (never changes this round)
     const sug = $("#resSuggest");
     sug.innerHTML = "";
-    if (suggestion.direction !== "same") {
-      const m = C.MODE_INFO[suggestion.mode];
-      const msg = suggestion.direction === "harder" ? (graded ? "That went smoothly. Ready for something harder next time?" : "Ready to practice what you discovered?") : "Want a gentler round next? Tips are shown and there's no rush.";
+    const curDiff = C.difficultyOf(r.mode);
+    const nextDiff = suggestion.direction === "harder" ? "more" : suggestion.direction === "easier" ? "easy" : curDiff;
+    if (r.mode !== "free" && nextDiff !== curDiff) {
+      const msg = nextDiff === "more" ? (graded ? "That went smoothly. Ready for More challenge next time?" : "Ready for More challenge?") : "Want an Easy round next? There's a demo, big pictures, and no rush.";
       sug.appendChild(el(`<p>${esc(msg)}</p>`));
-      const b = el(`<button type="button" class="btn ghost">Try ${esc(m.name)}</button>`);
-      b.onclick = () => startRound(r.activity.id, suggestion.mode);
+      const b = el(`<button type="button" class="btn ghost">Try ${esc(diffName(nextDiff))}</button>`);
+      b.onclick = () => startRound(r.activity.id, C.modeFor(r.activity.id, nextDiff, D.played[r.activity.id]));
       sug.appendChild(b);
     }
-    $("#againBtn").onclick = () => startRound(r.activity.id, r.mode);
+    $("#againBtn").onclick = () => startRound(r.activity.id, r.mode === "free" ? "free" : C.modeFor(r.activity.id, curDiff, D.played[r.activity.id]));
   }
 
   // pause
@@ -392,8 +426,7 @@
     if (S.screen !== "play" || S.paused) return;
     S.paused = true;
     if (S.mech && S.mech.pause) S.mech.pause();
-    Audio.stop();
-    $$("#pauseSpeed input").forEach(i => { i.checked = i.value === D.settings.speed; });
+    Audio.stop(); if (Clips) Clips.stop();
     $("#pauseOverlay").hidden = false;
     $("#resumeBtn").focus();
   }
@@ -408,7 +441,7 @@
     S.mech = null; S.paused = false;
     clearInterval(S.stopwatchTimer);
     $("#pauseOverlay").hidden = true;
-    Audio.stop();
+    Audio.stop(); if (Clips) Clips.stop();
   }
 
   // ---------------------------------------------------------------- MY SNAKE
@@ -445,7 +478,7 @@
     const tabs = $("#bookTabs");
     tabs.innerHTML = "";
     C.WORLDS.forEach(w => {
-      const entries = C.CONCEPTS.filter(c => c.world === w.id);
+      const entries = C.CONCEPTS.filter(c => c.world === w.id && (!c.retired || isSeen(c.id)));
       const seen = entries.filter(c => isSeen(c.id)).length;
       const b = el(`<button type="button" role="tab" class="book-tab" aria-selected="${S.bookWorld === w.id}" id="tab-${w.id}" aria-controls="bookPage" style="--tint:${w.tint}">
         <span class="bt-art">${Art.item(w.art, "art")}</span><span class="bt-name">${esc(w.name)}</span><span class="bt-count">${seen}/${entries.length}</span></button>`);
@@ -462,7 +495,7 @@
       tabs.appendChild(b);
     });
     const w = worldOf(S.bookWorld);
-    const entries = C.CONCEPTS.filter(c => c.world === w.id);
+    const entries = C.CONCEPTS.filter(c => c.world === w.id && (!c.retired || isSeen(c.id)));
     const seen = entries.filter(c => isSeen(c.id)).length;
     const prac = entries.filter(c => D.progress.concepts[c.id] && D.progress.concepts[c.id].practiced > 0).length;
     $("#bookPage").setAttribute("aria-labelledby", "tab-" + w.id);
@@ -500,7 +533,8 @@
     $("#setVoice").setAttribute("aria-checked", String(s.voice));
     $("#setSound").setAttribute("aria-checked", String(s.sound));
     $("#voiceNote").textContent = Audio.voiceAvailable() ? "Reads instructions and feedback aloud. You can replay any instruction." : "This device has no built-in voice. All instructions and feedback are shown as text.";
-    $$('input[name="speed"]').forEach(i => { i.checked = i.value === s.speed; });
+    $("#setCaptions").setAttribute("aria-checked", String(!!s.captions));
+    $("#audioStatus").textContent = Clips ? (Clips.getStatus().status === "unavailable" ? "This device can't play the built-in recordings, so the device voice and on-screen words are used instead." : "Built-in voice clips and sound effects are ready.") : "";
     $$('input[name="motion"]').forEach(i => { i.checked = i.value === s.motion; });
     $$('input[name="textSize"]').forEach(i => { i.checked = i.value === s.textSize; });
     $("#storageStatus").textContent = store.isPersistent()
@@ -514,15 +548,12 @@
     });
     toggle("#setVoice", "voice", () => { if (D.settings.voice) Audio.speak("Voice on."); });
     toggle("#setSound", "sound", () => { if (D.settings.sound) Audio.sfx.right(); });
+    toggle("#setCaptions", "captions");
     document.addEventListener("change", (e) => {
       const t = e.target;
-      if (t.name === "speed" || t.name === "pspeed") {
-        D.settings.speed = t.value; save(); applySettings();
-        $$('input[name="speed"], input[name="pspeed"]').forEach(i => { i.checked = i.value === t.value; });
-        if (S.mech && S.mech.speedChanged) S.mech.speedChanged();
-      } else if (t.name === "motion") { D.settings.motion = t.value; save(); applySettings(); }
+      if (t.name === "motion") { D.settings.motion = t.value; save(); applySettings(); }
       else if (t.name === "textSize") { D.settings.textSize = t.value; save(); applySettings(); }
-      else if (t.name === "mode") { D.settings.mode = t.value; save(); paintModeLine(); paintActModes(); }
+      else if (t.name === "mode") { D.settings.difficulty = t.value; save(); paintModeLine(); paintActModes(); }
     });
     $("#resetBtn").addEventListener("click", () => { $("#resetConfirm").hidden = false; $("#resetYes").focus(); });
     $("#resetNo").addEventListener("click", () => { $("#resetConfirm").hidden = true; $("#resetBtn").focus(); });
@@ -544,12 +575,19 @@
   // ---------------------------------------------------------------- wiring
   function bind() {
     $("#exploreBtn").addEventListener("click", () => { renderWorlds(); show("worlds"); });
-    $("#continueBtn").addEventListener("click", () => { const l = D.progress.last; if (l && C.ACTIVITY[l.activityId]) startRound(l.activityId, l.mode); });
+    $("#continueBtn").addEventListener("click", () => { const t = C.continueTarget(D.progress.last); if (t) startRound(t.activityId, t.mode); });
     $$("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
     $("#leaveBtn").addEventListener("click", () => { endPlayView(); openWorld(S.round.activity.world); });
+    $("#muteBtn").addEventListener("click", () => {
+      const muted = !D.settings.voice && !D.settings.sound;
+      if (muted) { const prev = D.settings.unmute || { voice: true, sound: true }; D.settings.voice = prev.voice; D.settings.sound = prev.sound; }
+      else { D.settings.unmute = { voice: D.settings.voice, sound: D.settings.sound }; D.settings.voice = false; D.settings.sound = false; Audio.stop(); if (Clips) Clips.stop(); }
+      save(); applySettings();
+    });
+    document.addEventListener("pointerdown", () => { if (Clips && !S.audioWarm) { S.audioWarm = true; Clips.prepare(["prompt-well-done"]); } }, { capture: true });
     $("#replayBtn").addEventListener("click", () => {
       const p = S.round.prompts[S.round.i];
-      if (D.settings.voice && Audio.voiceAvailable()) Audio.speak(p.say);
+      sayPrompt(p);
       const i = $("#instr"); i.classList.remove("flash"); void i.offsetWidth; i.classList.add("flash");
     });
     $("#helpBtn").addEventListener("click", help);
@@ -575,7 +613,7 @@
     if (where === "home") { renderHome(); show("home"); }
     else if (where === "worlds") { renderWorlds(); show("worlds"); }
     else if (where === "mysnake") { renderMySnake(); $("#lookNote").textContent = ""; show("mysnake"); }
-    else if (where === "book") { const l = D.progress.last && C.ACTIVITY[D.progress.last.activityId]; if (l && !S.bookOpened) S.bookWorld = l.world; S.bookOpened = true; renderBook(); show("book"); }
+    else if (where === "book") { const t0 = C.continueTarget(D.progress.last); const l = t0 && C.ACTIVITY[t0.activityId]; if (l && !S.bookOpened) S.bookWorld = l.world; S.bookOpened = true; renderBook(); show("book"); }
     else if (where === "settings") { renderSettings(); $("#resetDone").textContent = ""; show("settings"); }
     else if (where === "classic") openClassic();
   }
@@ -589,6 +627,8 @@
 
   // Test/inspection hook: read-only views of state (no answers are hidden from the page anyway).
   window.SnakeExplorers = {
+    clips: () => Clips && Clips.getStatus(),
+    start: (id, mode) => startRound(id, mode),
     state: () => ({ screen: S.screen, paused: S.paused, round: S.round && { activity: S.round.activity.id, mode: S.round.mode, i: S.round.i, n: S.round.prompts.length, results: S.round.results.slice() } }),
     prompt: () => S.round && S.round.prompts[S.round.i],
     mech: () => S.mech && S.mech.debug && S.mech.debug(),

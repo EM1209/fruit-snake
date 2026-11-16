@@ -29,6 +29,9 @@
         </div>
       </div>`);
     stage.appendChild(node);
+    // Easy: a "Show me" demo of a similar example (it only moves when pressed, then resets)
+    const demo = p.demo && root.SE_Demo ? root.SE_Demo.route(api, Object.assign({}, p.demo, { level: Object.assign({}, p.demo.level, { goal: p.demo.level.goal }) }), "Watch the snake follow these arrows to its leaf. Then make your own.") : null;
+    if (demo) { node.classList.add("has-demo"); node.querySelector(".side").insertBefore(demo.el, node.querySelector(".program-card")); }
     const board = node.querySelector(".plan-board"), progEl = node.querySelector(".program"), countEl = node.querySelector(".count");
 
     function describe() {
@@ -144,8 +147,8 @@
       },
       pause() { paused = true; },
       resume() { paused = false; },
-      destroy() { if (timer) clearInterval(timer); done = true; },
-      debug: () => ({ program: program.slice(), running, done, level: lv })
+      destroy() { if (timer) clearInterval(timer); done = true; if (demo) demo.cancel(); },
+      debug: () => ({ program: program.slice(), running, done, level: lv, demoPlaying: !!(demo && demo.isPlaying()) })
     };
   };
 })(typeof self !== "undefined" ? self : this);

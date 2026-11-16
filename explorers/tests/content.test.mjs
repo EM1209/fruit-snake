@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const L = require("../js/logic.js");
 const C = require("../js/content.js");
 
-const MECHANICS = new Set(["collect", "choose", "sort", "sequence", "plan", "explore"]);
+const MECHANICS = new Set(["collect", "choose", "sort", "sequence", "plan", "explore", "predict"]);   // "predict": Bug Hunt Easy (Playful Worlds)
 const SEEDS = Array.from({ length: 40 }, (_, i) => i * 7919 + 3);
 
 function eachPrompt(fn) {
@@ -207,8 +207,10 @@ test("cosmetics: free defaults exist and every goal uses a stat the game derives
   for (const k of ["color", "pattern", "accessory"]) assert.ok(C.COSMETICS[k].some(c => c.free));
 });
 
-test("every picture the content refers to exists in the illustration kit", () => {
+test("every picture the content refers to exists in the illustration kit", async () => {
   const Art = require("../js/art.js");
+  // Playful Worlds adds illustrations in the same style from src/art-extra.ts (plain TypeScript, no imports)
+  (await import("../src/art-extra.ts")).registerExtraArt(Art);
   const need = new Set();
   C.CONCEPTS.forEach(c => need.add(c.art));
   C.WORLDS.forEach(w => need.add(w.art));
@@ -224,6 +226,8 @@ test("every picture the content refers to exists in the illustration kit", () =>
     if (p.picture) need.add(p.picture);
     if (p.scene) need.add(p.scene);
     if (p.story) need.add(p.story.who);
+    if (p.demo && p.demo.cards) p.demo.cards.forEach(c => need.add(c.art));
+    if (p.visual && p.visual.kind === "chain") p.visual.items.forEach(c => need.add(c.art));
   });
   const missing = [...need].filter(n => !Art.has(n));
   assert.deepEqual(missing, []);

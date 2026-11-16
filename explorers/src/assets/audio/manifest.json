@@ -1,0 +1,2369 @@
+{
+ "clue-baby": {
+  "asr": "find a baby animal",
+  "asr_ok": true,
+  "bytes": 7560,
+  "dur": 1.43,
+  "kind": "clue",
+  "sha1": "3b51ef669494",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a baby animal."
+ },
+ "clue-can-fly": {
+  "asr": "find an animal that can fly",
+  "asr_ok": true,
+  "bytes": 10080,
+  "dur": 1.93,
+  "kind": "clue",
+  "sha1": "6395a4d71e5c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal that can fly."
+ },
+ "clue-dig": {
+  "asr": "find something you use to dig",
+  "asr_ok": true,
+  "bytes": 9360,
+  "dur": 1.76,
+  "kind": "clue",
+  "sha1": "e402aaf2f2b3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something you use to dig."
+ },
+ "clue-drink": {
+  "asr": "find something you drink from",
+  "asr_ok": true,
+  "bytes": 9720,
+  "dur": 1.86,
+  "kind": "clue",
+  "sha1": "2e38800c2091",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something you drink from."
+ },
+ "clue-dry-rain": {
+  "asr": "find something that keeps you dry in the rain",
+  "asr_ok": true,
+  "bytes": 13500,
+  "dur": 2.59,
+  "kind": "clue",
+  "sha1": "7594a422c2eb",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something that keeps you dry in the rain."
+ },
+ "clue-feet": {
+  "asr": "find something you wear on your feet",
+  "asr_ok": true,
+  "bytes": 11340,
+  "dur": 2.17,
+  "kind": "clue",
+  "sha1": "73e65ab2a3e6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something you wear on your feet."
+ },
+ "clue-fly-night": {
+  "asr": "find an animal that can fly and comes out at night",
+  "asr_ok": true,
+  "bytes": 16200,
+  "dur": 3.14,
+  "kind": "clue",
+  "sha1": "fb8a7fc9efc7",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal that can fly and comes out at night."
+ },
+ "clue-fungus": {
+  "asr": "find a food that is not a plant at all",
+  "asr_ok": true,
+  "bytes": 12420,
+  "dur": 2.4,
+  "kind": "clue",
+  "sha1": "7393b47acc9c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a food that is not a plant at all."
+ },
+ "clue-green-wide": {
+  "asr": "find a green fruit that is wide at the bottom",
+  "asr_ok": true,
+  "bytes": 13140,
+  "dur": 2.55,
+  "kind": "clue",
+  "sha1": "01fce77f3e5a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a green fruit that is wide at the bottom."
+ },
+ "clue-honey": {
+  "asr": "find a striped insect that makes honey",
+  "asr_ok": true,
+  "bytes": 12420,
+  "dur": 2.4,
+  "kind": "clue",
+  "sha1": "88a40b241fea",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a striped insect that makes honey."
+ },
+ "clue-hops": {
+  "asr": "find an animal that hops",
+  "asr_ok": true,
+  "bytes": 8100,
+  "dur": 1.54,
+  "kind": "clue",
+  "sha1": "87a9ef3d5880",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal that hops."
+ },
+ "clue-icy": {
+  "asr": "find an animal that lives in a cold icy place",
+  "asr_ok": true,
+  "bytes": 16920,
+  "dur": 3.28,
+  "kind": "clue",
+  "sha1": "bf00b008b9a9",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal that lives in a cold, icy place."
+ },
+ "clue-long-ears": {
+  "asr": "find an animal with long ears that nibbles carrots",
+  "asr_ok": true,
+  "bytes": 14940,
+  "dur": 2.9,
+  "kind": "clue",
+  "sha1": "a7a6532245bc",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal with long ears that nibbles carrots."
+ },
+ "clue-moo": {
+  "asr": "find the farm animal that says moo",
+  "asr_ok": true,
+  "bytes": 10980,
+  "dur": 2.12,
+  "kind": "clue",
+  "sha1": "25eaa10c4be3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the farm animal that says moo."
+ },
+ "clue-night-sky": {
+  "asr": "find something that shines in the night sky",
+  "asr_ok": true,
+  "bytes": 12600,
+  "dur": 2.43,
+  "kind": "clue",
+  "sha1": "071f427b3495",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something that shines in the night sky."
+ },
+ "clue-read": {
+  "asr": "find something you can read",
+  "asr_ok": true,
+  "bytes": 9000,
+  "dur": 1.73,
+  "kind": "clue",
+  "sha1": "9269af854cac",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something you can read."
+ },
+ "clue-red-fruit": {
+  "asr": "find a red fruit",
+  "asr_ok": true,
+  "bytes": 5940,
+  "dur": 1.11,
+  "kind": "clue",
+  "sha1": "31c2b0009928",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a red fruit."
+ },
+ "clue-sea-animal": {
+  "asr": "find an animal that lives in the sea",
+  "asr_ok": true,
+  "bytes": 10800,
+  "dur": 2.07,
+  "kind": "clue",
+  "sha1": "dcdc9510ccc6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal that lives in the sea."
+ },
+ "clue-shell": {
+  "asr": "find an animal with a shell",
+  "asr_ok": true,
+  "bytes": 8640,
+  "dur": 1.64,
+  "kind": "clue",
+  "sha1": "4ac747bbd120",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find an animal with a shell."
+ },
+ "clue-sleep-on": {
+  "asr": "find something you rest your head on to sleep",
+  "asr_ok": true,
+  "bytes": 13140,
+  "dur": 2.52,
+  "kind": "clue",
+  "sha1": "d167f3bb3788",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something you rest your head on to sleep."
+ },
+ "clue-spots": {
+  "asr": "find a small red bug with black spots",
+  "asr_ok": true,
+  "bytes": 12780,
+  "dur": 2.45,
+  "kind": "clue",
+  "sha1": "9a5f08af3e3d",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a small red bug with black spots."
+ },
+ "clue-teeth": {
+  "asr": "find something you use to brush your teeth",
+  "asr_ok": true,
+  "bytes": 12960,
+  "dur": 2.5,
+  "kind": "clue",
+  "sha1": "d450484c3129",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something you use to brush your teeth."
+ },
+ "clue-time": {
+  "asr": "find something that tells the time",
+  "asr_ok": true,
+  "bytes": 10440,
+  "dur": 2.0,
+  "kind": "clue",
+  "sha1": "5423e03356f5",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something that tells the time."
+ },
+ "clue-underground": {
+  "asr": "find a vegetable that grows under the ground",
+  "asr_ok": true,
+  "bytes": 13320,
+  "dur": 2.59,
+  "kind": "clue",
+  "sha1": "287642d758ae",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a vegetable that grows under the ground."
+ },
+ "clue-warm-hands": {
+  "asr": "find something that keeps your hands warm",
+  "asr_ok": true,
+  "bytes": 13320,
+  "dur": 2.58,
+  "kind": "clue",
+  "sha1": "1b28ac2669a0",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find something that keeps your hands warm."
+ },
+ "clue-yellow-fruit": {
+  "asr": "find a yellow fruit",
+  "asr_ok": true,
+  "bytes": 6660,
+  "dur": 1.23,
+  "kind": "clue",
+  "sha1": "0857e94c1d30",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find a yellow fruit."
+ },
+ "find-ant": {
+  "asr": "find the ant",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 0.97,
+  "kind": "find",
+  "sha1": "d1dbcf6b8902",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the ant."
+ },
+ "find-apple": {
+  "asr": "find the apple",
+  "asr_ok": true,
+  "bytes": 5760,
+  "dur": 1.05,
+  "kind": "find",
+  "sha1": "3575d6abb8ea",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the apple."
+ },
+ "find-ball": {
+  "asr": "find the clock",
+  "asr_ok": false,
+  "bytes": 4860,
+  "dur": 0.87,
+  "kind": "find",
+  "sha1": "25a35beac665",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the ball."
+ },
+ "find-banana": {
+  "asr": "find the banana",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 1.0,
+  "kind": "find",
+  "sha1": "772ef780dab6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the banana."
+ },
+ "find-basket": {
+  "asr": "find the basket",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.01,
+  "kind": "find",
+  "sha1": "6ad2461eadbb",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the basket."
+ },
+ "find-bat": {
+  "asr": "find the bat",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.76,
+  "kind": "find",
+  "sha1": "878e52b47bba",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the bat."
+ },
+ "find-bee": {
+  "asr": "find the t",
+  "asr_ok": false,
+  "bytes": 4140,
+  "dur": 0.75,
+  "kind": "find",
+  "sha1": "32631d3a1f6e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the bee."
+ },
+ "find-blanket": {
+  "asr": "find the blanket",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.04,
+  "kind": "find",
+  "sha1": "be159cc896a8",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the blanket."
+ },
+ "find-book": {
+  "asr": "find the book",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.79,
+  "kind": "find",
+  "sha1": "f1501063ba6b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the book."
+ },
+ "find-boots": {
+  "asr": "find the boots",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 0.97,
+  "kind": "find",
+  "sha1": "f7cbd87ecebd",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the boots."
+ },
+ "find-bottle": {
+  "asr": "find the bottle",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.93,
+  "kind": "find",
+  "sha1": "62fd00795879",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the bottle."
+ },
+ "find-broccoli": {
+  "asr": "find the broccoli",
+  "asr_ok": true,
+  "bytes": 6660,
+  "dur": 1.26,
+  "kind": "find",
+  "sha1": "16d758e9cd7b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the broccoli."
+ },
+ "find-butterfly": {
+  "asr": "find the butterfly",
+  "asr_ok": true,
+  "bytes": 7200,
+  "dur": 1.34,
+  "kind": "find",
+  "sha1": "20b3b6da84ff",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the butterfly."
+ },
+ "find-camel": {
+  "asr": "find the camel",
+  "asr_ok": true,
+  "bytes": 5760,
+  "dur": 1.05,
+  "kind": "find",
+  "sha1": "eb90952381e3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the camel."
+ },
+ "find-carrot": {
+  "asr": "find the carrot",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.95,
+  "kind": "find",
+  "sha1": "b3617091f184",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the carrot."
+ },
+ "find-cat": {
+  "asr": "find the cat",
+  "asr_ok": true,
+  "bytes": 4500,
+  "dur": 0.81,
+  "kind": "find",
+  "sha1": "558f82a9b867",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the cat."
+ },
+ "find-cherries": {
+  "asr": "find the cherries",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 1.01,
+  "kind": "find",
+  "sha1": "1c4bd4579f7c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the cherries."
+ },
+ "find-chick": {
+  "asr": "find the t",
+  "asr_ok": false,
+  "bytes": 4140,
+  "dur": 0.75,
+  "kind": "find",
+  "sha1": "9b64580c5356",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the chick."
+ },
+ "find-clock": {
+  "asr": "find the clock",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.93,
+  "kind": "find",
+  "sha1": "f0c5d8c77ed8",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the clock."
+ },
+ "find-cloud": {
+  "asr": "find the cloud",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.96,
+  "kind": "find",
+  "sha1": "793b6c2d9806",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the cloud."
+ },
+ "find-coat": {
+  "asr": "find the coat",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.84,
+  "kind": "find",
+  "sha1": "09b99c73f913",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the coat."
+ },
+ "find-corn": {
+  "asr": "find the corn",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 0.99,
+  "kind": "find",
+  "sha1": "8a8b5aac6e5e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the corn."
+ },
+ "find-cow": {
+  "asr": "find the cow",
+  "asr_ok": true,
+  "bytes": 4860,
+  "dur": 0.87,
+  "kind": "find",
+  "sha1": "2cffdeac6ddf",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the cow."
+ },
+ "find-crab": {
+  "asr": "find the crab",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.84,
+  "kind": "find",
+  "sha1": "6d6a8601afbc",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the crab."
+ },
+ "find-cucumber": {
+  "asr": "find the cucumber",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.2,
+  "kind": "find",
+  "sha1": "c2b07d94478a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the cucumber."
+ },
+ "find-cup": {
+  "asr": "find the cup",
+  "asr_ok": true,
+  "bytes": 4500,
+  "dur": 0.79,
+  "kind": "find",
+  "sha1": "f344a67a2193",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the cup."
+ },
+ "find-deer": {
+  "asr": "find the deer",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.84,
+  "kind": "find",
+  "sha1": "aa53cfc77fe1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the deer."
+ },
+ "find-dog": {
+  "asr": "find the dog",
+  "asr_ok": true,
+  "bytes": 4500,
+  "dur": 0.8,
+  "kind": "find",
+  "sha1": "518d9d407e92",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the dog."
+ },
+ "find-duck": {
+  "asr": "find the duck",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.85,
+  "kind": "find",
+  "sha1": "ad76c57665a1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the duck."
+ },
+ "find-fish": {
+  "asr": "find the fish",
+  "asr_ok": true,
+  "bytes": 4860,
+  "dur": 0.89,
+  "kind": "find",
+  "sha1": "c1b2052a0a21",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the fish."
+ },
+ "find-flower": {
+  "asr": "find the flower",
+  "asr_ok": true,
+  "bytes": 6300,
+  "dur": 1.17,
+  "kind": "find",
+  "sha1": "0393f5c860bf",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the flower."
+ },
+ "find-fox": {
+  "asr": "find the fox",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.94,
+  "kind": "find",
+  "sha1": "417d899f7312",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the fox."
+ },
+ "find-frog": {
+  "asr": "find the frog",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.92,
+  "kind": "find",
+  "sha1": "b6b8e9447bab",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the frog."
+ },
+ "find-gift": {
+  "asr": "find the present",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.04,
+  "kind": "find",
+  "sha1": "095594b5dc0c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the present."
+ },
+ "find-grapes": {
+  "asr": "find the grapes",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.04,
+  "kind": "find",
+  "sha1": "990a4c813a07",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the grapes."
+ },
+ "find-hen": {
+  "asr": "find the hen",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.85,
+  "kind": "find",
+  "sha1": "6a0e69be1dcb",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the hen."
+ },
+ "find-key": {
+  "asr": "find the key",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.85,
+  "kind": "find",
+  "sha1": "d3ac442d6291",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the key."
+ },
+ "find-ladybug": {
+  "asr": "find the ladybug",
+  "asr_ok": true,
+  "bytes": 6120,
+  "dur": 1.12,
+  "kind": "find",
+  "sha1": "ae04b7988a31",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the ladybug."
+ },
+ "find-leaf": {
+  "asr": "find the leaf",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.78,
+  "kind": "find",
+  "sha1": "f9deac3ad344",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the leaf."
+ },
+ "find-lemon": {
+  "asr": "find the lemon",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.94,
+  "kind": "find",
+  "sha1": "951e563c56ee",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the lemon."
+ },
+ "find-lizard": {
+  "asr": "find the lizard",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.92,
+  "kind": "find",
+  "sha1": "2549be5e8012",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the lizard."
+ },
+ "find-mittens": {
+  "asr": "find the mittens",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.85,
+  "kind": "find",
+  "sha1": "05d7215789ae",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the mittens."
+ },
+ "find-moon": {
+  "asr": "find the moon",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.93,
+  "kind": "find",
+  "sha1": "8b7970e1340b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the moon."
+ },
+ "find-mouse": {
+  "asr": "find the mouse",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.93,
+  "kind": "find",
+  "sha1": "d34a4281ab58",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the mouse."
+ },
+ "find-mushroom": {
+  "asr": "find the mushroom",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.21,
+  "kind": "find",
+  "sha1": "2c3efa30d633",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the mushroom."
+ },
+ "find-orange": {
+  "asr": "find the orange",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.04,
+  "kind": "find",
+  "sha1": "90e41cd02bc6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the orange."
+ },
+ "find-owl": {
+  "asr": "find the owl",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.04,
+  "kind": "find",
+  "sha1": "93d86762e6f3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the owl."
+ },
+ "find-peach": {
+  "asr": "find the key",
+  "asr_ok": false,
+  "bytes": 4320,
+  "dur": 0.79,
+  "kind": "find",
+  "sha1": "b68baf19363a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the peach."
+ },
+ "find-pear": {
+  "asr": "find the pear",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.91,
+  "kind": "find",
+  "sha1": "70897c7023fd",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the pear."
+ },
+ "find-peas": {
+  "asr": "find the peas",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.91,
+  "kind": "find",
+  "sha1": "6d97ef1facca",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the peas."
+ },
+ "find-penguin": {
+  "asr": "find the penguin",
+  "asr_ok": true,
+  "bytes": 5940,
+  "dur": 1.1,
+  "kind": "find",
+  "sha1": "c4e1d305515c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the penguin."
+ },
+ "find-pig": {
+  "asr": "find the t",
+  "asr_ok": false,
+  "bytes": 4500,
+  "dur": 0.79,
+  "kind": "find",
+  "sha1": "0c10ad8e5d24",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the pig."
+ },
+ "find-pillow": {
+  "asr": "find the pillow",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.02,
+  "kind": "find",
+  "sha1": "3d3c548e93a6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the pillow."
+ },
+ "find-polarbear": {
+  "asr": "find the polar bear",
+  "asr_ok": true,
+  "bytes": 7200,
+  "dur": 1.33,
+  "kind": "find",
+  "sha1": "2b5eeab43c2b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the polar bear."
+ },
+ "find-potato": {
+  "asr": "find the potato",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.2,
+  "kind": "find",
+  "sha1": "f48562e7502e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the potato."
+ },
+ "find-rabbit": {
+  "asr": "find the rabbit",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.91,
+  "kind": "find",
+  "sha1": "2893f234dd5f",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the rabbit."
+ },
+ "find-raincoat": {
+  "asr": "find the raincoat",
+  "asr_ok": true,
+  "bytes": 6120,
+  "dur": 1.13,
+  "kind": "find",
+  "sha1": "897691960bbe",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the raincoat."
+ },
+ "find-robin": {
+  "asr": "find the robin",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 1.0,
+  "kind": "find",
+  "sha1": "09f59d66756d",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the robin."
+ },
+ "find-rock": {
+  "asr": "find the rock",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.78,
+  "kind": "find",
+  "sha1": "10b9b6a4a88b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the rock."
+ },
+ "find-sandwich": {
+  "asr": "find the sandwich",
+  "asr_ok": true,
+  "bytes": 5760,
+  "dur": 1.05,
+  "kind": "find",
+  "sha1": "67ae8b1eaabc",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the sandwich."
+ },
+ "find-scarf": {
+  "asr": "find the scarf",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 0.98,
+  "kind": "find",
+  "sha1": "380173dba199",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the scarf."
+ },
+ "find-seed": {
+  "asr": "find the seed",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.86,
+  "kind": "find",
+  "sha1": "76165f9474bd",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the seed."
+ },
+ "find-sheep": {
+  "asr": "find the seed",
+  "asr_ok": false,
+  "bytes": 4500,
+  "dur": 0.81,
+  "kind": "find",
+  "sha1": "cc10cbcddcf8",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the sheep."
+ },
+ "find-shorts": {
+  "asr": "find the shorts",
+  "asr_ok": true,
+  "bytes": 5760,
+  "dur": 1.05,
+  "kind": "find",
+  "sha1": "b49302c6f371",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the shorts."
+ },
+ "find-shovel": {
+  "asr": "find the shovel",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 0.98,
+  "kind": "find",
+  "sha1": "f19ccf3ca1fb",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the shovel."
+ },
+ "find-snail": {
+  "asr": "find the snail",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.03,
+  "kind": "find",
+  "sha1": "50065e89fb7e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the snail."
+ },
+ "find-soap": {
+  "asr": "find the sun",
+  "asr_ok": false,
+  "bytes": 4680,
+  "dur": 0.86,
+  "kind": "find",
+  "sha1": "646fcec97828",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the soap."
+ },
+ "find-spoon": {
+  "asr": "find the spoon",
+  "asr_ok": true,
+  "bytes": 5580,
+  "dur": 1.02,
+  "kind": "find",
+  "sha1": "a54058342c9e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the spoon."
+ },
+ "find-squirrel": {
+  "asr": "find the squirrel",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.2,
+  "kind": "find",
+  "sha1": "d8c7c833c87a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the squirrel."
+ },
+ "find-strawberry": {
+  "asr": "find the strawberry",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.2,
+  "kind": "find",
+  "sha1": "61701be05e5e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the strawberry."
+ },
+ "find-summer": {
+  "asr": "find the sun",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.92,
+  "kind": "find",
+  "sha1": "8d2c6254c14e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the sun."
+ },
+ "find-sunglasses": {
+  "asr": "find the sunglasses",
+  "asr_ok": true,
+  "bytes": 7380,
+  "dur": 1.4,
+  "kind": "find",
+  "sha1": "e75e8e0aeedf",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the sunglasses."
+ },
+ "find-sunhat": {
+  "asr": "find the sun hat",
+  "asr_ok": true,
+  "bytes": 5940,
+  "dur": 1.08,
+  "kind": "find",
+  "sha1": "ab2681f32300",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the sun hat."
+ },
+ "find-tomato": {
+  "asr": "find the tomato",
+  "asr_ok": true,
+  "bytes": 6300,
+  "dur": 1.16,
+  "kind": "find",
+  "sha1": "9b3b45e3f32c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the tomato."
+ },
+ "find-toothbrush": {
+  "asr": "find the toothbrush",
+  "asr_ok": true,
+  "bytes": 6660,
+  "dur": 1.24,
+  "kind": "find",
+  "sha1": "cd5f75d2fead",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the toothbrush."
+ },
+ "find-tree": {
+  "asr": "find the tree",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.95,
+  "kind": "find",
+  "sha1": "f814978fe91a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the tree."
+ },
+ "find-tshirt": {
+  "asr": "find the t shirt",
+  "asr_ok": true,
+  "bytes": 8280,
+  "dur": 1.58,
+  "kind": "find",
+  "sha1": "cf7f8e639966",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the T-shirt."
+ },
+ "find-turtle": {
+  "asr": "find the turtle",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.94,
+  "kind": "find",
+  "sha1": "90cb08b32f00",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the turtle."
+ },
+ "find-umbrella": {
+  "asr": "find the umbrella",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.22,
+  "kind": "find",
+  "sha1": "5f404ad6f55e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the umbrella."
+ },
+ "find-watermelon": {
+  "asr": "find the watermelon",
+  "asr_ok": true,
+  "bytes": 6840,
+  "dur": 1.29,
+  "kind": "find",
+  "sha1": "eabaf1a2f11d",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the watermelon."
+ },
+ "find-whale": {
+  "asr": "find the whale",
+  "asr_ok": true,
+  "bytes": 4860,
+  "dur": 0.89,
+  "kind": "find",
+  "sha1": "4244d412404c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Find the whale."
+ },
+ "phoneme-f": {
+  "bytes": 4104,
+  "dur": 0.6,
+  "kind": "phoneme",
+  "segment_ms": null,
+  "sha1": "13aa2414ba16",
+  "sound": "f",
+  "source": "synthesized labiodental friction noise",
+  "spectral": {
+   "centroid": 4577,
+   "flatness": 0.361,
+   "low500": 0.0
+  },
+  "spectral_ok": true
+ },
+ "phoneme-l": {
+  "bytes": 4104,
+  "dur": 0.6,
+  "kind": "phoneme",
+  "segment_ms": [
+   30,
+   96
+  ],
+  "sha1": "c91a15fcce50",
+  "sound": "l",
+  "source": "steady part cut from Pico saying 'leaf', looped",
+  "spectral": {
+   "centroid": 340,
+   "flatness": 0.0,
+   "low500": 0.883
+  },
+  "spectral_ok": true
+ },
+ "phoneme-m": {
+  "bytes": 4752,
+  "dur": 0.7,
+  "kind": "phoneme",
+  "segment_ms": [
+   20,
+   106
+  ],
+  "sha1": "7591fa698012",
+  "sound": "m",
+  "source": "steady part cut from Pico saying 'moon', looped",
+  "spectral": {
+   "centroid": 213,
+   "flatness": 0.0,
+   "low500": 0.998
+  },
+  "spectral_ok": true
+ },
+ "phoneme-s": {
+  "bytes": 4752,
+  "dur": 0.7,
+  "kind": "phoneme",
+  "segment_ms": [
+   255,
+   361
+  ],
+  "sha1": "0961793e144e",
+  "sound": "s",
+  "source": "steady part cut from Pico saying 'bus', looped",
+  "spectral": {
+   "centroid": 6623,
+   "flatness": 0.097,
+   "low500": 0.011
+  },
+  "spectral_ok": true
+ },
+ "phoneme-sh": {
+  "bytes": 4752,
+  "dur": 0.7,
+  "kind": "phoneme",
+  "segment_ms": [
+   305,
+   436
+  ],
+  "sha1": "c2d4baee933e",
+  "sound": "sh",
+  "source": "steady part cut from Pico saying 'wish', looped",
+  "spectral": {
+   "centroid": 3841,
+   "flatness": 0.126,
+   "low500": 0.003
+  },
+  "spectral_ok": true
+ },
+ "prompt-detect-sound": {
+  "asr": "who is making this sound find them",
+  "asr_ok": true,
+  "bytes": 14940,
+  "dur": 2.91,
+  "kind": "prompt",
+  "sha1": "cf36c1a36477",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Who is making this sound? Find them!"
+ },
+ "prompt-detect-tracks": {
+  "asr": "who made these tracks",
+  "asr_ok": true,
+  "bytes": 5940,
+  "dur": 1.1,
+  "kind": "prompt",
+  "sha1": "586703ac6634",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Who made these tracks?"
+ },
+ "prompt-safari-chain": {
+  "asr": "listen to these words",
+  "asr_ok": true,
+  "bytes": 7380,
+  "dur": 1.4,
+  "kind": "prompt",
+  "sha1": "6f17b798e188",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Listen to these words."
+ },
+ "prompt-safari-same": {
+  "asr": "which one starts the same way",
+  "asr_ok": true,
+  "bytes": 10260,
+  "dur": 1.96,
+  "kind": "prompt",
+  "sha1": "84f5f7da1723",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Which one starts the same way?"
+ },
+ "prompt-safari-sound": {
+  "asr": "listen to this sound",
+  "asr_ok": true,
+  "bytes": 7020,
+  "dur": 1.32,
+  "kind": "prompt",
+  "sha1": "a4b3c6bca2af",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Listen to this sound."
+ },
+ "prompt-safari-starts": {
+  "asr": "which picture starts with this sound",
+  "asr_ok": true,
+  "bytes": 12240,
+  "dur": 2.35,
+  "kind": "prompt",
+  "sha1": "0a45504feca2",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Which picture starts with this sound?"
+ },
+ "prompt-safari-what": {
+  "asr": "listen what makes this sound",
+  "asr_ok": true,
+  "bytes": 13320,
+  "dur": 2.56,
+  "kind": "prompt",
+  "sha1": "9afe5a9ac610",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Listen! What makes this sound?"
+ },
+ "prompt-safari-who": {
+  "asr": "listen who makes this sound",
+  "asr_ok": true,
+  "bytes": 12420,
+  "dur": 2.39,
+  "kind": "prompt",
+  "sha1": "7f8d7fe927fe",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Listen! Who makes this sound?"
+ },
+ "prompt-try-again": {
+  "asr": "let's try again",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.2,
+  "kind": "prompt",
+  "sha1": "4dc30f502e8a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Let's try again."
+ },
+ "prompt-watch-me": {
+  "asr": "watch me first",
+  "asr_ok": true,
+  "bytes": 5760,
+  "dur": 1.06,
+  "kind": "prompt",
+  "sha1": "500b8cfea9b6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Watch me first."
+ },
+ "prompt-well-done": {
+  "asr": "well done",
+  "asr_ok": true,
+  "bytes": 4140,
+  "dur": 0.75,
+  "kind": "prompt",
+  "sha1": "7fe051095b24",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Well done!"
+ },
+ "prompt-your-turn": {
+  "asr": "now it's your turn",
+  "asr_ok": true,
+  "bytes": 6660,
+  "dur": 1.25,
+  "kind": "prompt",
+  "sha1": "a4fecc8b1eb5",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "Now it's your turn."
+ },
+ "sfx-bee": {
+  "bytes": 10031,
+  "dur": 1.6,
+  "kind": "sfx",
+  "label": "bee buzzing",
+  "sha1": "4a94f666fa37",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 717,
+   "flatness": 0.011,
+   "low500": 0.666
+  },
+  "spectral_ok": true
+ },
+ "sfx-bird": {
+  "bytes": 6583,
+  "dur": 1.04,
+  "kind": "sfx",
+  "label": "bird chirping",
+  "sha1": "98ddc7172f76",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 3946,
+   "flatness": 0.0,
+   "low500": 0.0
+  },
+  "spectral_ok": true
+ },
+ "sfx-cat": {
+  "bytes": 6112,
+  "dur": 0.95,
+  "kind": "sfx",
+  "label": "cat meowing",
+  "sha1": "6a87de6c04ae",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 870,
+   "flatness": 0.001,
+   "low500": 0.02
+  },
+  "spectral_ok": true
+ },
+ "sfx-clock": {
+  "bytes": 12382,
+  "dur": 2.0,
+  "kind": "sfx",
+  "label": "clock ticking",
+  "sha1": "d0f79e79e50f",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 2520,
+   "flatness": 0.072,
+   "low500": 0.008
+  },
+  "spectral_ok": true
+ },
+ "sfx-cow": {
+  "bytes": 9404,
+  "dur": 1.5,
+  "kind": "sfx",
+  "label": "cow mooing",
+  "sha1": "26a5c6313af9",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 358,
+   "flatness": 0.0,
+   "low500": 0.91
+  },
+  "spectral_ok": true
+ },
+ "sfx-dog": {
+  "bytes": 4859,
+  "dur": 0.74,
+  "kind": "sfx",
+  "label": "dog barking",
+  "sha1": "6ea84b4695bb",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 917,
+   "flatness": 0.01,
+   "low500": 0.017
+  },
+  "spectral_ok": true
+ },
+ "sfx-duck": {
+  "bytes": 4702,
+  "dur": 0.72,
+  "kind": "sfx",
+  "label": "duck quacking",
+  "sha1": "14d39da76e80",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 1340,
+   "flatness": 0.027,
+   "low500": 0.065
+  },
+  "spectral_ok": true
+ },
+ "sfx-frog": {
+  "bytes": 6583,
+  "dur": 1.03,
+  "kind": "sfx",
+  "label": "frog croaking",
+  "sha1": "46fa934ae442",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 839,
+   "flatness": 0.004,
+   "low500": 0.056
+  },
+  "spectral_ok": true
+ },
+ "sfx-hen": {
+  "bytes": 6583,
+  "dur": 1.02,
+  "kind": "sfx",
+  "label": "hen clucking",
+  "sha1": "239ab44a9208",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 1142,
+   "flatness": 0.017,
+   "low500": 0.046
+  },
+  "spectral_ok": true
+ },
+ "sfx-mouse": {
+  "bytes": 3448,
+  "dur": 0.51,
+  "kind": "sfx",
+  "label": "mouse squeaking",
+  "sha1": "c45b54e511e2",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 3673,
+   "flatness": 0.0,
+   "low500": 0.0
+  },
+  "spectral_ok": true
+ },
+ "sfx-owl": {
+  "bytes": 10344,
+  "dur": 1.67,
+  "kind": "sfx",
+  "label": "owl hooting",
+  "sha1": "e1995120a8ab",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 359,
+   "flatness": 0.0,
+   "low500": 0.986
+  },
+  "spectral_ok": true
+ },
+ "sfx-pig": {
+  "bytes": 5642,
+  "dur": 0.88,
+  "kind": "sfx",
+  "label": "pig oinking",
+  "sha1": "db8a120c6e9f",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 473,
+   "flatness": 0.005,
+   "low500": 0.815
+  },
+  "spectral_ok": true
+ },
+ "sfx-rain": {
+  "bytes": 13636,
+  "dur": 2.2,
+  "kind": "sfx",
+  "label": "rain falling",
+  "sha1": "5bee50dbfd5e",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 3512,
+   "flatness": 0.16,
+   "low500": 0.011
+  },
+  "spectral_ok": true
+ },
+ "sfx-sheep": {
+  "bytes": 7210,
+  "dur": 1.13,
+  "kind": "sfx",
+  "label": "sheep bleating",
+  "sha1": "6211462880f0",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 679,
+   "flatness": 0.001,
+   "low500": 0.055
+  },
+  "spectral_ok": true
+ },
+ "sfx-snake": {
+  "bytes": 8777,
+  "dur": 1.4,
+  "kind": "sfx",
+  "label": "snake hissing",
+  "sha1": "67754b0d3a1d",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 6729,
+   "flatness": 0.018,
+   "low500": 0.0
+  },
+  "spectral_ok": true
+ },
+ "sfx-tap": {
+  "bytes": 12382,
+  "dur": 2.0,
+  "kind": "sfx",
+  "label": "water running from a tap",
+  "sha1": "088548f34032",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 2516,
+   "flatness": 0.034,
+   "low500": 0.008
+  },
+  "spectral_ok": true
+ },
+ "sfx-thunder": {
+  "bytes": 17241,
+  "dur": 2.8,
+  "kind": "sfx",
+  "label": "thunder rumbling",
+  "sha1": "1a50a4f5d216",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 821,
+   "flatness": 0.124,
+   "low500": 0.867
+  },
+  "spectral_ok": true
+ },
+ "sfx-waves": {
+  "bytes": 17241,
+  "dur": 2.8,
+  "kind": "sfx",
+  "label": "ocean waves",
+  "sha1": "147391504517",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 538,
+   "flatness": 0.001,
+   "low500": 0.691
+  },
+  "spectral_ok": true
+ },
+ "sfx-whale": {
+  "bytes": 13636,
+  "dur": 2.2,
+  "kind": "sfx",
+  "label": "whale singing",
+  "sha1": "7fcac2f7504a",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 372,
+   "flatness": 0.0,
+   "low500": 0.885
+  },
+  "spectral_ok": true
+ },
+ "sfx-wind": {
+  "bytes": 14733,
+  "dur": 2.4,
+  "kind": "sfx",
+  "label": "wind blowing",
+  "sha1": "562b40d49464",
+  "source": "synthesized by tools/audio/build_audio.py (sound design, not a field recording)",
+  "spectral": {
+   "centroid": 843,
+   "flatness": 0.025,
+   "low500": 0.137
+  },
+  "spectral_ok": true
+ },
+ "word-ant": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3060,
+  "dur": 0.54,
+  "kind": "word",
+  "sha1": "4b5bdfe2189c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "ant"
+ },
+ "word-apple": {
+  "asr": "apple",
+  "asr_ok": true,
+  "bytes": 3600,
+  "dur": 0.62,
+  "kind": "word",
+  "sha1": "b3c555978683",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "apple"
+ },
+ "word-ball": {
+  "asr": "ball",
+  "asr_ok": true,
+  "bytes": 2880,
+  "dur": 0.48,
+  "kind": "word",
+  "sha1": "9542038c748f",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "ball"
+ },
+ "word-banana": {
+  "asr": "banana",
+  "asr_ok": true,
+  "bytes": 3420,
+  "dur": 0.6,
+  "kind": "word",
+  "sha1": "4df89ef9e9d7",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "banana"
+ },
+ "word-basket": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3600,
+  "dur": 0.62,
+  "kind": "word",
+  "sha1": "0711751a7071",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "basket"
+ },
+ "word-bat": {
+  "asr": "bat",
+  "asr_ok": true,
+  "bytes": 2160,
+  "dur": 0.36,
+  "kind": "word",
+  "sha1": "0f6f6df1882c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "bat"
+ },
+ "word-bee": {
+  "asr": "bee",
+  "asr_ok": true,
+  "bytes": 2160,
+  "dur": 0.35,
+  "kind": "word",
+  "sha1": "f903156ee2f3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "bee"
+ },
+ "word-blanket": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3780,
+  "dur": 0.67,
+  "kind": "word",
+  "sha1": "5586148dd9d2",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "blanket"
+ },
+ "word-book": {
+  "asr": "book",
+  "asr_ok": true,
+  "bytes": 2340,
+  "dur": 0.39,
+  "kind": "word",
+  "sha1": "4ffe16fd313b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "book"
+ },
+ "word-boots": {
+  "asr": "boots",
+  "asr_ok": true,
+  "bytes": 3060,
+  "dur": 0.54,
+  "kind": "word",
+  "sha1": "9bcded0794f0",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "boots"
+ },
+ "word-bottle": {
+  "asr": "bottle",
+  "asr_ok": true,
+  "bytes": 3060,
+  "dur": 0.53,
+  "kind": "word",
+  "sha1": "b36480133755",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "bottle"
+ },
+ "word-broccoli": {
+  "asr": "broccoli",
+  "asr_ok": true,
+  "bytes": 5040,
+  "dur": 0.9,
+  "kind": "word",
+  "sha1": "b7fb371ec4e7",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "broccoli"
+ },
+ "word-butterfly": {
+  "asr": "butterfly",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.96,
+  "kind": "word",
+  "sha1": "72a12e909353",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "butterfly"
+ },
+ "word-camel": {
+  "asr": "camel",
+  "asr_ok": true,
+  "bytes": 3600,
+  "dur": 0.62,
+  "kind": "word",
+  "sha1": "dddc145da759",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "camel"
+ },
+ "word-carrot": {
+  "asr": "carrot",
+  "asr_ok": true,
+  "bytes": 3060,
+  "dur": 0.52,
+  "kind": "word",
+  "sha1": "ae518435c403",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "carrot"
+ },
+ "word-cat": {
+  "asr": "cat",
+  "asr_ok": true,
+  "bytes": 2160,
+  "dur": 0.36,
+  "kind": "word",
+  "sha1": "cbf31515afb1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "cat"
+ },
+ "word-cherries": {
+  "asr": "cherries",
+  "asr_ok": true,
+  "bytes": 3240,
+  "dur": 0.56,
+  "kind": "word",
+  "sha1": "84d37b72da8f",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "cherries"
+ },
+ "word-chick": {
+  "asr": "pig",
+  "asr_ok": false,
+  "bytes": 1980,
+  "dur": 0.31,
+  "kind": "word",
+  "sha1": "7dec4846e391",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "chick"
+ },
+ "word-clock": {
+  "asr": "clock",
+  "asr_ok": true,
+  "bytes": 2880,
+  "dur": 0.5,
+  "kind": "word",
+  "sha1": "23e64d9d40b3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "clock"
+ },
+ "word-cloud": {
+  "asr": "cloud",
+  "asr_ok": true,
+  "bytes": 3060,
+  "dur": 0.52,
+  "kind": "word",
+  "sha1": "2cb3fafb16c0",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "cloud"
+ },
+ "word-coat": {
+  "asr": "pillow",
+  "asr_ok": false,
+  "bytes": 2520,
+  "dur": 0.4,
+  "kind": "word",
+  "sha1": "3613e13caf39",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "coat"
+ },
+ "word-corn": {
+  "asr": "polar",
+  "asr_ok": false,
+  "bytes": 3240,
+  "dur": 0.56,
+  "kind": "word",
+  "sha1": "5ecf18d94de3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "corn"
+ },
+ "word-cow": {
+  "asr": "cow",
+  "asr_ok": true,
+  "bytes": 2520,
+  "dur": 0.43,
+  "kind": "word",
+  "sha1": "8a3c9d42d888",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "cow"
+ },
+ "word-crab": {
+  "asr": "frog",
+  "asr_ok": false,
+  "bytes": 2520,
+  "dur": 0.41,
+  "kind": "word",
+  "sha1": "5262cb63f9e2",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "crab"
+ },
+ "word-cucumber": {
+  "asr": "cucumber",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.78,
+  "kind": "word",
+  "sha1": "399adc8e6f8e",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "cucumber"
+ },
+ "word-cup": {
+  "asr": "cow",
+  "asr_ok": false,
+  "bytes": 2160,
+  "dur": 0.33,
+  "kind": "word",
+  "sha1": "8c6dfb0adcbb",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "cup"
+ },
+ "word-deer": {
+  "asr": "deer",
+  "asr_ok": true,
+  "bytes": 2520,
+  "dur": 0.43,
+  "kind": "word",
+  "sha1": "41414a55294c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "deer"
+ },
+ "word-dog": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 2340,
+  "dur": 0.39,
+  "kind": "word",
+  "sha1": "c2e02d7459d1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "dog"
+ },
+ "word-duck": {
+  "asr": "bat",
+  "asr_ok": false,
+  "bytes": 2700,
+  "dur": 0.44,
+  "kind": "word",
+  "sha1": "89a90a1f85d7",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "duck"
+ },
+ "word-fish": {
+  "asr": "mittens",
+  "asr_ok": false,
+  "bytes": 2160,
+  "dur": 0.35,
+  "kind": "word",
+  "sha1": "2b9c6c1cfb10",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "fish"
+ },
+ "word-flower": {
+  "asr": "flower",
+  "asr_ok": true,
+  "bytes": 3960,
+  "dur": 0.69,
+  "kind": "word",
+  "sha1": "3e739a67deb0",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "flower"
+ },
+ "word-fox": {
+  "asr": "dog",
+  "asr_ok": false,
+  "bytes": 2520,
+  "dur": 0.4,
+  "kind": "word",
+  "sha1": "c6ef9a1fef5b",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "fox"
+ },
+ "word-frog": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 2340,
+  "dur": 0.37,
+  "kind": "word",
+  "sha1": "5deed0b2a9a1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "frog"
+ },
+ "word-gift": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3600,
+  "dur": 0.61,
+  "kind": "word",
+  "sha1": "de3047586efe",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "present"
+ },
+ "word-grapes": {
+  "asr": "grapes",
+  "asr_ok": true,
+  "bytes": 3600,
+  "dur": 0.62,
+  "kind": "word",
+  "sha1": "0cebee9361b9",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "grapes"
+ },
+ "word-hen": {
+  "asr": "hen",
+  "asr_ok": true,
+  "bytes": 2520,
+  "dur": 0.43,
+  "kind": "word",
+  "sha1": "ab7145687b92",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "hen"
+ },
+ "word-key": {
+  "asr": "key",
+  "asr_ok": true,
+  "bytes": 2520,
+  "dur": 0.4,
+  "kind": "word",
+  "sha1": "d1e027167a57",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "key"
+ },
+ "word-ladybug": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 4140,
+  "dur": 0.75,
+  "kind": "word",
+  "sha1": "e36c57139a52",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "ladybug"
+ },
+ "word-leaf": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 2520,
+  "dur": 0.42,
+  "kind": "word",
+  "sha1": "e07bd781b1ec",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "leaf"
+ },
+ "word-lemon": {
+  "asr": "lemon",
+  "asr_ok": true,
+  "bytes": 3420,
+  "dur": 0.59,
+  "kind": "word",
+  "sha1": "1265bce03f17",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "lemon"
+ },
+ "word-lizard": {
+  "asr": "lizard",
+  "asr_ok": true,
+  "bytes": 3240,
+  "dur": 0.57,
+  "kind": "word",
+  "sha1": "949f5886595a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "lizard"
+ },
+ "word-mittens": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 2700,
+  "dur": 0.46,
+  "kind": "word",
+  "sha1": "19f1a991e5ee",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "mittens"
+ },
+ "word-moon": {
+  "asr": "moon",
+  "asr_ok": true,
+  "bytes": 3060,
+  "dur": 0.53,
+  "kind": "word",
+  "sha1": "531d04d44cde",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "moon"
+ },
+ "word-mouse": {
+  "asr": "mouse",
+  "asr_ok": true,
+  "bytes": 3060,
+  "dur": 0.53,
+  "kind": "word",
+  "sha1": "dd8d54ea00ce",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "mouse"
+ },
+ "word-mushroom": {
+  "asr": "mushroom",
+  "asr_ok": true,
+  "bytes": 4680,
+  "dur": 0.84,
+  "kind": "word",
+  "sha1": "983bfc5e9147",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "mushroom"
+ },
+ "word-orange": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3600,
+  "dur": 0.61,
+  "kind": "word",
+  "sha1": "3e236dc92c4a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "orange"
+ },
+ "word-owl": {
+  "asr": "cow",
+  "asr_ok": false,
+  "bytes": 3420,
+  "dur": 0.61,
+  "kind": "word",
+  "sha1": "b50a58d0a4d3",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "owl"
+ },
+ "word-peach": {
+  "asr": "boots",
+  "asr_ok": false,
+  "bytes": 2340,
+  "dur": 0.36,
+  "kind": "word",
+  "sha1": "53d533ac82a7",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "peach"
+ },
+ "word-pear": {
+  "asr": "deer",
+  "asr_ok": false,
+  "bytes": 2520,
+  "dur": 0.42,
+  "kind": "word",
+  "sha1": "b1747d3a6692",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "pear"
+ },
+ "word-peas": {
+  "asr": "bee",
+  "asr_ok": false,
+  "bytes": 2160,
+  "dur": 0.33,
+  "kind": "word",
+  "sha1": "dfae08d638e1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "peas"
+ },
+ "word-penguin": {
+  "asr": "penguin",
+  "asr_ok": true,
+  "bytes": 3600,
+  "dur": 0.63,
+  "kind": "word",
+  "sha1": "273f63bdccfc",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "penguin"
+ },
+ "word-pig": {
+  "asr": "bee",
+  "asr_ok": false,
+  "bytes": 1980,
+  "dur": 0.29,
+  "kind": "word",
+  "sha1": "fca187925d03",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "pig"
+ },
+ "word-pillow": {
+  "asr": "pillow",
+  "asr_ok": true,
+  "bytes": 3420,
+  "dur": 0.6,
+  "kind": "word",
+  "sha1": "37f777e6e197",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "pillow"
+ },
+ "word-polarbear": {
+  "asr": "polar bear",
+  "asr_ok": true,
+  "bytes": 4860,
+  "dur": 0.86,
+  "kind": "word",
+  "sha1": "d5fac54f8a13",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "polar bear"
+ },
+ "word-potato": {
+  "asr": "potato",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.76,
+  "kind": "word",
+  "sha1": "9c0b4f2f516d",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "potato"
+ },
+ "word-rabbit": {
+  "asr": "rabbit",
+  "asr_ok": true,
+  "bytes": 3240,
+  "dur": 0.55,
+  "kind": "word",
+  "sha1": "c0e3a30f0764",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "rabbit"
+ },
+ "word-raincoat": {
+  "asr": "raincoat",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.78,
+  "kind": "word",
+  "sha1": "2c672a596332",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "raincoat"
+ },
+ "word-robin": {
+  "asr": "robin",
+  "asr_ok": true,
+  "bytes": 3600,
+  "dur": 0.64,
+  "kind": "word",
+  "sha1": "2219ed40d739",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "robin"
+ },
+ "word-rock": {
+  "asr": "rock",
+  "asr_ok": true,
+  "bytes": 2880,
+  "dur": 0.49,
+  "kind": "word",
+  "sha1": "383a3f782a1d",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "rock"
+ },
+ "word-sandwich": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3420,
+  "dur": 0.59,
+  "kind": "word",
+  "sha1": "6945e7f1d8ec",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "sandwich"
+ },
+ "word-scarf": {
+  "asr": "",
+  "asr_ok": false,
+  "bytes": 3240,
+  "dur": 0.56,
+  "kind": "word",
+  "sha1": "206fe9306b45",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "scarf"
+ },
+ "word-seed": {
+  "asr": "key",
+  "asr_ok": false,
+  "bytes": 2340,
+  "dur": 0.37,
+  "kind": "word",
+  "sha1": "9956eaf4528a",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "seed"
+ },
+ "word-sheep": {
+  "asr": "key",
+  "asr_ok": false,
+  "bytes": 2340,
+  "dur": 0.37,
+  "kind": "word",
+  "sha1": "8e6e1857d8f6",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "sheep"
+ },
+ "word-shorts": {
+  "asr": "shorts",
+  "asr_ok": true,
+  "bytes": 3240,
+  "dur": 0.55,
+  "kind": "word",
+  "sha1": "82c5cba8f7c0",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "shorts"
+ },
+ "word-shovel": {
+  "asr": "turtle",
+  "asr_ok": false,
+  "bytes": 3060,
+  "dur": 0.53,
+  "kind": "word",
+  "sha1": "9f68d20fda9c",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "shovel"
+ },
+ "word-snail": {
+  "asr": "snail",
+  "asr_ok": true,
+  "bytes": 3420,
+  "dur": 0.6,
+  "kind": "word",
+  "sha1": "a68dbcf9a569",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "snail"
+ },
+ "word-soap": {
+  "asr": "sun",
+  "asr_ok": false,
+  "bytes": 2340,
+  "dur": 0.38,
+  "kind": "word",
+  "sha1": "235e3382f667",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "soap"
+ },
+ "word-spoon": {
+  "asr": "spoon",
+  "asr_ok": true,
+  "bytes": 3420,
+  "dur": 0.59,
+  "kind": "word",
+  "sha1": "fba43d9c90ea",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "spoon"
+ },
+ "word-squirrel": {
+  "asr": "whale",
+  "asr_ok": false,
+  "bytes": 4320,
+  "dur": 0.77,
+  "kind": "word",
+  "sha1": "da6889369238",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "squirrel"
+ },
+ "word-strawberry": {
+  "asr": "strawberry",
+  "asr_ok": true,
+  "bytes": 4320,
+  "dur": 0.78,
+  "kind": "word",
+  "sha1": "ce21fe76f9df",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "strawberry"
+ },
+ "word-summer": {
+  "asr": "sun",
+  "asr_ok": true,
+  "bytes": 2520,
+  "dur": 0.41,
+  "kind": "word",
+  "sha1": "f30dd56ecc44",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "sun"
+ },
+ "word-sunglasses": {
+  "asr": "sunglasses",
+  "asr_ok": true,
+  "bytes": 5400,
+  "dur": 0.99,
+  "kind": "word",
+  "sha1": "4c91c279c6f8",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "sunglasses"
+ },
+ "word-sunhat": {
+  "asr": "sun hat",
+  "asr_ok": true,
+  "bytes": 3780,
+  "dur": 0.66,
+  "kind": "word",
+  "sha1": "bf3e188166de",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "sun hat"
+ },
+ "word-tomato": {
+  "asr": "tomato",
+  "asr_ok": true,
+  "bytes": 4140,
+  "dur": 0.74,
+  "kind": "word",
+  "sha1": "a2a717dcf188",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "tomato"
+ },
+ "word-toothbrush": {
+  "asr": "toothbrush",
+  "asr_ok": true,
+  "bytes": 4500,
+  "dur": 0.82,
+  "kind": "word",
+  "sha1": "32a2247ae641",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "toothbrush"
+ },
+ "word-tree": {
+  "asr": "tree",
+  "asr_ok": true,
+  "bytes": 2700,
+  "dur": 0.45,
+  "kind": "word",
+  "sha1": "c56abf1e69fa",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "tree"
+ },
+ "word-tshirt": {
+  "asr": "t shirt",
+  "asr_ok": true,
+  "bytes": 6480,
+  "dur": 1.19,
+  "kind": "word",
+  "sha1": "4965365dbcd4",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "T-shirt"
+ },
+ "word-turtle": {
+  "asr": "turtle",
+  "asr_ok": true,
+  "bytes": 2700,
+  "dur": 0.44,
+  "kind": "word",
+  "sha1": "37c792635af0",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "turtle"
+ },
+ "word-umbrella": {
+  "asr": "umbrella",
+  "asr_ok": true,
+  "bytes": 4500,
+  "dur": 0.79,
+  "kind": "word",
+  "sha1": "1769e60d0be1",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "umbrella"
+ },
+ "word-watermelon": {
+  "asr": "watermelon",
+  "asr_ok": true,
+  "bytes": 5220,
+  "dur": 0.95,
+  "kind": "word",
+  "sha1": "85d5b2f4d54f",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "watermelon"
+ },
+ "word-whale": {
+  "asr": "whale",
+  "asr_ok": true,
+  "bytes": 3240,
+  "dur": 0.55,
+  "kind": "word",
+  "sha1": "f63f4117db75",
+  "source": "SVOX Pico TTS (en-US), offline",
+  "text": "whale"
+ }
+}

@@ -1,0 +1,331 @@
+{
+  "_about": "Single source of truth for Playful Worlds audio. tools/audio/build_audio.py renders every entry; the games and tests read the same file.",
+  "vocab": {
+    "apple": "apple",
+    "banana": "banana",
+    "grapes": "grapes",
+    "strawberry": "strawberry",
+    "orange": "orange",
+    "pear": "pear",
+    "carrot": "carrot",
+    "broccoli": "broccoli",
+    "corn": "corn",
+    "tomato": "tomato",
+    "peas": "peas",
+    "lemon": "lemon",
+    "cherries": "cherries",
+    "watermelon": "watermelon",
+    "potato": "potato",
+    "mushroom": "mushroom",
+    "cucumber": "cucumber",
+    "peach": "peach",
+    "fish": "fish",
+    "frog": "frog",
+    "duck": "duck",
+    "camel": "camel",
+    "polarbear": "polar bear",
+    "penguin": "penguin",
+    "owl": "owl",
+    "squirrel": "squirrel",
+    "cow": "cow",
+    "lizard": "lizard",
+    "rabbit": "rabbit",
+    "crab": "crab",
+    "fox": "fox",
+    "mouse": "mouse",
+    "robin": "robin",
+    "whale": "whale",
+    "turtle": "turtle",
+    "bat": "bat",
+    "deer": "deer",
+    "snail": "snail",
+    "bee": "bee",
+    "butterfly": "butterfly",
+    "cat": "cat",
+    "dog": "dog",
+    "pig": "pig",
+    "ant": "ant",
+    "hen": "hen",
+    "chick": "chick",
+    "sheep": "sheep",
+    "ladybug": "ladybug",
+    "raincoat": "raincoat",
+    "boots": "boots",
+    "umbrella": "umbrella",
+    "sunhat": "sun hat",
+    "sunglasses": "sunglasses",
+    "shorts": "shorts",
+    "tshirt": "T-shirt",
+    "coat": "coat",
+    "mittens": "mittens",
+    "scarf": "scarf",
+    "ball": "ball",
+    "book": "book",
+    "cup": "cup",
+    "key": "key",
+    "spoon": "spoon",
+    "pillow": "pillow",
+    "blanket": "blanket",
+    "bottle": "bottle",
+    "soap": "soap",
+    "toothbrush": "toothbrush",
+    "shovel": "shovel",
+    "basket": "basket",
+    "gift": "present",
+    "clock": "clock",
+    "tree": "tree",
+    "flower": "flower",
+    "leaf": "leaf",
+    "rock": "rock",
+    "moon": "moon",
+    "summer": "sun",
+    "cloud": "cloud",
+    "seed": "seed",
+    "sandwich": "sandwich"
+  },
+  "clues": {
+    "feet": "Find something you wear on your feet.",
+    "dry-rain": "Find something that keeps you dry in the rain.",
+    "red-fruit": "Find a red fruit.",
+    "yellow-fruit": "Find a yellow fruit.",
+    "can-fly": "Find an animal that can fly.",
+    "sea-animal": "Find an animal that lives in the sea.",
+    "shell": "Find an animal with a shell.",
+    "time": "Find something that tells the time.",
+    "dig": "Find something you use to dig.",
+    "fly-night": "Find an animal that can fly and comes out at night.",
+    "green-wide": "Find a green fruit that is wide at the bottom.",
+    "moo": "Find the farm animal that says moo.",
+    "sleep-on": "Find something you rest your head on to sleep.",
+    "teeth": "Find something you use to brush your teeth.",
+    "underground": "Find a vegetable that grows under the ground.",
+    "baby": "Find a baby animal.",
+    "read": "Find something you can read.",
+    "warm-hands": "Find something that keeps your hands warm.",
+    "hops": "Find an animal that hops.",
+    "honey": "Find a striped insect that makes honey.",
+    "spots": "Find a small red bug with black spots.",
+    "night-sky": "Find something that shines in the night sky.",
+    "long-ears": "Find an animal with long ears that nibbles carrots.",
+    "drink": "Find something you drink from.",
+    "fungus": "Find a food that is not a plant at all.",
+    "icy": "Find an animal that lives in a cold, icy place."
+  },
+  "prompts": {
+    "safari-who": "Listen! Who makes this sound?",
+    "safari-what": "Listen! What makes this sound?",
+    "safari-sound": "Listen to this sound.",
+    "safari-starts": "Which picture starts with this sound?",
+    "safari-chain": "Listen to these words.",
+    "safari-same": "Which one starts the same way?",
+    "detect-tracks": "Who made these tracks?",
+    "detect-sound": "Who is making this sound? Find them!",
+    "well-done": "Well done!",
+    "try-again": "Let's try again.",
+    "watch-me": "Watch me first.",
+    "your-turn": "Now it's your turn."
+  },
+  "phonemes": {
+    "m": {
+      "src": "moon",
+      "mode": "sonorant-start",
+      "hold": 0.7,
+      "example": "moon"
+    },
+    "s": {
+      "src": "bus",
+      "mode": "fric-end",
+      "hold": 0.7,
+      "example": "summer"
+    },
+    "f": {
+      "src": null,
+      "mode": "synth-f",
+      "hold": 0.6,
+      "example": "fish"
+    },
+    "sh": {
+      "src": "wish",
+      "mode": "fric-end",
+      "hold": 0.7,
+      "example": "shovel"
+    },
+    "l": {
+      "src": "leaf",
+      "mode": "fixed-start",
+      "hold": 0.6,
+      "example": "leaf"
+    }
+  },
+  "initialSounds": {
+    "m": [
+      "mouse",
+      "moon",
+      "mittens",
+      "mushroom"
+    ],
+    "s": [
+      "summer",
+      "soap",
+      "sandwich",
+      "seed"
+    ],
+    "f": [
+      "fish",
+      "fox",
+      "frog",
+      "flower"
+    ],
+    "sh": [
+      "shorts",
+      "shovel",
+      "sheep"
+    ],
+    "l": [
+      "leaf",
+      "lemon",
+      "lizard",
+      "ladybug"
+    ],
+    "b": [
+      "ball",
+      "bat",
+      "bee",
+      "book",
+      "banana",
+      "boots",
+      "basket"
+    ],
+    "p": [
+      "pig",
+      "pear",
+      "peas",
+      "peach",
+      "penguin",
+      "pillow"
+    ],
+    "k": [
+      "cat",
+      "cow",
+      "cup",
+      "carrot",
+      "camel",
+      "corn",
+      "key",
+      "coat"
+    ],
+    "r": [
+      "rabbit",
+      "robin",
+      "rock",
+      "raincoat"
+    ],
+    "d": [
+      "dog",
+      "duck",
+      "deer"
+    ]
+  },
+  "sfx": {
+    "cow": {
+      "art": "cow",
+      "kind": "animal",
+      "label": "cow mooing"
+    },
+    "sheep": {
+      "art": "sheep",
+      "kind": "animal",
+      "label": "sheep bleating"
+    },
+    "cat": {
+      "art": "cat",
+      "kind": "animal",
+      "label": "cat meowing"
+    },
+    "dog": {
+      "art": "dog",
+      "kind": "animal",
+      "label": "dog barking"
+    },
+    "duck": {
+      "art": "duck",
+      "kind": "animal",
+      "label": "duck quacking"
+    },
+    "owl": {
+      "art": "owl",
+      "kind": "animal",
+      "label": "owl hooting"
+    },
+    "frog": {
+      "art": "frog",
+      "kind": "animal",
+      "label": "frog croaking"
+    },
+    "bee": {
+      "art": "bee",
+      "kind": "animal",
+      "label": "bee buzzing"
+    },
+    "bird": {
+      "art": "robin",
+      "kind": "animal",
+      "label": "bird chirping"
+    },
+    "pig": {
+      "art": "pig",
+      "kind": "animal",
+      "label": "pig oinking"
+    },
+    "hen": {
+      "art": "hen",
+      "kind": "animal",
+      "label": "hen clucking"
+    },
+    "snake": {
+      "art": "snake",
+      "kind": "animal",
+      "label": "snake hissing"
+    },
+    "mouse": {
+      "art": "mouse",
+      "kind": "animal",
+      "label": "mouse squeaking"
+    },
+    "whale": {
+      "art": "whale",
+      "kind": "animal",
+      "label": "whale singing"
+    },
+    "rain": {
+      "art": "rain",
+      "kind": "world",
+      "label": "rain falling"
+    },
+    "thunder": {
+      "art": "storm",
+      "kind": "world",
+      "label": "thunder rumbling"
+    },
+    "waves": {
+      "art": "hab-ocean",
+      "kind": "world",
+      "label": "ocean waves"
+    },
+    "wind": {
+      "art": "windy",
+      "kind": "world",
+      "label": "wind blowing"
+    },
+    "clock": {
+      "art": "clock",
+      "kind": "world",
+      "label": "clock ticking"
+    },
+    "tap": {
+      "art": "rinse",
+      "kind": "world",
+      "label": "water running from a tap"
+    }
+  }
+}

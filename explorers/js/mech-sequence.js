@@ -27,6 +27,10 @@
         <div class="seq-foot"><button type="button" class="btn ghost clear">${icon("undo")}Clear</button><button type="button" class="btn primary check" disabled>${icon("check")}Check order</button></div>
       </div>`);
     stage.appendChild(node);
+    // Easy: three big picture cards, a "Show me" demo with a different example, names spoken on tap
+    const demo = p.demo && root.SE_Demo ? root.SE_Demo.sequence(api, p.demo) : null;
+    if (demo) node.insertBefore(demo.el, node.firstChild);
+    if (p.easy) node.classList.add("easy3");
     const slotBox = node.querySelector(".slots"), pool = node.querySelector(".pool"), statusEl = node.querySelector(".seq-status");
     const checkBtn = node.querySelector(".check");
     const tileOf = (id) => p.tiles.find(t => t.id === id);
@@ -67,6 +71,7 @@
       const i = slots.findIndex(s => !s);
       if (i < 0) { statusEl.textContent = "All places are full. Tap a placed card to take it back."; return; }
       slots[i] = id; api.sfx("tap");
+      if (p.easy) { const t = tileOf(id); if (t) api.speak(t.label); }
       statusEl.textContent = "";
       render();
       const next = pool.querySelector(".tile"); if (next && document.activeElement === document.body) next.focus();
@@ -137,7 +142,8 @@
         }
         return false;
       },
-      destroy() { done = true; }
+      destroy() { done = true; if (demo) demo.cancel(); },
+      debug: () => ({ slots: slots.slice(), locked: locked.slice(), done, demoPlaying: !!(demo && demo.isPlaying()) })
     };
   };
 })(typeof self !== "undefined" ? self : this);

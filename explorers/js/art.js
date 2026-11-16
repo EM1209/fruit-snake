@@ -470,5 +470,8 @@
       (o.accessory && o.accessory !== "none" ? accessorySvg(o.accessory, 0, o.accessory === "bowtie" || o.accessory === "scarf" ? -6 : -2, 0.7) : "") + `</g></svg>`;
   }
 
-  return { item, shapeSvg, svg, cells, codeGrid, mascot, head, has, names: () => Object.keys(A), SHAPE_COLORS, INK };
+  // Playful Worlds adds illustrations in the same style (src/art-extra.ts). Raw access to existing ones lets new art reuse them.
+  function register(name, fn) { A[name] = fn; }
+  const raw = (name) => (A[name] ? A[name]() : "");
+  return { item, shapeSvg, svg, cells, codeGrid, mascot, head, has, register, raw, names: () => Object.keys(A), SHAPE_COLORS, INK };
 });

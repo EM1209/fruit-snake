@@ -3,12 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Snake Explorers</title>
+<title>Snake Explorers — Playful Worlds</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
-<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div id="app">
@@ -19,14 +15,16 @@
 
   <!-- HOME -->
   <section class="screen home" id="scr-home" aria-labelledby="homeTitle">
+    <div class="scene-band home-scene" id="homeScene" aria-hidden="true"></div>
     <div class="home-hero">
       <div class="home-mascot" id="homeMascot"></div>
-      <h1 id="homeTitle" tabindex="-1" data-focus>Snake Explorers</h1>
-      <p class="home-invite">What will you discover?</p>
+      <h1 id="homeTitle" tabindex="-1" data-focus>Snake Explorers <span class="title-sub">Playful Worlds</span></h1>
+      <p class="home-invite">Six worlds to explore. What will you discover?</p>
       <div class="home-actions">
         <button type="button" class="btn primary big" id="exploreBtn">Let’s explore</button>
         <button type="button" class="btn ghost" id="continueBtn" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg><span>Continue</span></button>
       </div>
+      <p class="continue-note" id="continueNote"></p>
       <p class="home-stats" id="homeStats" aria-live="polite"></p>
     </div>
     <nav class="home-links" aria-label="More">
@@ -43,30 +41,33 @@
       <button type="button" class="icon-btn" data-go="home" aria-label="Home"><span data-icon="home"></span><span class="ib-lab">Home</span></button>
       <h1 id="worldsTitle" tabindex="-1" data-focus>Choose a world</h1>
     </header>
-    <div class="world-grid" id="worldGrid"></div>
+    <div class="map">
+      <div class="scene-band map-scene" id="mapScene" aria-hidden="true"></div>
+      <ol class="world-grid world-map" id="worldGrid" aria-label="Worlds along the trail"></ol>
+    </div>
   </section>
 
   <!-- ONE WORLD: mode + activities -->
   <section class="screen world" id="scr-world" hidden aria-labelledby="worldTitle">
+    <div class="scene-band world-scene" id="worldScene" aria-hidden="true"></div>
     <header class="topbar">
       <button type="button" class="icon-btn" data-go="worlds" aria-label="Back to worlds"><span data-icon="back"></span><span class="ib-lab">Worlds</span></button>
       <div class="world-head"><span class="wh-art" id="worldArt"></span><div><h1 id="worldTitle" tabindex="-1" data-focus></h1><p id="worldSkill" class="sub"></p></div></div>
     </header>
-    <fieldset class="mode-picker" id="modePicker">
+    <fieldset class="mode-picker diff-picker" id="modePicker">
       <legend>How would you like to play?</legend>
-      <div class="seg">
-        <label><input type="radio" name="mode" value="explore"><span>Explore</span></label>
-        <label><input type="radio" name="mode" value="practice"><span>Practice</span></label>
-        <label><input type="radio" name="mode" value="challenge"><span>Challenge</span></label>
+      <div class="seg diff">
+        <label><input type="radio" name="mode" value="easy"><span><span class="d-ico" data-icon="sprout" aria-hidden="true"></span>Easy</span></label>
+        <label><input type="radio" name="mode" value="more"><span><span class="d-ico" data-icon="peak" aria-hidden="true"></span>More challenge</span></label>
       </div>
       <p class="mode-line" id="modeLine" aria-live="polite"></p>
-      <label class="check-row" id="stopwatchRow" hidden><input type="checkbox" id="stopwatchToggle"> <span>Add a stopwatch (optional — just for fun, no time limit)</span></label>
     </fieldset>
     <div class="activity-list" id="activityList"></div>
   </section>
 
   <!-- ACTIVITY -->
   <section class="screen play" id="scr-play" hidden aria-labelledby="playTitle">
+    <div class="scene-band play-scene" id="playScene" aria-hidden="true"></div>
     <header class="playbar">
       <button type="button" class="icon-btn" id="leaveBtn" aria-label="Leave activity"><span data-icon="home"></span><span class="ib-lab">Leave</span></button>
       <div class="pb-title">
@@ -77,6 +78,7 @@
       <span class="stopwatch" id="stopwatch" hidden><span>0:00</span></span>
       <div class="pb-tools">
         <button type="button" class="icon-btn" id="replayBtn" aria-label="Hear the instructions again"><span data-icon="speaker"></span><span class="ib-lab">Repeat</span></button>
+        <button type="button" class="icon-btn" id="muteBtn" aria-pressed="false" aria-label="Mute voice and sound effects"><span data-icon="sound"></span><span class="ib-lab">Sound on</span></button>
         <button type="button" class="icon-btn" id="helpBtn" aria-label="Get a hint"><span data-icon="help"></span><span class="ib-lab">Hint</span></button>
         <button type="button" class="icon-btn" id="pauseBtn" aria-label="Pause"><span data-icon="pause"></span><span class="ib-lab">Pause</span></button>
       </div>
@@ -97,13 +99,6 @@
         <h2 id="pauseTitle">Paused</h2>
         <p>Take your time. Nothing moves until you come back.</p>
         <button type="button" class="btn primary big" id="resumeBtn"><span data-icon="play"></span>Keep going</button>
-        <fieldset class="speed-pick" id="pauseSpeed">
-          <legend>Snake movement</legend>
-          <label><input type="radio" name="pspeed" value="step"><span>One step per press</span></label>
-          <label><input type="radio" name="pspeed" value="relaxed"><span>Relaxed</span></label>
-          <label><input type="radio" name="pspeed" value="steady"><span>Steady</span></label>
-          <label><input type="radio" name="pspeed" value="lively"><span>Lively</span></label>
-        </fieldset>
         <div class="row">
           <button type="button" class="btn ghost" id="restartBtn"><span data-icon="refresh"></span>Start this round again</button>
           <button type="button" class="btn ghost" id="pauseLeaveBtn"><span data-icon="home"></span>Leave activity</button>
@@ -180,15 +175,15 @@
         <div><h2 id="soundLab">Sound effects</h2><p class="sub">Little chimes for taps and answers. Every sound also has something you can see.</p></div>
         <button type="button" class="switch" role="switch" id="setSound" aria-labelledby="soundLab"><span class="knob"></span><span class="sw-on">On</span><span class="sw-off">Off</span></button>
       </div>
-      <fieldset class="set-row col"><legend><h2>Snake movement</h2></legend>
-        <p class="sub">Separate from how hard the questions are. Choose what feels comfortable.</p>
-        <div class="seg wrap">
-          <label><input type="radio" name="speed" value="step"><span>One step per press</span></label>
-          <label><input type="radio" name="speed" value="relaxed"><span>Relaxed</span></label>
-          <label><input type="radio" name="speed" value="steady"><span>Steady</span></label>
-          <label><input type="radio" name="speed" value="lively"><span>Lively</span></label>
-        </div>
-      </fieldset>
+      <div class="set-row">
+        <div><h2 id="capLab">Word labels under pictures</h2><p class="sub">Optional. Every game can be played from pictures and sound alone.</p></div>
+        <button type="button" class="switch" role="switch" id="setCaptions" aria-labelledby="capLab"><span class="knob"></span><span class="sw-on">On</span><span class="sw-off">Off</span></button>
+      </div>
+      <div class="set-row col">
+        <h2>Snake movement</h2>
+        <p class="sub">In every learning game the snake moves one square each time you press — it never moves on its own while you think. Code routes move only after you press Run. Classic Snake keeps its own original controls.</p>
+        <p class="sub" id="audioStatus"></p>
+      </div>
       <fieldset class="set-row col"><legend><h2>Motion</h2></legend>
         <div class="seg wrap">
           <label><input type="radio" name="motion" value="system"><span>Match my device</span></label>
@@ -226,22 +221,6 @@
   </section>
 </div>
 
-<script src="js/logic.js"></script>
-<script src="js/deck.js"></script>
-<script src="js/bank.js"></script>
-<script src="js/levels.js"></script>
-<script src="js/content.js"></script>
-<script src="js/art.js"></script>
-<script src="js/store.js"></script>
-<script src="js/audio.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/mech-collect.js"></script>
-<script src="js/mech-choose.js"></script>
-<script src="js/mech-sort.js"></script>
-<script src="js/mech-sequence.js"></script>
-<script src="js/mech-plan.js"></script>
-<script src="js/mech-explore.js"></script>
-<script src="js/icons-static.js"></script>
-<script src="js/app.js"></script>
+<script type="module" src="/src/main.ts"></script>
 </body>
 </html>

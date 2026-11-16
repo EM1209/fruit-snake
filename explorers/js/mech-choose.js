@@ -26,6 +26,7 @@
       const prog = v.program && v.program.length ? `<ol class="code-line" aria-label="The code: ${v.program.map(d => names[d]).join(", ")}">` + v.program.map((d, i) => `<li><span class="code-chip">${icon(d)}<span class="n">${i + 1}</span></span></li>`).join("") + `</ol>` : "";
       return `<div class="vis vis-grid">${Art.codeGrid(v, "Code board. The snake is at column " + (v.level.start.x + 1) + ", row " + (v.level.start.y + 1) + "." + (v.marks && v.marks.length ? " Lettered squares: " + v.marks.map(m => m.letter + " at column " + (m.x + 1) + ", row " + (m.y + 1)).join("; ") + "." : "") + (v.level.rocks.length ? " Rocks at " + v.level.rocks.map(r => "column " + (r[0] + 1) + " row " + (r[1] + 1)).join("; ") + "." : ""))}${prog}</div>`;
     }
+    if (v.kind === "chain") return `<div class="vis vis-chain" role="img" aria-label="Food chain: ${v.items.map(t => esc(t.label)).join(", is eaten by ")}">` + v.items.map((t, i) => (i ? `<span class="chain-arrow" aria-hidden="true">${icon("right")}</span>` : "") + `<span class="chain-item">${Art.item(t.art, "art")}<span class="lab">${esc(t.label)}</span></span>`).join("") + `</div>`;
     if (v.kind === "numberline") return `<div class="vis vis-line">` + v.items.map(t => `<span class="nbox${t === "?" ? " blank" : ""}">${esc(t)}</span>`).join("") + `</div>`;
     if (v.kind === "equation") return `<div class="vis vis-eq">${esc(v.text)}</div>`;
     if (v.kind === "pattern") return `<div class="vis vis-pattern" role="list" aria-label="Pattern">` + v.seq.map((s, i) =>

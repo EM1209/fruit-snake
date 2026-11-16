@@ -11,10 +11,13 @@ const I = C._internals;
 const SEEDS = Array.from({ length: 60 }, (_, i) => i * 104729 + 17);
 function prompts(aid, mode) { return SEEDS.flatMap(s => C.buildRound(aid, mode, s)); }
 
-test("19 activities: every world gained at least one new activity", () => {
-  assert.equal(C.ACTIVITIES.length, 19);
-  for (const w of C.WORLDS) assert.ok(C.ACTIVITIES.some(a => a.world === w.id && a.isNew), w.id);
+test("Playful Worlds: 17 activities live here (Letter Line and Sentence Builder retired; 6 more are added from src/ — 23 in all)", () => {
+  assert.equal(C.ACTIVITIES.length, 17);
+  assert.ok(!C.ACTIVITY["letter-line"] && !C.ACTIVITY["sentence-builder"], "retired activities are not offered");
+  assert.deepEqual(Object.keys(C.RETIRED).sort(), ["letter-line", "sentence-builder"]);
   for (const a of C.ACTIVITIES) for (const m of L.MODES) assert.ok(a.modes[m], a.id + " " + m);
+  // retired rounds still build, so an old save that points at them can never crash
+  for (const id of Object.keys(C.RETIRED)) assert.ok(C.buildRound(id, "explore", 1, null).length > 0);
 });
 
 test("sentences: capital first, full stop last, alternates accepted, the spare word can't fit", () => {
@@ -41,6 +44,15 @@ test("sentences: capital first, full stop last, alternates accepted, the spare w
 
 test("Bug Hunt: predicted squares, bump steps, and buggy programs all match a real simulation", () => {
   for (const mode of L.MODES) for (const p of prompts("bug-hunt", mode)) {
+    if (p.mechanic === "predict") {
+      // Easy: tap the square — the answer is where a real simulation of the arrows ends
+      const sim = I.walk(Object.assign({ rocks: [] }, p.level), p.level.start, p.program);
+      assert.equal(sim.bump, -1); assert.deepEqual(sim.pos, p.answer);
+      assert.ok(p.program.length >= 2 && p.program.length <= 3 && p.level.w === 3, "2–3 arrows on a small board");
+      assert.ok(p.demo && p.demo.program.length === p.program.length, "a demo of a similar example");
+      assert.notEqual(JSON.stringify(p.demo.level.start) + p.demo.program.join(), JSON.stringify(p.level.start) + p.program.join(), "the demo is a different example");
+      continue;
+    }
     if (p.mechanic === "plan") {
       assert.ok(p.startProgram && p.startProgram.length <= p.level.maxMoves, "fix: program fits");
       assert.notEqual(L.runProgram(p.level, p.startProgram).result, "success", "fix: the given code really is buggy");
@@ -136,8 +148,16 @@ test("food chains go plant → plant-eater → predator, and living/non-living s
     assert.equal(c.links.length, c.labels.length);
   }
   for (const mode of L.MODES) for (const p of prompts("food-chains", mode)) {
-    if (p.mechanic === "sort") p.items.forEach(it => assert.deepEqual(it.bins, [B.LIVING.find(x => x.id === it.id).living ? "living" : "not"]));
-    if (p.mechanic === "sequence") assert.equal(p.cyclic, undefined, "chains are not cycles");
+    // Playful Worlds: picture sorting and questions only — no ordering prompts at all
+    assert.notEqual(p.mechanic, "sequence", "no food-chain ordering");
+    assert.ok(!/order/i.test(p.instruction), "no ordering instructions: " + p.instruction);
+    if (p.mechanic === "sort" && p.bins[0].id === "living") p.items.forEach(it => assert.deepEqual(it.bins, [B.LIVING.find(x => x.id === it.id).living ? "living" : "not"]));
+    if (p.mechanic === "sort" && p.bins[0].id === "plants") p.items.forEach(it => assert.deepEqual(it.bins, [C.DIET.plants.includes(it.id) ? "plants" : "hunts"]));
+    if (p.visual && p.visual.kind === "chain") {
+      const ch = B.CHAINS.find(c => c.links.join() === p.visual.items.map(x => x.art).join());
+      const eaterIdx = ch.labels.findIndex(l => p.instruction.includes("the " + l + " eat"));
+      assert.equal(p.rule.valid[0], ch.links[eaterIdx - 1], "the answer is the link just before the eater");
+    }
   }
   for (const q of B.NATURE_QUESTIONS) {
     assert.ok(q.m && q.m.length, q.id + " has modes");
