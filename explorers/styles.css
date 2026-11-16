@@ -550,3 +550,8 @@ fieldset.set-row > * + * { margin-top: 8px; }
   .bin { min-height: 112px; padding: 8px 6px; }
   .bin-head .art { width: 44px; height: 44px; }
 }
+/* Discovery Book tabs: name on top, count underneath, so long world names never collide */
+.book-tab { display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 8px; align-items: center; }
+.book-tab .bt-art { grid-row: 1 / span 2; }
+.book-tab .bt-name { overflow-wrap: anywhere; }
+.book-tab .bt-count { grid-column: 2; }

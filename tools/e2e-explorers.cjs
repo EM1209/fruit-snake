@@ -94,10 +94,13 @@ const KEY = { up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "Arrow
 async function steerTo(page, pred, blockPred) {
   for (let guard = 0; guard < 6; guard++) {
     const m = await mech(page);
-    const goal = m.items.find(pred);
-    if (!goal) return false;
-    const blocked = new Set(m.items.filter(i => i !== goal && blockPred(i)).map(i => i.x + "," + i.y));
-    const route = bfs(m.N, m.snake[0], m.dir, goal, blocked);
+    // try each matching item until one has a clear route (another berry can box one in)
+    let goal = null, route = null;
+    for (const g of m.items.filter(pred)) {
+      const blocked = new Set(m.items.filter(i => i !== g && blockPred(i)).map(i => i.x + "," + i.y));
+      const r = bfs(m.N, m.snake[0], m.dir, g, blocked);
+      if (r && (!route || r.length < route.length)) { goal = g; route = r; }
+    }
     if (!route) return false;
     for (const d of route) await page.keyboard.press(KEY[d]);
     const after = await mech(page);
@@ -179,13 +182,19 @@ async function solveSequence(page, p, tryWrong) {
     if (k === "right") return waitNext(page);
     await page.click(".sequence .clear");
   }
+  // aim for the accepted order (any listed answer, any rotation for cycles) that agrees with cards already locked in
+  const lockedVals = await page.$$eval(".slots .slot", (els) => els.map(e => (/locked|given/.test(e.className) ? (e.querySelector(".slot-btn").getAttribute("aria-label") || "") : null)));
+  const rotationsOf = (a) => a.map((_, k) => a.slice(k).concat(a.slice(0, k)));
+  const candidates = p.answers.flatMap(a => (p.cyclic ? rotationsOf(a) : [a]));
+  const labelOf = (v) => (p.tiles.find(t => t.value === v) || {}).label;
+  const target = candidates.find(c => lockedVals.every((l, i) => !l || l.includes(": " + labelOf(c[i]) + " ("))) || p.answers[0];
   // place the remaining correct values in order, skipping locked slots
   for (let i = 0; i < p.slots; i++) {
     const slot = page.locator(".slots .slot").nth(i);
     const cls = await slot.getAttribute("class");
     if (/locked|given/.test(cls)) continue;
     if (/filled/.test(cls)) { await slot.locator(".slot-btn").click(); }
-    const want = p.answers[0][i];
+    const want = target[i];
     const tiles = await page.$$eval(".pool .tile", (ts) => ts.map(t => t.dataset.id));
     const t = tiles.find(id => p.tiles.find(x => x.id === id).value === want);
     await page.click(`.pool .tile[data-id="${t}"]`);
