@@ -379,9 +379,10 @@ html[data-text="large"] .playbar .ib-lab { font-size: .7rem; }
 /* phones/tablets in portrait: the rescue board takes the full width (big squares),
    with the mission and the arrow pad side by side underneath */
 @media (max-aspect-ratio: 5/4) {
-  .rescue { grid-template-rows: auto auto; }
-  .rescue .board-box { container-type: normal; display: block; }
-  .rescue-board { width: min(100%, 560px); margin: 0 auto; }
+  /* plain document flow: the board takes its own height, the mission and pad follow it, the stage scrolls */
+  .rescue { display: flex; flex-direction: column; flex: 0 0 auto; min-height: auto; }
+  .rescue .board-box { container-type: normal; display: block; flex: none; min-height: auto; height: auto; }
+  .rescue-board { width: min(100%, 560px, calc((100dvh - 400px) * var(--w) / var(--h))); min-width: min(100%, 300px); margin: 0 auto; height: auto; }
   .rescue .side { flex-wrap: nowrap; align-items: stretch; }
   .rescue .mission-card { flex: 1 1 0; min-width: 0; padding: 8px 10px; }
 }

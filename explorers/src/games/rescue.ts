@@ -245,8 +245,27 @@ export function mountRescue(stage: HTMLElement, api: Api): Mech {
     const rows = m.rescues.map((r, i) => `<li class="${s.delivered.includes(i) ? "ok" : s.carrying.includes(i) ? "on" : ""}">
       <span class="mc-pic">${api.Art.item(r.art, "art")}</span><span class="mc-arrow">${icon("right")}</span><span class="mc-pic">${api.Art.item(HOMES[r.home].art, "art")}</span>
       <span class="mc-text">${s.delivered.includes(i) ? "Home safe!" : s.carrying.includes(i) ? "Following you — now find the " + esc(HOMES[r.home].label) : "Find the " + esc(ANIMAL_HOME[r.animal].label)}</span></li>`).join("");
+    labelCells();
     card.innerHTML = `<h2 class="mc-title">Mission</h2><ul class="mc-list">${rows}</ul>` + (m.key ? `<p class="mc-key${s.hasKey ? " ok" : ""}">${api.Art.item("key", "art")}<span>${s.hasKey ? (s.gateOpen ? "Gate open" : "You have the key") : "The gate needs the key"}</span></p>` : "");
   }
+  /** Every square says what is on it now (for keyboard and screen-reader players). */
+  function cellLabel(x: number, y: number): string {
+    const q = { x, y }; const parts: string[] = [];
+    if (same(s.pos, q)) parts.push("the snake (you)" + (s.carrying.length ? ", with the " + s.carrying.map(i => ANIMAL_HOME[m.rescues[i].animal].label).join(" and the ") + " following" : ""));
+    m.rescues.forEach((r, i) => { if (!s.carrying.includes(i) && !s.delivered.includes(i) && same(r.at, q)) parts.push("the lost " + ANIMAL_HOME[r.animal].label); });
+    m.homes.forEach(h => {
+      if (!same(h.at, q)) return;
+      const safe = m.rescues.filter((r, i) => s.delivered.includes(i) && r.home === h.id).map(r => ANIMAL_HOME[r.animal].label);
+      parts.push("the " + h.label + (safe.length ? ", with the " + safe.join(" and the ") + " safe at home" : ""));
+    });
+    if (m.key && same(m.key, q) && !s.hasKey) parts.push("the key");
+    if (m.gates.some(g => same(g, q))) parts.push(s.gateOpen ? "an open gate" : "a locked gate");
+    if (m.rocks.some(r => same(r, q))) parts.push("a rock");
+    const ground = m.water.some(c => same(c, q)) ? "River" : m.bridges.some(c => same(c, q)) ? "Bridge" : "Grass";
+    const where = "column " + (x + 1) + ", row " + (y + 1);
+    return (parts.length ? cap(parts.join(", ")) + (ground !== "Grass" ? " on the " + ground.toLowerCase() : "") : ground) + ", " + where;
+  }
+  function labelCells() { cellEls.forEach((c, i) => c.setAttribute("aria-label", cellLabel(i % m.w, Math.floor(i / m.w)))); }
   function clearGlow() { glow.splice(0).forEach(g => g.classList.remove("glow")); }
   function move(dir: string) {
     if (done || paused) return;
@@ -299,6 +318,6 @@ export function mountRescue(stage: HTMLElement, api: Api): Mech {
     },
     pause() { paused = true; }, resume() { paused = false; },
     destroy() { done = true; },
-    debug: () => ({ state: s, mission: m, done, solution: solve(m, s) })
+    debug: () => ({ state: s, mission: m, done, solution: solve(m, s), label: (x: number, y: number) => cellLabel(x, y) })
   };
 }

@@ -335,3 +335,51 @@ test("the exported Artifact fragment boots inside a host skeleton under the CSP"
   expect(await page.title()).toBe("Snake Explorers — Playful Worlds");
   expect(errors).toEqual([]);
 });
+
+test("Snake Rescue layout: board, mission and every arrow never overlap at in-between sizes (regression)", async ({ page }) => {
+  await open(page);
+  const sizes: [number, number][] = [[904, 782], [904, 826], [1000, 820], [760, 900], [600, 900], [1100, 1000], [1024, 768], [700, 600], [1366, 700], [480, 860]];
+  for (const [w, h] of sizes) for (const mode of ["explore", "challenge"]) {
+    await page.setViewportSize({ width: w, height: h });
+    await SE(page).start("snake-rescue", mode);
+    await page.waitForTimeout(100);
+    const boxes = await page.evaluate(() => {
+      const r = (e: Element) => { const b = e.getBoundingClientRect(); return { l: b.left, t: b.top, r: b.right, b: b.bottom }; };
+      return { board: r(document.querySelector(".rescue-board")!), boxEl: r(document.querySelector(".rescue .board-box")!),
+        others: [".mission-card", ".dpad .dir.up", ".dpad .dir.down", ".dpad .dir.left", ".dpad .dir.right"].map(s => ({ s, ...r(document.querySelector(s)!) })) };
+    });
+    const hit = (a: any, b: any) => a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1;
+    for (const o of boxes.others) expect(hit(boxes.board, o), `${w}x${h} ${mode}: board overlaps ${o.s}`).toBe(false);
+    expect(boxes.board.b, `${w}x${h} ${mode}: board stays inside its box`).toBeLessThanOrEqual(boxes.boxEl.b + 1);
+    for (const d of ["up", "down", "left", "right"]) {
+      const btn = page.locator(`.dpad .dir.${d}`);
+      await btn.scrollIntoViewIfNeeded();
+      const topmost = await btn.evaluate((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!e && b.contains(e); });
+      expect(topmost, `${w}x${h} ${mode}: the ${d} arrow can be pressed`).toBe(true);
+    }
+  }
+});
+
+test("Snake Rescue squares say what is on them, and update as the mission changes (regression)", async ({ page }) => {
+  await open(page);
+  await SE(page).start("snake-rescue", "explore");
+  const m = (await SE(page).mech()).mission;
+  const label = (x: number, y: number) => page.locator(`.rcell[data-x="${x}"][data-y="${y}"]`).getAttribute("aria-label");
+  const r = m.rescues[0], h = m.homes[0];
+  expect(await label(m.start.x, m.start.y)).toMatch(/^The snake \(you\)/);
+  expect(await label(r.at.x, r.at.y)).toMatch(/lost/);
+  expect(await label(h.at.x, h.at.y)).toContain(h.label);
+  // at least one plain grass square still reads as grass, with its position
+  const all = await page.locator(".rcell").evaluateAll(els => els.map(e => e.getAttribute("aria-label")!));
+  expect(all.some(a => /^Grass, column \d+, row \d+$/.test(a))).toBe(true);
+  expect(all.filter(a => /snake/i.test(a)).length).toBe(1);
+  // walk the solution: labels follow the snake, the follower and the delivery
+  const keys: Record<string, string> = { up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight" };
+  for (const d of (await SE(page).mech()).solution) {
+    await page.keyboard.press(keys[d]);
+    const st = (await SE(page).mech()).state;
+    expect(await label(st.pos.x, st.pos.y)).toMatch(/^The snake \(you\)/);
+    if (st.carrying.length) expect(await label(st.pos.x, st.pos.y)).toContain("following");
+  }
+  expect(await label(h.at.x, h.at.y)).toContain("safe at home");
+});
