@@ -10,16 +10,16 @@
 
   root.SE_Mech.sequence = function mount(stage, api) {
     const p = api.prompt, Art = api.Art, L = api.L;
-    const letters = p.kind === "letters";
+    const letters = p.kind === "letters", words = p.kind === "words";
     const lockOnCheck = api.mode !== "challenge";
     const slots = new Array(p.slots).fill(null);   // tile ids
     const locked = new Array(p.slots).fill(false);
     let done = false;
 
     const pic = p.picture ? `<div class="seq-picture">${Art.item(p.picture, "art", api.mode === "challenge" ? "Picture to spell" : p.word)}
-      ${p.sayWord ? `<button type="button" class="btn small ghost hear">${icon("speaker")}Hear the word</button>` : ""}</div>` : "";
+      ${p.sayWord ? `<button type="button" class="btn small ghost hear">${icon("speaker")}${words ? "Hear the sentence" : "Hear the word"}</button>` : ""}</div>` : "";
     const node = el(`
-      <div class="sequence ${letters ? "letters" : "steps"}">
+      <div class="sequence ${letters ? "letters" : words ? "words" : "steps"}">
         ${pic}
         <ol class="slots n${p.slots}" aria-label="Your order"></ol>
         <p class="seq-status" aria-live="polite"></p>
@@ -39,7 +39,7 @@
       if (t) { slots[i] = t.id; locked[i] = "given"; }
     });
 
-    function tileHtml(t) { return letters ? `<span class="letter">${esc(t.value)}</span>` : content(t, Art, { small: true }); }
+    function tileHtml(t) { return letters ? `<span class="letter">${esc(t.value)}</span>` : words ? `<span class="wordtile">${esc(t.value)}</span>` : content(t, Art, { small: true }); }
     function render() {
       slotBox.innerHTML = "";
       for (let i = 0; i < p.slots; i++) {
@@ -47,7 +47,7 @@
         const guide = p.guide ? p.guide[i] : "";
         const li = el(`<li class="slot${t ? " filled" : ""}${locked[i] ? " locked" : ""}${locked[i] === "given" ? " given" : ""}"></li>`);
         const b = el(`<button type="button" class="slot-btn" aria-label="${t ? "Place " + (i + 1) + ": " + esc(t.label) + (locked[i] ? (locked[i] === "given" ? " (given)" : " (correct)") : ", tap to remove") : "Place " + (i + 1) + ": empty" + (guide ? ", the word shows " + guide : "")}">
-          <span class="slot-no" aria-hidden="true">${i + 1}</span>${t ? tileHtml(t) : guide ? `<span class="letter ghost-letter" aria-hidden="true">${esc(guide)}</span>` : ""}
+          <span class="slot-no" aria-hidden="true">${i + 1}</span>${t ? tileHtml(t) : guide ? `<span class="${words ? "wordtile" : "letter"} ghost-letter" aria-hidden="true">${esc(guide)}</span>` : ""}
           ${locked[i] === true ? `<span class="mark">${badge(true, "")}</span>` : ""}</button>`);
         if (locked[i]) b.disabled = !t ? false : true;
         b.addEventListener("click", () => unplace(i));

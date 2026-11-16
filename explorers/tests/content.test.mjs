@@ -170,9 +170,11 @@ test("collect prompts: targets are on the board, berry counts are reachable", ()
   eachPrompt((p) => {
     if (p.mechanic !== "collect") return;
     if (p.kind === "find") {
-      assert.ok(p.board.includes(p.target));
+      const targets = p.targets || [p.target];
+      assert.ok(targets.length >= 1 && targets.every(t => p.board.includes(t)));
       assert.equal(new Set(p.board).size, p.board.length);
-      p.board.filter(b => b !== p.target).forEach(b => assert.ok(p.wrongHints[b]));
+      p.board.filter(b => !targets.includes(b)).forEach(b => assert.ok(p.wrongHints[b], "wrong hint for " + b));
+      assert.ok(p.board.some(b => !targets.includes(b)), "board needs a wrong choice");
     }
     if (p.kind === "count") { assert.ok(p.berries > p.target && p.target >= 1); }
     if (p.kind === "explore") assert.ok(p.goal > 0 && p.pool.length >= 4);

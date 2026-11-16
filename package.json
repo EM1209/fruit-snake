@@ -15,7 +15,8 @@
     "add:ios": "npx cap add ios",
     "open:android": "npx cap open android",
     "open:ios": "npx cap open ios",
-    "icons": "npx --yes @capacitor/assets generate --iconBackgroundColor '#eafce9' --iconBackgroundColorDark '#2a1a44'"
+    "icons": "npx --yes @capacitor/assets generate --iconBackgroundColor '#eafce9' --iconBackgroundColorDark '#2a1a44'",
+    "inventory": "node tools/content-inventory.cjs --write"
   },
   "dependencies": {
     "@capacitor-community/admob": "^6.1.0",

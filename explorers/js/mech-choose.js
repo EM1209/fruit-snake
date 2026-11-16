@@ -11,7 +11,20 @@
     if (v.kind === "dots") {
       return `<div class="vis vis-dots">` + v.groups.map((g, i) =>
         (i ? `<span class="op" aria-hidden="true">${esc(v.op || "")}</span>` : "") +
-        `<span class="dot-group" role="img" aria-label="${g.n} ${g.n === 1 ? "berry" : "berries"}">${Array.from({ length: g.n }, () => Art.item(g.art, "dot")).join("")}</span>`).join("") + `</div>`;
+        (g.blank ? `<span class="dot-group blank" role="img" aria-label="next step: how many?">?</span>`
+          : `<span class="dot-group${g.n > 12 ? " many" : ""}" role="img" aria-label="${g.n} ${g.art === "berry" ? (g.n === 1 ? "berry" : "berries") : g.art === "mittens" ? (g.n === 1 ? "sock" : "socks") : (g.n === 1 ? "dot" : "dots")}">${Array.from({ length: g.n }, () => Art.item(g.art, "dot")).join("")}</span>`)).join("") + `</div>`;
+    }
+    if (v.kind === "rows") {
+      return `<div class="vis"><span class="dot-rows" role="img" aria-label="${v.rows} rows of ${v.cols}" style="--cols:${v.cols}">${Array.from({ length: v.rows * v.cols }, () => Art.item(v.art, "dot")).join("")}</span></div>`;
+    }
+    if (v.kind === "cells") {
+      const lab = v.blankHalf ? "Half picture. The other half of the dotted line is empty." : "A shape made of colored squares";
+      return `<div class="vis vis-cells">${Art.cells({ grid: v.grid, axis: v.axis, blankHalf: v.blankHalf }, "cells-big", lab)}</div>`;
+    }
+    if (v.kind === "grid") {
+      const names = { up: "up", down: "down", left: "left", right: "right" };
+      const prog = v.program && v.program.length ? `<ol class="code-line" aria-label="The code: ${v.program.map(d => names[d]).join(", ")}">` + v.program.map((d, i) => `<li><span class="code-chip">${icon(d)}<span class="n">${i + 1}</span></span></li>`).join("") + `</ol>` : "";
+      return `<div class="vis vis-grid">${Art.codeGrid(v, "Code board. The snake is at column " + (v.level.start.x + 1) + ", row " + (v.level.start.y + 1) + "." + (v.marks && v.marks.length ? " Lettered squares: " + v.marks.map(m => m.letter + " at column " + (m.x + 1) + ", row " + (m.y + 1)).join("; ") + "." : "") + (v.level.rocks.length ? " Rocks at " + v.level.rocks.map(r => "column " + (r[0] + 1) + " row " + (r[1] + 1)).join("; ") + "." : ""))}${prog}</div>`;
     }
     if (v.kind === "numberline") return `<div class="vis vis-line">` + v.items.map(t => `<span class="nbox${t === "?" ? " blank" : ""}">${esc(t)}</span>`).join("") + `</div>`;
     if (v.kind === "equation") return `<div class="vis vis-eq">${esc(v.text)}</div>`;
@@ -27,7 +40,7 @@
     const need = L.choiceNeed(p.rule);
     let extra = "";
     if (p.story) extra = `<div class="story">${Art.item(p.story.who, "art")}<p>${esc(p.story.text)}</p></div>`;
-    else if (p.checklist) extra = `<div class="story checklist">${Art.item(p.scene, "art")}<div><b>Picnic list</b><ul>${p.checklist.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div></div>`;
+    else if (p.checklist) extra = `<div class="story checklist">${Art.item(p.scene, "art")}<div><b>${esc(p.checklistTitle || "Picnic list")}</b><ul>${p.checklist.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div></div>`;
     else if (p.scene) extra = `<div class="story">${Art.item(p.scene, "art")}<p>${esc(p.instruction.split(". ")[0])}.</p></div>`;
     const wide = p.wide || p.options.some(o => o.text && String(o.text).length > 14) || p.options.some(o => o.dots);
     const node = el(`

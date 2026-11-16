@@ -5,7 +5,7 @@
  */
 (function () {
   "use strict";
-  const L = window.SE_Logic, C = window.SE_Content, Art = window.SE_Art, Store = window.SE_Store, Audio = window.SE_Audio;
+  const L = window.SE_Logic, C = window.SE_Content, Art = window.SE_Art, Store = window.SE_Store, Audio = window.SE_Audio, Deck = window.SE_Deck;
   const { esc, el, icon, badge } = window.SE_UI;
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
@@ -81,7 +81,7 @@
       const b = el(`<button type="button" class="world-card" style="--tint:${w.tint}" data-world="${w.id}">
         <span class="wc-art">${Art.item(w.art, "art")}</span>
         <span class="wc-text"><span class="wc-name">${esc(w.name)}</span><span class="wc-skill">${esc(w.skill)}</span>
-        <span class="wc-example">${esc(w.example)}</span><span class="wc-count">${n} ${n === 1 ? "activity" : "activities"}</span></span></button>`);
+        <span class="wc-example">${esc(w.example)}</span><span class="wc-count">${n} ${n === 1 ? "activity" : "activities"}${C.ACTIVITIES.some(x => x.world === w.id && x.isNew && !D.played[x.id]) ? ` <span class="new-chip">New activity</span>` : ""}</span></span></button>`);
       b.addEventListener("click", () => openWorld(w.id));
       grid.appendChild(b);
     });
@@ -105,7 +105,7 @@
     C.ACTIVITIES.filter(a => a.world === w.id).forEach(a => {
       const card = el(`<article class="act-card">
         <div class="ac-art">${Art.item(a.art, "art")}</div>
-        <div class="ac-body"><h3>${esc(a.title)}</h3><p class="ac-obj">${esc(a.objective)}</p>
+        <div class="ac-body"><h3>${esc(a.title)}${a.isNew && !D.played[a.id] ? ` <span class="new-chip">New</span>` : ""}</h3><p class="ac-obj">${esc(a.objective)}</p>
           <p class="ac-mode"><span class="mech-tag">${esc(MECH_NAME[a.mechanic])}</span> <span class="ac-mode-line" data-act="${a.id}"></span></p></div>
         <button type="button" class="btn primary play-act" data-act="${a.id}">${icon("play")}Play <span class="sr-only">${esc(a.title)}</span></button></article>`);
       card.querySelector(".play-act").addEventListener("click", () => startRound(a.id, D.settings.mode));
@@ -122,7 +122,8 @@
   // ---------------------------------------------------------------- PLAY: round controller
   function startRound(activityId, mode) {
     const a = C.ACTIVITY[activityId];
-    const prompts = C.buildRound(activityId, mode, (Math.random() * 1e9) | 0);
+    const prompts = C.buildRound(activityId, mode, (Math.random() * 1e9) | 0, D.history);
+    D.played[activityId] = (D.played[activityId] || 0) + 1;
     S.round = { activity: a, mode, prompts, i: 0, results: [], newly: [], practicedIds: [], start: Date.now(), reviewUsed: false,
       stopwatch: mode === "challenge" && $("#stopwatchToggle").checked, beforeUnlocks: unlockState() };
     D.settings.mode = mode;
@@ -166,7 +167,9 @@
     stage.className = "stage mech-" + p.mechanic;
     r.cur = { misses: 0, hints: 0, help: 0, answered: false };
     paintProgress();
-    $("#instr").textContent = (p.review ? "Quick review: " : "") + p.instruction;
+    $("#instr").innerHTML = (p.review ? `<span class="review-chip">${icon("refresh")}Review</span> ` : "") + esc(p.instruction);
+    // record what is actually SHOWN, so the next round can deal fresh material
+    if (p.cids && p.cids.length) { Deck.markShown(D.history, Deck.keyOf(r.activity.id, r.mode), p.cids); save(); }
     const tip = $("#tip");
     tip.hidden = r.mode !== "explore" || p.mechanic === "explore" || p.kind === "explore";
     tip.innerHTML = tip.hidden ? "" : `<b>Tip:</b> ${esc(p.hints[0])}`;
@@ -590,6 +593,7 @@
     prompt: () => S.round && S.round.prompts[S.round.i],
     mech: () => S.mech && S.mech.debug && S.mech.debug(),
     data: () => JSON.parse(JSON.stringify(D)),
+    history: () => JSON.parse(JSON.stringify(D.history)),
     persistent: () => store.isPersistent()
   };
 })();

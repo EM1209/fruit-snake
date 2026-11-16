@@ -9,7 +9,7 @@
 
   root.SE_Mech.plan = function mount(stage, api) {
     const p = api.prompt, Art = api.Art, L = api.L, lv = p.level;
-    let program = [], running = false, done = false, paused = false, timer = null, failAt = -1;
+    let program = (p.startProgram || []).slice(), running = false, done = false, paused = false, timer = null, failAt = -1;
     const node = el(`
       <div class="plan">
         <div class="board-box"><div class="board plan-board" style="--w:${lv.w};--h:${lv.h}" role="img" aria-label="${esc(describe())}"></div></div>

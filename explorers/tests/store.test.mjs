@@ -68,3 +68,31 @@ test("reset clears progress and looks but keeps settings", () => {
   assert.equal(r.look.accessory, "none");
   assert.equal(r.progress.stats.rounds, 0);
 });
+
+test("a first-release save loads unchanged; new fields are additive; loading never rewrites it", () => {
+  const old = { v: 1, settings: { voice: false, sound: true, motion: "reduce", speed: "step", textSize: "large", mode: "challenge" },
+    look: { color: "mint", pattern: "spots", accessory: "hat" },
+    progress: { concepts: { apple: { seen: 2, practiced: 1 } }, stats: { rounds: 3, worlds: { word: 3 }, modes: { challenge: 3 }, sorted: 0, sequences: 2, routes: 0, challengeRounds: 3 }, best: {}, last: { activityId: "letter-line", mode: "challenge" } },
+    seenUnlocks: ["accessory:hat"], futureField: { keep: true } };
+  const raw = JSON.stringify(old);
+  const st = memStorage({ "snakeExplorers.v1": raw, fs_best: "9" });
+  const d = Store.create(st).load();
+  assert.equal(st.getItem("snakeExplorers.v1"), raw, "loading alone writes nothing");
+  assert.deepEqual(d.progress.concepts, old.progress.concepts);
+  assert.equal(d.progress.stats.rounds, 3);
+  assert.deepEqual(d.settings, old.settings);
+  assert.deepEqual(d.look, old.look);
+  assert.deepEqual(d.futureField, { keep: true }, "unknown fields survive");
+  assert.deepEqual(d.history, { v: 1, keys: {} });
+  assert.deepEqual(d.played, {});
+  assert.equal(d.v, 1);
+  assert.equal(st.getItem("fs_best"), "9");
+});
+
+test("corrupt history or played data in a save is cleaned without touching progress", () => {
+  const save = { v: 1, progress: { concepts: { owl: { seen: 1, practiced: 0 } }, stats: { rounds: 1 } }, history: { keys: { "x:practice": { t: "bad", s: { a: "nope", b: 2 } } } }, played: { "kind-choices": 2, junk: "x" } };
+  const d = Store.create(memStorage({ "snakeExplorers.v1": JSON.stringify(save) })).load();
+  assert.deepEqual(d.history.keys["x:practice"].s, { b: 2 });
+  assert.deepEqual(d.played, { "kind-choices": 2 });
+  assert.equal(d.progress.concepts.owl.seen, 1);
+});

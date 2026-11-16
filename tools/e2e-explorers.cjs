@@ -27,7 +27,8 @@ const TRAP = () => {
 };
 const ACTS = [["word", 0, "snack-hunt"], ["word", 1, "letter-line"], ["number", 0, "berry-count"], ["number", 1, "number-questions"],
   ["pattern", 0, "pattern-path"], ["pattern", 1, "shape-sort"], ["nature", 0, "habitat-homes"], ["nature", 1, "life-cycles"], ["nature", 2, "nature-walk"],
-  ["logic", 0, "code-snake"], ["everyday", 0, "step-by-step"], ["everyday", 1, "ready-weather"], ["everyday", 2, "kind-choices"]];
+  ["logic", 0, "code-snake"], ["everyday", 0, "step-by-step"], ["everyday", 1, "ready-weather"], ["everyday", 2, "kind-choices"],
+  ["word", 2, "sentence-builder"], ["number", 2, "fair-shares"], ["pattern", 2, "mirror-match"], ["nature", 3, "food-chains"], ["logic", 1, "bug-hunt"], ["everyday", 3, "tidy-up"]];
 
 async function newPage(browser, opts) {
   const o = opts || {};
@@ -115,11 +116,12 @@ async function solveCollect(page, p, tryWrong) {
     return;
   }
   if (p.kind === "find") {
+    const targets = p.targets || [p.target];
     if (tryWrong) {
-      await steerTo(page, i => i.id !== p.target, i => i.id === p.target);
+      await steerTo(page, i => !targets.includes(i.id), i => targets.includes(i.id));
       ok((await fbKind(page)) === "wrong", "collect: wrong snack gives a 'Not yet' hint and the snake waits");
     }
-    await steerTo(page, i => i.id === p.target, () => true);
+    await steerTo(page, i => targets.includes(i.id), () => true);
     return waitNext(page);
   }
   // count
@@ -229,14 +231,24 @@ async function solveSort(page, p, tryWrong) {
 async function solvePlan(page, p, tryWrong) {
   const lv = p.level;
   if (tryWrong) {
-    const off = lv.start.x === 0 ? "left" : lv.start.y === 0 ? "up" : lv.start.x === lv.w - 1 ? "right" : "down";
+    const D = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    const blocked = (d) => { const nx = lv.start.x + D[d][0], ny = lv.start.y + D[d][1]; return nx < 0 || ny < 0 || nx >= lv.w || ny >= lv.h || lv.rocks.some(r => r[0] === nx && r[1] === ny); };
+    const off = Object.keys(D).find(blocked) || "down";
+    const bumps = !!Object.keys(D).find(blocked);
     await page.click(`[data-add="${off}"]`);
     await page.click(".plan .run");
     await page.waitForFunction(() => document.querySelector("#feedback").className.includes("fb-"), null, { timeout: 8000 });
     ok((await fbKind(page)) === "wrong", "plan: a bad route stops, marks the step, and explains");
-    ok(await page.locator(".chip.fail").count() === 1, "plan: the failing arrow is highlighted for fixing");
+    if (bumps && !p.startProgram) ok(await page.locator(".chip.fail").count() === 1, "plan: the failing arrow is highlighted for fixing");
     await page.click(".plan .clear");
   }
+  if (p.startProgram && !tryWrong) {
+    ok(await page.locator(".program .chip").count() === p.startProgram.length, "Bug Hunt: the buggy code is pre-filled for fixing");
+    await page.click(".plan .run");
+    await page.waitForFunction(() => /fb-wrong/.test(document.querySelector("#feedback").className), null, { timeout: 15000 });
+    ok(true, "Bug Hunt: running the buggy code shows where it goes wrong");
+  }
+  if (await page.locator(".plan .clear:not([disabled])").count()) await page.click(".plan .clear");
   const sol = await page.evaluate((lv) => window.SE_Logic.solveLevel(lv), lv);
   // use the keyboard for arrows on every other level, buttons otherwise
   for (const [k, d] of sol.path.entries()) {
@@ -255,9 +267,10 @@ async function playRound(page, world, idx, aid, mode) {
   await openActivity(page, world, idx, mode);
   const st0 = await state(page);
   ok(st0.round.activity === aid && st0.round.mode === mode, `${aid}/${mode}: round started`);
-  let guard = 0, wrongTried = false;
+  let guard = 0, wrongTried = false; reviews = 0;
   while ((await state(page)).screen === "play" && guard++ < 20) {
     const p = await prompt(page);
+    if (p.review) { ok(await page.locator("#instr .review-chip").count() === 1, `${aid}/${mode}: a review item is labelled “Review”`); reviews++; }
     const tryWrong = !wrongTried && p.graded !== false;
     if (tryWrong) wrongTried = true;
     if (p.mechanic === "collect") await solveCollect(page, p, tryWrong);
@@ -269,12 +282,15 @@ async function playRound(page, world, idx, aid, mode) {
     if (guard === 1) ok((await fbKind(page)) === "right" || p.graded === false, `${aid}/${mode}: correct answer confirmed with ✓ and explanation`);
     await page.click("#nextBtn");
   }
+  reviewTotal += reviews;
   await page.waitForSelector("#scr-results:not([hidden])", { timeout: 5000 });
   const title = await page.textContent("#resTitle");
   ok(/complete|walk/i.test(title), `${aid}/${mode}: results screen ("${title}")`);
   return page.textContent("#resLine");
 }
 
+let reviews = 0, reviewTotal = 0;
+const roundCids = async (page) => page.evaluate(() => { const h = window.SnakeExplorers.history(); return h; });
 // ---------------- main ----------------
 (async () => {
   const browser = await chromium.launch();
@@ -296,7 +312,10 @@ async function playRound(page, world, idx, aid, mode) {
     }
   }
   const d = await page.evaluate(() => window.SnakeExplorers.data());
-  ok(d.progress.stats.rounds === 39, "progress: 39 rounds recorded (" + d.progress.stats.rounds + ")");
+  ok(d.progress.stats.rounds === 57, "progress: 57 rounds recorded (" + d.progress.stats.rounds + ")");
+  ok(reviewTotal >= 3, "practice: missed items come back as clearly labelled reviews (" + reviewTotal + ")");
+  const hist = d.history.keys;
+  ok(Object.keys(hist).length >= 50, "history: recorded per activity and mode (" + Object.keys(hist).length + " keys)");
   const seen = Object.values(d.progress.concepts).filter(c => c.seen > 0).length, prac = Object.values(d.progress.concepts).filter(c => c.practiced > 0).length;
   ok(seen > prac && prac > 10, `progress: discovered (${seen}) is tracked separately from practiced (${prac})`);
   const walk = d.progress.concepts;
@@ -382,7 +401,7 @@ async function playRound(page, world, idx, aid, mode) {
   const before = await page.evaluate(() => window.SnakeExplorers.data().progress.stats.rounds);
   await page.reload();
   const after = await page.evaluate(() => window.SnakeExplorers.data().progress.stats.rounds);
-  ok(before === after && after >= 39, "persistence: progress survives reload (" + after + " rounds)");
+  ok(before === after && after >= 57, "persistence: progress survives reload (" + after + " rounds)");
   const keys = await page.evaluate(() => Object.keys(localStorage));
   ok(keys.includes("snakeExplorers.v1") && !keys.some(k => k.startsWith("fs_")), "persistence: own namespace, no Fruit Snake (fs_*) keys touched: " + JSON.stringify(keys));
 
@@ -399,7 +418,7 @@ async function playRound(page, world, idx, aid, mode) {
   await page.click("#resetBtn");
   ok(await page.isVisible("#resetConfirm"), "settings: reset asks for confirmation in the page");
   await page.click("#resetNo");
-  ok((await page.evaluate(() => window.SnakeExplorers.data().progress.stats.rounds)) >= 39, "settings: 'Keep my progress' keeps it");
+  ok((await page.evaluate(() => window.SnakeExplorers.data().progress.stats.rounds)) >= 57, "settings: 'Keep my progress' keeps it");
   await page.check('input[name="textSize"][value="standard"]', { force: true });
   await page.check('input[name="motion"][value="system"]', { force: true });
   await page.click("#setVoice"); await page.click("#setSound");
@@ -421,6 +440,74 @@ async function playRound(page, world, idx, aid, mode) {
   ok(mic.length === 0, "privacy: microphone never requested " + JSON.stringify(mic));
   ok(page.errors.length === 0, "no JS errors " + JSON.stringify(page.errors.slice(0, 5)));
   await ctx.close();
+
+  // ---- Play again deals fresh questions; history survives reload ----
+  {
+    const { ctx, page } = await newPage(browser);
+    await setSpeed(page, "lively");
+    for (const [w, i, aid, mode] of [["everyday", 2, "kind-choices", "practice"], ["word", 2, "sentence-builder", "challenge"], ["logic", 1, "bug-hunt", "explore"], ["nature", 3, "food-chains", "practice"], ["number", 2, "fair-shares", "challenge"]]) {
+      await playRound(page, w, i, aid, mode);
+      const key = aid + ":" + mode;
+      const first = Object.keys((await page.evaluate(() => window.SnakeExplorers.history())).keys[key].s);
+      await page.click("#againBtn");
+      await page.waitForSelector("#scr-play:not([hidden])");
+      const shownNow = [];
+      for (let k = 0; k < 20 && (await state(page)).screen === "play"; k++) {
+        const p = await prompt(page);
+        if (!p.review) shownNow.push(...p.cids);
+        const before = (await state(page)).round.i;
+        await page.click("#leaveBtn"); break;   // leaving mid-round: only what was shown counts
+      }
+      const repeat = shownNow.filter(c => first.includes(c) && !/^(habset|rooms):/.test(c));
+      ok(repeat.length === 0, `Play again (${aid}/${mode}): the first new question is fresh (${shownNow.join(",")})`);
+      await page.reload();
+      const after = Object.keys((await page.evaluate(() => window.SnakeExplorers.history())).keys[key].s);
+      ok(first.every(c => after.includes(c)) && after.length === first.length + shownNow.length, `history (${aid}/${mode}): survives reload and only counts shown questions`);
+    }
+    ok(page.errors.length === 0, "freshness checks: no JS errors " + JSON.stringify(page.errors.slice(0, 3)));
+    await ctx.close();
+  }
+  // ---- "New" marks new activities until they're played ----
+  {
+    const { ctx, page } = await newPage(browser);
+    await page.click("#exploreBtn");
+    ok(await page.locator(".world-card .new-chip").count() === 6, "worlds: each world shows one “New activity” mark");
+    await page.click('[data-world="word"]');
+    const newOnes = await page.$$eval(".act-card", cs => cs.filter(c => c.querySelector(".new-chip")).map(c => c.querySelector("h3").textContent.trim()));
+    ok(newOnes.length === 1 && /Sentence Builder/.test(newOnes[0]), "world: only the new activity is marked New (" + newOnes + ")");
+    await page.locator(".play-act").nth(2).click();
+    await page.click("#leaveBtn");
+    ok(await page.locator(".act-card .new-chip").count() === 0, "world: the New mark goes away once played");
+    await ctx.close();
+  }
+  // ---- a first-release save loads unchanged, gains history additively, and fs_* keys are untouched ----
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    await ctx.addInitScript(TRAP);
+    const page = await ctx.newPage();
+    page.errors = []; page.on("pageerror", e => page.errors.push(e.message));
+    await page.goto(URL);
+    const OLD = { v: 1, settings: { voice: false, sound: true, motion: "system", speed: "steady", textSize: "large", mode: "practice" }, look: { color: "mint", pattern: "spots", accessory: "hat" },
+      progress: { concepts: { apple: { seen: 3, practiced: 2 }, owl: { seen: 1, practiced: 0 } }, stats: { rounds: 4, worlds: { word: 3, nature: 1 }, modes: { practice: 4 }, sorted: 2, sequences: 1, routes: 0, challengeRounds: 0 }, best: {}, last: { activityId: "letter-line", mode: "practice" } },
+      seenUnlocks: ["accessory:hat", "pattern:spots"] };
+    const FS = { fs_best: "12", fs_learned: '{"fruits":["apple"]}', fs_skin: "ocean", fs_saymode: "tap" };
+    await page.evaluate(([old, fs]) => { localStorage.clear(); localStorage.setItem("snakeExplorers.v1", JSON.stringify(old)); Object.entries(fs).forEach(([k, v]) => localStorage.setItem(k, v)); }, [OLD, FS]);
+    await page.reload();
+    const d = await page.evaluate(() => window.SnakeExplorers.data());
+    ok(d.progress.concepts.apple.practiced === 2 && d.progress.stats.rounds === 4 && d.look.color === "mint" && d.settings.speed === "steady" && d.settings.textSize === "large", "old save: progress, looks and settings load unchanged");
+    ok(d.history && d.history.keys && Object.keys(d.history.keys).length === 0 && d.played && typeof d.played === "object", "old save: new fields are added with safe defaults");
+    ok(await page.isVisible("#continueBtn") && /Letter Line/.test(await page.textContent("#continueBtn")), "old save: Continue adventure still points to the last activity");
+    const rawBefore = await page.evaluate(() => localStorage.getItem("snakeExplorers.v1"));
+    ok(rawBefore === JSON.stringify(OLD), "old save: loading alone never rewrites the save");
+    await setSpeed(page, "lively");
+    await playRound(page, "word", 2, "sentence-builder", "explore");
+    const d2 = await page.evaluate(() => window.SnakeExplorers.data());
+    ok(d2.v === 1 && d2.progress.concepts.apple.practiced === 2 && d2.progress.stats.rounds === 5 && d2.history.keys["sentence-builder:explore"], "old save: keeps everything and adds history after a new round");
+    const fsAfter = await page.evaluate((fs) => Object.keys(fs).map(k => localStorage.getItem(k)), FS);
+    ok(JSON.stringify(fsAfter) === JSON.stringify(Object.values(FS)), "Fruit Snake fs_* saves untouched");
+    ok(page.errors.length === 0, "old save: no JS errors");
+    await ctx.close();
+  }
 
   // ---- blocked storage + no speech + reduced motion ----
   {
@@ -454,7 +541,8 @@ async function playRound(page, world, idx, aid, mode) {
     await page.screenshot({ path: `${SHOTS}/${name}-home.png` });
     await page.click("#exploreBtn"); await noHScroll("worlds");
     await page.screenshot({ path: `${SHOTS}/${name}-worlds.png` });
-    for (const [w, i, aid, mode] of [["word", 0, "snack-hunt", "practice"], ["logic", 0, "code-snake", "practice"], ["pattern", 1, "shape-sort", "challenge"], ["everyday", 0, "step-by-step", "challenge"], ["number", 1, "number-questions", "challenge"]]) {
+    for (const [w, i, aid, mode] of [["word", 0, "snack-hunt", "practice"], ["logic", 0, "code-snake", "practice"], ["pattern", 1, "shape-sort", "challenge"], ["everyday", 0, "step-by-step", "challenge"], ["number", 1, "number-questions", "challenge"],
+      ["word", 2, "sentence-builder", "challenge"], ["logic", 1, "bug-hunt", "practice"], ["pattern", 2, "mirror-match", "challenge"], ["nature", 3, "food-chains", "challenge"], ["everyday", 3, "tidy-up", "challenge"], ["number", 2, "fair-shares", "challenge"]]) {
       await openActivity(page, w, i, mode);
       await noHScroll(aid);
       if (aid === "snack-hunt" || aid === "code-snake") {
@@ -477,6 +565,27 @@ async function playRound(page, world, idx, aid, mode) {
     await page.goto(URL); await page.click('[data-go="mysnake"]'); await noHScroll("my snake");
     await page.goto(URL); await page.click('[data-go="settings"]'); await noHScroll("settings");
     ok(page.errors.length === 0, `${name}: no JS errors ` + JSON.stringify(page.errors.slice(0, 3)));
+    await ctx.close();
+  }
+
+  // ---- large text + long prompts on a small phone ----
+  for (const vp of [{ width: 360, height: 640 }, { width: 390, height: 844 }]) {
+    const { ctx, page } = await newPage(browser, { viewport: vp, hasTouch: true });
+    await page.click('[data-go="settings"]');
+    await page.check('input[name="textSize"][value="large"]', { force: true });
+    for (const [w, i, aid, mode] of [["everyday", 2, "kind-choices", "challenge"], ["number", 2, "fair-shares", "challenge"], ["everyday", 1, "ready-weather", "challenge"], ["nature", 2, "nature-walk", "challenge"], ["word", 2, "sentence-builder", "challenge"], ["logic", 1, "bug-hunt", "explore"]]) {
+      await openActivity(page, w, i, mode);
+      const tag = vp.width + "-large-" + aid;
+      ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${tag}: no sideways scroll`);
+      const tb = await page.locator(".playbar").boundingBox();
+      ok(tb.x >= 0 && tb.x + tb.width <= vp.width + 1, `${tag}: top bar fits`);
+      const wide = await page.$$eval(".opt, .tile, .slot-btn", (els) => els.filter(e => e.getBoundingClientRect().right > innerWidth + 1 || e.getBoundingClientRect().left < -1).length);
+      ok(wide === 0, `${tag}: every answer card fits the screen width`);
+      const clipped = await page.$$eval(".opt .big-text, .opt .lab, .story p, .instr", (els) => els.filter(e => e.scrollWidth > e.clientWidth + 2).length);
+      ok(clipped === 0, `${tag}: long text wraps instead of being cut off`);
+      await page.screenshot({ path: `${SHOTS}/${tag}.png`, fullPage: true });
+    }
+    ok(page.errors.length === 0, `${vp.width} large text: no JS errors`);
     await ctx.close();
   }
 

@@ -514,3 +514,39 @@ fieldset.set-row > * + * { margin-top: 8px; }
 /* ---------- reduced motion (set from Settings, following the device by default) ---------- */
 .rm *, .rm *::before, .rm *::after { animation: none !important; transition: none !important; }
 .rm .cell-item.glow::after { box-shadow: 0 0 0 5px var(--sun); }
+
+/* ---------- More Adventures ---------- */
+.new-chip { display: inline-block; vertical-align: middle; font-family: var(--body); font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: var(--sun); color: #3D2C00; border-radius: 999px; padding: 1px 8px; }
+.review-chip { display: inline-flex; align-items: center; gap: 4px; vertical-align: middle; font-family: var(--body); font-size: .78rem; font-weight: 700; background: var(--brand-tint); color: var(--brand); border-radius: 999px; padding: 1px 9px 1px 6px; }
+.review-chip .ico { width: 1em; height: 1em; }
+.words .slot-btn { width: auto; min-width: 84px; min-height: 64px; padding: 16px 12px 8px; }
+.words .tile { width: auto; min-width: 74px; min-height: 52px; padding: 8px 14px; }
+.wordtile { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.1; white-space: nowrap; }
+.dot-group.blank { min-width: 64px; min-height: 64px; display: grid; place-items: center; font-family: var(--display); font-size: 2rem; color: var(--brand); box-shadow: inset 0 0 0 3px var(--brand); }
+.dot-group.many .dot { width: 26px; height: 26px; }
+.dot-rows { display: grid; grid-template-columns: repeat(var(--cols), 34px); gap: 4px; padding: 10px; background: var(--card); border-radius: 18px; box-shadow: var(--shadow); }
+.dot-rows .dot { width: 34px; height: 34px; }
+.vis-cells .cells-big { width: min(220px, 60vw); height: auto; }
+.opt .pic .cells { width: 112px; height: auto; max-height: 120px; }
+.vis-grid { flex-direction: column; gap: 8px; }
+.code-grid { width: min(250px, 70vw); height: auto; display: block; }
+.code-line { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.code-chip { position: relative; display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--brand-tint); color: var(--brand); }
+.code-chip .ico { width: 22px; height: 22px; }
+.code-chip .n { position: absolute; bottom: 1px; right: 4px; font-size: .62rem; font-weight: 700; }
+.stage.mech-choose .options { max-width: 820px; }
+@media (max-width: 600px) {
+  .words .slot-btn { min-width: 64px; min-height: 56px; padding: 14px 8px 6px; }
+  .words .tile { min-width: 58px; min-height: 46px; padding: 6px 10px; }
+  .wordtile { font-size: 1.05rem; }
+  .dot-rows { grid-template-columns: repeat(var(--cols), 26px); } .dot-rows .dot { width: 26px; height: 26px; }
+  .opt .pic .cells { width: 92px; }
+}
+@media (max-width: 600px) {
+  .sitem { min-width: 80px; padding: 6px 8px; }
+  .sitem .art { width: 42px; height: 42px; }
+  .sitem .lab { font-size: .8rem; }
+  .tray { gap: 8px; min-height: 56px; }
+  .bin { min-height: 112px; padding: 8px 6px; }
+  .bin-head .art { width: 44px; height: 44px; }
+}

@@ -39,6 +39,7 @@
     if (o.shape) pic = Art.shapeSvg(o.shape.shape, o.shape.color, "art");
     else if (o.art) pic = Art.item(o.art, "art");
     else if (o.dots) pic = `<span class="dots" data-n="${o.dots.n}">` + Array.from({ length: o.dots.n }, () => Art.item(o.dots.art, "dot")).join("") + `</span>`;
+    else if (o.cells) pic = Art.cells(o.cells, "art cells");
     else if (o.swatch) pic = `<span class="swatch sw-${o.swatch}">${Art.shapeSvg("circle", o.swatch, "art")}</span>`;
     const big = o.text != null && !o.art && !o.shape && !o.dots ? `<span class="big-text${String(o.text).length > 14 ? " long" : ""}">${esc(o.text)}</span>` : "";
     const lab = (o.text != null && big) ? "" : `<span class="lab">${esc(o.label)}</span>`;

@@ -161,7 +161,7 @@
     function handle(it) {
       if (p.kind === "find") {
         api.seen([it.id]);
-        if (it.id === p.target) {
+        if ((p.targets || [p.target]).includes(it.id)) {
           removeItem(it, true); grow += 1; done = true; stop();
           setMood("cheer"); api.sfx("right"); api.practiced(p.concepts);
           api.feedback({ kind: "right", text: p.explanation, mood: "cheer", say: cap(api.foodName(it.id)) + "! " + p.explanation });
@@ -237,7 +237,7 @@
       speedChanged() { if (!waiting && !done && !paused) start(); if (api.speedName() === "step") { stop(); waiting = true; } renderStatus(); },
       showHelp() {
         if (p.kind === "find" && api.helpLevel() >= 2) {
-          const t = items.find(i => i.id === p.target); if (t) { t.el.classList.add("glow"); }
+          items.filter(i => (p.targets || [p.target]).includes(i.id)).forEach(t => t.el.classList.add("glow"));
         }
       },
       destroy() { stop(); done = true; },
